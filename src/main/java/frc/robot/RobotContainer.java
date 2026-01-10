@@ -1,11 +1,11 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.GoalEndState;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.path.PathPlannerPath;
+// import com.pathplanner.lib.auto.AutoBuilder;
+// import com.pathplanner.lib.auto.NamedCommands;
+// import com.pathplanner.lib.path.GoalEndState;
+// import com.pathplanner.lib.path.PathConstraints;
+// import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;

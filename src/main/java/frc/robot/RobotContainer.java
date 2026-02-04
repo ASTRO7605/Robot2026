@@ -6,7 +6,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 // import com.pathplanner.lib.path.GoalEndState;
 // import com.pathplanner.lib.path.PathConstraints;
 // import com.pathplanner.lib.path.PathPlannerPath;
-
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -35,6 +35,11 @@ import frc.robot.Constants.TunnelCageConstants.PinPosition;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Led;
 
+//ajout pour limelight
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+//
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -50,12 +55,19 @@ public class RobotContainer {
             DriveConstants.kXboxControllerID);
     private final CommandJoystick m_turnStick = new CommandJoystick(DriveConstants.kTurnStickID);
     private final CommandJoystick m_throttleStick = new CommandJoystick(DriveConstants.kThrottleStickID);
-
+    // private final CommandJoystick m_alignButton = new
+    // CommandJoystick(DriveConstants.bu)
+    private double integralError = 0;
+    private double limelightLastError = 0;
+    private double derivativeError = 0;
     private double driverMulti = 1;
-    //private final SendableChooser<Command> m_chooser;
+    // private final SendableChooser<Command> m_chooser;
 
     // /* Subsystems */
     private Base m_base;
+    // limelight
+    private final NetworkTable limelight_m = NetworkTableInstance.getDefault().getTable("limelight");
+    //
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -80,6 +92,7 @@ public class RobotContainer {
 
     private Command getBaseDefaultCommand() {
         return new RunCommand(() -> {
+
             // double dir_x = m_driverController.getLeftX();
             // double dir_y = m_driverController.getLeftY();
 
@@ -102,10 +115,20 @@ public class RobotContainer {
             dir_r *= dir_r;
 
             double turn = 0;
+            boolean aimButton = m_throttleStick.getHID().getRawButton(Constants.DriveConstants.kTriggerID);
 
-            turn = MathUtil.applyDeadband(m_turnStick.getX(),
-                    DriveConstants.kControllerRotationDeadband);
-            turn *= (turn < 0) ? -turn : turn;
+            if (aimButton) {
+                turn = limelightAiming();
+            } else {
+                turn = MathUtil.applyDeadband(m_turnStick.getX(),
+                        DriveConstants.kControllerRotationDeadband);
+                turn *= (turn < 0) ? -turn : turn;
+
+                turn *= -DriveConstants.kMaxTeleopRotateSpeed * DriveConstants.kGeneralSpeedMulti;
+                if (Math.abs(turn) >= DriveConstants.kMaxTeleopRotateSpeed * driverMulti) {
+                    turn = DriveConstants.kMaxTeleopRotateSpeed * driverMulti * (turn < 0 ? -1 : 1);
+                }
+            }
 
             double x = -dir_r * Math.sin(dir_theta);
             x *= DriveConstants.kMaxTeleopSpeed * DriveConstants.kGeneralSpeedMulti;
@@ -119,13 +142,10 @@ public class RobotContainer {
                 y = DriveConstants.kMaxTeleopSpeed * driverMulti * (y < 0 ? -1 : 1);
             }
 
-            turn *= -DriveConstants.kMaxTeleopRotateSpeed * DriveConstants.kGeneralSpeedMulti;
-            if (Math.abs(turn) >= DriveConstants.kMaxTeleopRotateSpeed * driverMulti) {
-                turn = DriveConstants.kMaxTeleopRotateSpeed * driverMulti * (turn < 0 ? -1 : 1);
-            }
-
             m_base.drive(new Translation2d(x, y), turn, false);
+
         }, m_base);
+
     }
 
     /**
@@ -137,7 +157,6 @@ public class RobotContainer {
      * edu.wpi.first.wpilibj2.command.button.JoystickButton}.
      */
     private void configureButtonBindings() {
-
     }
 
     /**
@@ -146,9 +165,9 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     // public Command getAutonomousCommand() {
-    //     // An ExampleCommand will run in autonomous
-    //     // return new exampleAuto(m_base);
-    //     return m_chooser.getSelected();
+    // // An ExampleCommand will run in autonomous
+    // // return new exampleAuto(m_base);
+    // return m_chooser.getSelected();
     // }
 
     public void resetGyroOffsetEstimatedPose() {
@@ -157,5 +176,56 @@ public class RobotContainer {
 
     public void setNeutralModeSwerve(NeutralModeValue neutralMode) {
         m_base.setNeutralMode(neutralMode);
+    }
+
+    // Procédure qui permet d'aligner le Robot à partir du aprilTag en vue
+    public double limelightAiming() {
+
+        double tv = limelight_m.getEntry("tv").getDouble(0.0);
+        double tx = limelight_m.getEntry("tx").getDouble(0.0);
+        double error = tx;
+        double Kp = 0.03; //proportionnel
+        double Ki = 0.001; //intégral 
+        double Kd = 0.002; //dérivé
+
+        integralError += error;
+        derivativeError = error - limelightLastError;
+        limelightLastError = error;
+
+        double rotationSpeed = -(Kp * error + Ki * integralError + Kd * derivativeError);
+
+        if (tv == 1.0) {
+            // deadband
+            if (Math.abs(tx) < 1.0) {
+                rotationSpeed = 0.0;
+            }
+            return rotationSpeed;
+        }
+        return 0;
+
+    }
+
+    public void limelightControl() { // ajout pour limelight
+        limelightAiming();
+        double tv = limelight_m.getEntry("tv").getDouble(0.0); // vérifie si une cible est détectée
+        double tx = limelight_m.getEntry("tx").getDouble(0.0); // calcul de la position horizontale(X)
+        double ta = limelight_m.getEntry("ta").getDouble(0.0); // calcule la distance de la cible
+        double steeringAdjust = 0.0;
+        // if (tv == 1.0) {
+        //     while(ta < 2.0){
+        //         m_base.drive(new Translation2d(Constants.MovementConstants.forwardSpeed, 0), 0, false);
+        //         ta = limelight_m.getEntry("ta").getDouble(0.0); // calcule la distance de la cible
+            
+        //     }
+           
+        // } 
+        if (tv == 1.0) {
+            if(ta < 2.0){
+                m_base.drive(new Translation2d(Constants.MovementConstants.forwardSpeed, 0), 0, false);
+                System.out.println("TA: " + ta);
+            }
+           
+        } 
+        
     }
 }

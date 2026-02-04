@@ -37,9 +37,10 @@ public final class Constants {
     public static final boolean kEnableVision = true;
 
     public static final class DriveConstants {
-        public static final int kXboxControllerID = 0;
+        public static final int kXboxControllerID = 2;
         public static final int kTurnStickID = 1;
-        public static final int kThrottleStickID = 2;
+        public static final int kThrottleStickID = 0;
+        public static final int kTriggerID = 1;
 
         public static final double kControllerMovementDeadband = 0.1;
         public static final double kControllerRotationDeadband = 0.1;
@@ -582,4 +583,10 @@ public final class Constants {
 
     public static final int kCANTimeout = 50;
     public static final int kPeriodicFrameTimeout = 500;
+
+    public static final class MovementConstants{
+        static double forwardSpeed = 2;
+        static double backwardSpeed = -0.7;  
+    }
+
 }

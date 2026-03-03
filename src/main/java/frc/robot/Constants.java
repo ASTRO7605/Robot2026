@@ -83,13 +83,13 @@ public final class Constants {
         public static final SensorDirectionValue cancoderInvert = chosenModule.cancoderInvert;
 
         /* Swerve Current Limiting */
-        public static final int angleCurrentLimit = 40;
-        public static final int angleCurrentThreshold = 50;
+        public static final int angleCurrentLimit = 50;
+        public static final int angleCurrentThreshold = 40;
         public static final double angleCurrentThresholdTime = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
-        public static final int driveCurrentLimit = 60;
-        public static final int driveCurrentThreshold = 70;
+        public static final int driveCurrentLimit = 70;
+        public static final int driveCurrentThreshold = 60;
         public static final double driveCurrentThresholdTime = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
 

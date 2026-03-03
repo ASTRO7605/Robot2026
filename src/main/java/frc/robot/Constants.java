@@ -126,8 +126,7 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double kMaxTeleopSpeed = 4.8
-                ;
+        public static final double kMaxTeleopSpeed = 4.8;
         /** Radians per Second */
         public static final double kMaxTeleopRotateSpeed = 5 * Math.PI;
 
@@ -584,9 +583,44 @@ public final class Constants {
     public static final int kCANTimeout = 50;
     public static final int kPeriodicFrameTimeout = 500;
 
-    public static final class MovementConstants{
+    public static final class MovementConstants {
         static double forwardSpeed = 2;
-        static double backwardSpeed = -0.7;  
+        static double backwardSpeed = -0.7;
     }
 
+    ////////////////////////////////////////////////////////
+    /// Constants des moteurs Neo Kraken pour les mécanismes autres que le drivebase
+     ////////////////////////////////////////////////////////
+     
+    // constantes pour l'utilisation du climb
+    public static final class ClimbConstants {
+        public static final int climbMotorId = 16;
+    }
+
+    // constantes pour les intakes
+    public static final class IntakeConstants {
+        public static final int leftIntakeMotorId = 10;
+        public static final int rightIntakeMotorId = 9;
+    }
+
+    // constantes pour le convoyeur
+    public static final class ConveyorConstants {
+        public static final int conveyorMotorId = 11;
+    }
+
+    // constantes pour les Lauchers
+    public static final class LauncherConstants {
+        public static final int rightLaucherMotorId = 13;
+        public static final int leftLaucherMotorId = 14;
+    }
+
+    // constantes pour la base du shooter
+    public static final class ShooterBaseConstants {
+        public static final int shooterBaseMotorId = 12;
+    }
+
+    // constantes pour les tourelles
+    public static final class TurretConstants {
+        public static final int turretMotorId = 15;
+    }
 }

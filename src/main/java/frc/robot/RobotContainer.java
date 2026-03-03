@@ -1,11 +1,12 @@
 package frc.robot;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.auto.NamedCommands;
-// import com.pathplanner.lib.path.GoalEndState;
-// import com.pathplanner.lib.path.PathConstraints;
-// import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -34,7 +35,8 @@ import frc.robot.Constants.TunnelCageConstants.PinPosition;
 
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Led;
-
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 //ajout pour limelight
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -61,8 +63,13 @@ public class RobotContainer {
     private double limelightLastError = 0;
     private double derivativeError = 0;
     private double driverMulti = 1;
-    // private final SendableChooser<Command> m_chooser;
-
+    private final SendableChooser<Command> m_chooser;
+    private final Field2d field = new Field2d();
+    double tv = 0.0; // variable pour vérifier si une cible est détectée
+    double tx = 0.0; // variable pour calculer la position horizontale(X)
+    double ta = 0.0; // variable pour calculer la distance de la cible
+    double ty = 0.0; // variable pour calculer la position verticale(Y)
+    double tid = -1.0; // variable pour identifier la cible
     // /* Subsystems */
     private Base m_base;
     // limelight
@@ -78,15 +85,20 @@ public class RobotContainer {
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
         }
-
+        SmartDashboard.putData("Field", field);
         registerNamedCommands();
 
-        // m_chooser = AutoBuilder.buildAutoChooser();
-        // SmartDashboard.putData("AutoChooser", m_chooser);
+        m_chooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("AutoChooser", m_chooser);
 
         configureButtonBindings();
+        configureTriggers();
+
     }
 
+    public void updateOdometry(Pose2d pose) {
+        field.setRobotPose(pose);
+    }
     private void registerNamedCommands() {
     }
 
@@ -159,16 +171,19 @@ public class RobotContainer {
     private void configureButtonBindings() {
     }
 
+    private void configureTriggers() {
+         new EventTrigger("shoot")
+            .onTrue(new PrintCommand("Shooting!")); // Command to execute when the "shoot" event is triggered
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *
      * @return the command to run in autonomous
      */
-    // public Command getAutonomousCommand() {
-    // // An ExampleCommand will run in autonomous
-    // // return new exampleAuto(m_base);
-    // return m_chooser.getSelected();
-    // }
+    public Command getAutonomousCommand() {
+    return m_chooser.getSelected();
+    }
 
     public void resetGyroOffsetEstimatedPose() {
         m_base.resetGyroOffset(true);
@@ -181,35 +196,41 @@ public class RobotContainer {
     // Procédure qui permet d'aligner le Robot à partir du aprilTag en vue
     public double limelightAiming() {
 
-        double tv = limelight_m.getEntry("tv").getDouble(0.0);
-        double tx = limelight_m.getEntry("tx").getDouble(0.0);
+        tv = limelight_m.getEntry("tv").getDouble(0.0);
+        tx = limelight_m.getEntry("tx").getDouble(0.0);
+
         double error = tx;
-        double Kp = 0.03; //proportionnel
-        double Ki = 0.001; //intégral 
-        double Kd = 0.002; //dérivé
+        double Kp = 0.03; //proportionnel: temp de réaction en fonction de l'erreur
+        double Ki = 0.001; //intégral: Corrige les erreurs passées 
+        double Kd = 0.002; //dérivé: prévoit les erreurs futures
 
-        integralError += error;
-        derivativeError = error - limelightLastError;
-        limelightLastError = error;
 
-        double rotationSpeed = -(Kp * error + Ki * integralError + Kd * derivativeError);
 
         if (tv == 1.0) {
             // deadband
+            integralError += error;
+            derivativeError = error - limelightLastError;
+            limelightLastError = error;
+
+            double rotationSpeed = -(Kp * error + Ki * integralError + Kd * derivativeError);
             if (Math.abs(tx) < 1.0) {
                 rotationSpeed = 0.0;
             }
             return rotationSpeed;
+        }
+        else {
+             integralError = 0;
         }
         return 0;
 
     }
 
     public void limelightControl() { // ajout pour limelight
-        limelightAiming();
-        double tv = limelight_m.getEntry("tv").getDouble(0.0); // vérifie si une cible est détectée
-        double tx = limelight_m.getEntry("tx").getDouble(0.0); // calcul de la position horizontale(X)
-        double ta = limelight_m.getEntry("ta").getDouble(0.0); // calcule la distance de la cible
+
+        
+        tv = limelight_m.getEntry("tv").getDouble(0.0); // vérifie si une cible est détectée
+        tx = limelight_m.getEntry("tx").getDouble(0.0); // calcul de la position horizontale(X)
+        ta = limelight_m.getEntry("ta").getDouble(0.0); // calcule la distance de la cible
         double steeringAdjust = 0.0;
         // if (tv == 1.0) {
         //     while(ta < 2.0){
@@ -221,11 +242,26 @@ public class RobotContainer {
         // } 
         if (tv == 1.0) {
             if(ta < 2.0){
-                m_base.drive(new Translation2d(Constants.MovementConstants.forwardSpeed, 0), 0, false);
+                m_base.drive(new Translation2d(Constants.MovementConstants.forwardSpeed, 0), limelightAiming(), false);
+
+                m_base.stopWheels();
+                
                 System.out.println("TA: " + ta);
             }
            
         } 
         
     }
+
+    // to test
+    public void shootLogic() {
+        tid = limelight_m.getEntry("tid").getDouble(-1.0);
+
+        if(tid == 9.0 || tid == 10.0 || tid == 26.0 || tid == 25.0){
+            m_base.drive(new Translation2d(0, 0), limelightAiming(), false);
+            //implémenter la logique de tir 
+            System.out.println(" Shoot Target ID: " + tid);
+        }
+    }
 }
+

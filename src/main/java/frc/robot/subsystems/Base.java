@@ -26,14 +26,14 @@ import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-// import com.pathplanner.lib.auto.AutoBuilder;
-// import com.pathplanner.lib.config.PIDConstants;
-// import com.pathplanner.lib.config.RobotConfig;
-// import com.pathplanner.lib.controllers.PPHolonomicDriveController;
-// import com.pathplanner.lib.path.GoalEndState;
-// import com.pathplanner.lib.path.IdealStartingState;
-// import com.pathplanner.lib.path.PathConstraints;
-// import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.IdealStartingState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -49,6 +49,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Base extends SubsystemBase {
+    private final Field2d field = new Field2d();
     private final Pigeon2 m_gyro;
     private final SwerveDrivePoseEstimator m_poseEstimator;
     private final SwerveModule[] m_swerveMods;
@@ -98,15 +99,15 @@ public class Base extends SubsystemBase {
 
         m_gyro.getConfigurator().apply(new Pigeon2Configuration());
         m_gyro.setYaw(0);
+        SmartDashboard.putData("Field", field);
+        Optional<RobotConfig> robotConfig;
 
-        // Optional<RobotConfig> robotConfig;
-
-        // try {
-        //     robotConfig = Optional.of(RobotConfig.fromGUISettings());
-        // } catch (Exception e) {
-        //     robotConfig = Optional.empty();
-        //     e.printStackTrace();
-        // }
+        try {
+            robotConfig = Optional.of(RobotConfig.fromGUISettings());
+        } catch (Exception e) {
+            robotConfig = Optional.empty();
+            e.printStackTrace();
+        }
 
         m_swerveMods = new SwerveModule[] {
                 new SwerveModule(0, DriveConstants.Mod0.constants),
@@ -135,29 +136,30 @@ public class Base extends SubsystemBase {
         SmartDashboard.putData("Robot Measurement", m_robotField);
         SmartDashboard.putData("Target Pose", m_targetField);
 
-        // AutoBuilder.configure(this::getPose, // Robot pose supplier
-        //         this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        //         (speeds, feedforwards) ->
+        AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::setPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+                (speeds, feedforwards) ->
 
-        //         driveRobotRelativeChassisSpeeds(speeds), // Method that will drive the robot
-        //                                                  // given ROBOT RELATIVE
-        //                                                  // ChassisSpeeds. Also optionally
-        //                                                  // outputs individual module
-        //                                                  // feedforwards
-        //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
-        //                                         // holonomic drive trains
-        //                 new PIDConstants(AutoConstants.driveKP, AutoConstants.driveKI, AutoConstants.driveKD), // Translation
-        //                                                                                                        // PID
-        //                                                                                                        // constants
-        //                 new PIDConstants(AutoConstants.turnKP, AutoConstants.turnKI, AutoConstants.turnKD) // Rotation
-        //                                                                                                    // PID
-        //                                                                                                    // constants
-        //         ),
-        //         robotConfig.get(), // The robot configuration
-        //         this::shouldPathsFlip,
-        //         this // Reference to this subsystem to set requirements
-        // );
+                driveRobotRelativeChassisSpeeds(speeds), // Method that will drive the robot
+                                                         // given ROBOT RELATIVE
+                                                         // ChassisSpeeds. Also optionally
+                                                         // outputs individual module
+                                                         // feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for
+                                                // holonomic drive trains
+                        new PIDConstants(AutoConstants.driveKP, AutoConstants.driveKI, AutoConstants.driveKD), // Translation
+                                                                                                               // PID
+                                                                                                               // constants
+                        new PIDConstants(AutoConstants.turnKP, AutoConstants.turnKI, AutoConstants.turnKD) // Rotation
+                                                                                                           // PID
+                                                                                                           // constants
+                ),
+                robotConfig.get(), // The robot configuration
+                this::shouldPathsFlip,
+                this // Reference to this subsystem to set requirements
+        );
         m_drivingInFieldRelative = true;
         m_gyro.reset();
 
@@ -427,6 +429,7 @@ public class Base extends SubsystemBase {
             SmartDashboard.putNumber("Mod " + mod.m_moduleNumber + " Velocity", mod.getState().speedMetersPerSecond);
         }
 
+        field.setRobotPose(m_poseEstimator.getEstimatedPosition());
         m_robotField.setRobotPose(m_poseEstimator.getEstimatedPosition());
         m_targetField.setRobotPose(m_reefFinalPositions.getOrDefault(
                 m_targetChooser.getSelected() + SmartDashboard.getString("Target Reef Tag Side", "R"), new Pose2d()));

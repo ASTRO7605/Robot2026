@@ -207,23 +207,60 @@ public final class Constants {
     public static final int kPeriodicFrameTimeout = 500;
 
     ////////////////////////////////////////////////////////
-    /// Constants des moteurs Neo Kraken pour les mécanismes autres que le drivebase
+    /// Constants des moteurs Neo Kraken pour les sous-systèmes autres que le drivebase
      ////////////////////////////////////////////////////////
      
-    // constantes pour l'utilisation du climb
+    // constantes pour le climb
     public static final class ClimbConstants {
         public static final int climbMotorId = 16;
+        public static final double kp = 0.0;
+        public static final double ki = 0.0;
+        public static final double kd = 0.0;
+        public static final double maxVelocity = 40; 
+        public static final double maxAcceleration = 60;
+        public static final double kVoltageCompensation = 11;
+        public static final int kCurrentLimit = 50;
+        public static final double fPositionConversion = 3 * Math.PI / 10;
+        public static final double fVelocityConversion = fPositionConversion / 60;
+        public static final double kSoftLimitForward = 55.5; 
+        public static final double feedforwards  = 0.7;
+        public static final double kPositionThreshold = 0.25;
+        public static final double kLimitSwitchPosition = 0;
+        //enum pour les positions de climb
+        public static enum climbLvl {
+            //in inches
+            Stowed(0),
+            Lv1(27),
+            Lv2(45),
+            Lv3(63);
+            
+            public final double position;
+            
+            climbLvl(double position) {
+                this.position = position;
+            }
+        }
     }
 
     // constantes pour les intakes
     public static final class IntakeConstants {
-        public static final int leftIntakeMotorId = 10;
         public static final int rightIntakeMotorId = 9;
     }
 
     // constantes pour le convoyeur
     public static final class ConveyorConstants {
+        public static final int leftIntakeMotorId = 10;
         public static final int conveyorMotorId = 11;
+
+        public static final double maxVelocity = 40; 
+        public static final double maxAcceleration = 60;
+        public static final double kVoltageCompensation = 11;
+        public static final int kCurrentLimit = 50;
+
+        public static final double kInSpeed = 0.8;
+        public static final double kOutSpeed = -1;
+        
+        public static final double kThresholdMotorStopped = 500;
     }
 
     // constantes pour les Lauchers

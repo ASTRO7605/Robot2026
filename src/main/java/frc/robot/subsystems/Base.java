@@ -3,10 +3,17 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.PoseEstimationConstants;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.LimelightVisionResult;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.ctre.phoenix6.CANBus;
@@ -39,10 +46,12 @@ public class Base extends SubsystemBase {
 
     private final Field2d m_robotField;
 
+    private Map<String, LimelightVisionModule> m_visionModules = new HashMap<>();
+    private boolean useVision = false;
+
     /** radians */
     private double m_gyroOffset = 0.0;
     private boolean m_drivingInFieldRelative = true;
-    private boolean m_currentlyPathfinding = false;
 
     public Base() {
         m_gyro = new Pigeon2(Constants.DriveConstants.pigeonID, canbus);
@@ -54,7 +63,7 @@ public class Base extends SubsystemBase {
 
         Optional<RobotConfig> robotConfig;
 
-        try {  
+        try {
             // TODO: set config in pathplanner GUI
             robotConfig = Optional.of(RobotConfig.fromGUISettings());
         } catch (Exception e) {
@@ -72,7 +81,9 @@ public class Base extends SubsystemBase {
         m_poseEstimator = new SwerveDrivePoseEstimator(
                 DriveConstants.swerveKinematics, m_gyro.getRotation2d(),
                 getModulePositions(),
-                new Pose2d(new Translation2d(0, 0), new Rotation2d(0)));
+                new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
+                PoseEstimationConstants.kStateStdDevs,
+                PoseEstimationConstants.kVisionStdDevsDefault);
 
         SmartDashboard.putData("Robot Measurement", m_robotField);
 
@@ -101,21 +112,25 @@ public class Base extends SubsystemBase {
         );
         m_drivingInFieldRelative = true;
         m_gyro.reset();
+
+        // initialize vision modules
+        if (useVision) {
+            m_visionModules.put(VisionConstants.limelight4Name, new LimelightVisionModule(
+                    VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform, this::getHeading));
+            m_visionModules.put(VisionConstants.limelight3Name, new LimelightVisionModule(
+                    VisionConstants.limelight3Name, VisionConstants.robotTolimelight3Transform, this::getHeading));
+            m_visionModules.put(VisionConstants.limelight2Name, new LimelightVisionModule(
+                    VisionConstants.limelight2Name, VisionConstants.robotTolimelight2Transform, this::getHeading));
+        }
+
     }
 
     public boolean shouldPathsFlip() {
-        if (m_currentlyPathfinding) {
-            return false;
-        }
         var alliance = DriverStation.getAlliance();
         if (alliance.isPresent()) {
             return alliance.get() == DriverStation.Alliance.Red;
         }
         return false;
-    }
-
-    public void setPathfindingFlag(boolean newValue) {
-        m_currentlyPathfinding = newValue;
     }
 
     public void drive(Translation2d translation, double rotation, boolean isOpenLoop) {
@@ -247,10 +262,61 @@ public class Base extends SubsystemBase {
             mod.setNeutralMode(neutralMode);
         }
     }
-    
+
+    public void updateVisionEstimate() {
+        for (LimelightVisionModule vis : m_visionModules.values()) {
+            LimelightVisionResult o_result = vis.getEstimatedPoses();
+            var result = o_result.mt2Estimate();
+            double distance = o_result.closestTagDistance();
+
+            // filter out empty results
+            if (result.isEmpty()) {
+                continue;
+            }
+
+            // TODO: decide filter strategy and tune std devs
+            var stdDevs = PoseEstimationConstants.kVisionStdDevsPerMeterGlobal.times(distance)
+                    .plus(PoseEstimationConstants.kVisionStdDevsBaselineGlobal);
+
+            Pose2d measurement2d = result.get().pose;
+
+            m_poseEstimator.addVisionMeasurement(measurement2d, result.get().timestampSeconds,
+                    stdDevs);
+        }
+    }
+
+    public void setLimelight4IMUMode(VisionConstants.LimelightIMUModes mode) {
+        m_visionModules.get(VisionConstants.limelight4Name).setIMUMode(mode);
+    }
+
+    public Optional<Pose2d> getAveragePoseFromCameras() {
+        List<Pose2d> poses = new ArrayList<>();
+        for (LimelightVisionModule module : m_visionModules.values()) {
+            var measurement = module.getEstimatedPoses().mt2Estimate();
+            measurement.ifPresent(result -> poses.add(result.pose));
+        }
+
+        if (poses.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Translation2d averageTranslation = new Translation2d();
+        Rotation2d averageRotation = new Rotation2d();
+        for (Pose2d pose : poses) {
+            averageTranslation = averageTranslation.plus(pose.getTranslation());
+            averageRotation = averageRotation.plus(pose.getRotation());
+        }
+
+        averageTranslation = averageTranslation.div(poses.size());
+        averageRotation = averageRotation.div(poses.size());
+
+        return Optional.of(new Pose2d(averageTranslation, averageRotation));
+    }
 
     @Override
     public void periodic() {
+        // update pose estimator with vision, if applicable
+        updateVisionEstimate();
         // update pose estimator with gyro and swerve
         m_poseEstimator.update(getGyroYaw(), getModulePositions());
         {

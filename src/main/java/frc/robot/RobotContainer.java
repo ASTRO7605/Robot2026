@@ -3,7 +3,6 @@ package frc.robot;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
@@ -17,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Base;
 
 /**
@@ -136,11 +136,17 @@ public class RobotContainer {
 
         m_turnStick.button(2).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(false)));
 
+        m_turnStick.button(5).whileTrue(new RunCommand(() -> {
+            var latestMeasurement = m_base.getAveragePoseFromCameras();
+            if (latestMeasurement.isPresent()) {
+                m_base.setPose(latestMeasurement.get());
+            }
+        }));
+
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
 
         /* Copilot Buttons */
 
-        
     }
 
     /**
@@ -159,5 +165,9 @@ public class RobotContainer {
 
     public void setNeutralModeSwerve(NeutralModeValue neutralMode) {
         m_base.setNeutralMode(neutralMode);
+    }
+
+    public void setLimelight4IMUMode(VisionConstants.LimelightIMUModes mode) {
+        m_base.setLimelight4IMUMode(mode);
     }
 }

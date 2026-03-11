@@ -35,7 +35,7 @@ import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
 
-       public static final boolean kEnableVision = true;
+    public static final boolean kEnableVision = true;
 
     public static final class DriveConstants {
         public static final int kXboxControllerID = 2;
@@ -55,13 +55,13 @@ public final class Constants {
                 .KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(20.75); 
-        public static final double wheelBase = Units.inchesToMeters(23.75); 
+        public static final double trackWidth = Units.inchesToMeters(20.75);
+        public static final double wheelBase = Units.inchesToMeters(23.75);
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         // with bumpers
-        public static final double kRobotWidth = Units.inchesToMeters(35.69); 
-        public static final double kRobotLength = Units.inchesToMeters(32.63); 
+        public static final double kRobotWidth = Units.inchesToMeters(35.69);
+        public static final double kRobotLength = Units.inchesToMeters(32.63);
 
         /*
          * Swerve Kinematics
@@ -207,35 +207,37 @@ public final class Constants {
     public static final int kPeriodicFrameTimeout = 500;
 
     ////////////////////////////////////////////////////////
-    /// Constants des moteurs Neo Kraken pour les sous-systèmes autres que le drivebase
-     ////////////////////////////////////////////////////////
-     
+    /// Constants des moteurs Neo Kraken pour les sous-systèmes autres que le
+    //////////////////////////////////////////////////////// drivebase
+    ////////////////////////////////////////////////////////
+
     // constantes pour le climb
     public static final class ClimbConstants {
         public static final int climbMotorId = 16;
         public static final double kp = 0.0;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
-        public static final double maxVelocity = 40; 
+        public static final double maxVelocity = 40;
         public static final double maxAcceleration = 60;
         public static final double kVoltageCompensation = 11;
         public static final int kCurrentLimit = 50;
         public static final double fPositionConversion = 3 * Math.PI / 10;
         public static final double fVelocityConversion = fPositionConversion / 60;
-        public static final double kSoftLimitForward = 55.5; 
-        public static final double feedforwards  = 0.7;
+        public static final double kSoftLimitForward = 55.5;
+        public static final double feedforwards = 0.7;
         public static final double kPositionThreshold = 0.25;
         public static final double kLimitSwitchPosition = 0;
-        //enum pour les positions de climb
+
+        // enum pour les positions de climb
         public static enum climbLvl {
-            //in inches
+            // in inches
             Stowed(0),
             Lv1(27),
             Lv2(45),
             Lv3(63);
-            
+
             public final double position;
-            
+
             climbLvl(double position) {
                 this.position = position;
             }
@@ -252,14 +254,14 @@ public final class Constants {
         public static final int leftIntakeMotorId = 10;
         public static final int conveyorMotorId = 11;
 
-        public static final double maxVelocity = 40; 
+        public static final double maxVelocity = 40;
         public static final double maxAcceleration = 60;
         public static final double kVoltageCompensation = 11;
         public static final int kCurrentLimit = 50;
 
         public static final double kInSpeed = 0.8;
         public static final double kOutSpeed = -1;
-        
+
         public static final double kThresholdMotorStopped = 500;
     }
 
@@ -272,19 +274,70 @@ public final class Constants {
     // constantes pour la base du shooter
     public static final class ShooterBaseConstants {
         public static final int shooterBaseMotorId = 12;
-        public static final double maxVelocity = 40; 
+        public static final double maxVelocity = 40;
         public static final double maxAcceleration = 60;
         public static final double kVoltageCompensation = 11;
         public static final int kCurrentLimit = 50;
 
         public static final double kInSpeed = 0.8;
         public static final double kOutSpeed = -1;
-        
+
         public static final double kThresholdMotorStopped = 500;
     }
 
     // constantes pour les tourelles
     public static final class TurretConstants {
         public static final int turretMotorId = 15;
+    }
+
+    public static final class FieldConstants {
+
+    }
+
+    /**
+     * Standard deviations: X(m), Y(m), θ(rad)
+     */
+    public static final class PoseEstimationConstants {
+        public static final Matrix<N3, N1> kStateStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
+                new double[] { 0.025, 0.025, 0.001 });
+        // Basically dummy values given as a default, since we feed actual dynamic std
+        // devs with each update from vision
+        public static final Matrix<N3, N1> kVisionStdDevsDefault = new Matrix<>(Nat.N3(), Nat.N1(),
+                new double[] { 0.05, 0.05, 100 });
+        // because gyro is better than vision, we make σ_θ huge
+        public static final Matrix<N3, N1> kVisionStdDevsPerMeterGlobal = new Matrix<>(Nat.N3(), Nat.N1(),
+                new double[] { .04, .04, 100 });
+        public static final Matrix<N3, N1> kVisionStdDevsBaselineGlobal = new Matrix<>(Nat.N3(), Nat.N1(),
+                new double[] { .18, .18, 100 });
+        public static final Matrix<N3, N1> kVisionStdDevsPerMeterCubedLocal = new Matrix<>(Nat.N3(), Nat.N1(),
+                new double[] { .05, .05, 100 });
+    }
+
+    public static final class VisionConstants {
+        public static final String limelight4Name = "limelight-4";
+        public static final String limelight3Name = "limelight-3";
+        public static final String limelight2Name = "limelight-2";
+
+        public static final Transform3d robotTolimelight4Transform = new Transform3d();
+        public static final Transform3d robotTolimelight3Transform = new Transform3d();
+        public static final Transform3d robotTolimelight2Transform = new Transform3d();
+
+        public static final double kMaxPoseAmbiguityAllowed = 0.2;
+
+        // see limelight docs
+        public static enum LimelightIMUModes {
+            EXTERNAL_ONLY(0),
+            EXTERNAL_SEED(1),
+            INTERNAL_ONLY(2),
+            INTERNAL_MT1_ASSIST(3),
+            INTERNAL_EXTERNAL_ASSIST(4);
+
+            LimelightIMUModes(int value) {
+                this.value = value;
+            }
+
+            public final int value;
+        }
+
     }
 }

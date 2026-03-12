@@ -209,7 +209,7 @@ public final class Constants {
     ////////////////////////////////////////////////////////
     /// Constants des moteurs Neo Kraken pour les sous-systèmes autres que le drivebase
      ////////////////////////////////////////////////////////
-     
+    public static final double kVoltageCompensation = 11;
     // constantes pour le climb
     public static final class ClimbConstants {
         public static final int climbMotorId = 16;
@@ -218,9 +218,8 @@ public final class Constants {
         public static final double kd = 0.0;
         public static final double maxVelocity = 40; 
         public static final double maxAcceleration = 60;
-        public static final double kVoltageCompensation = 11;
         public static final int kCurrentLimit = 50;
-        public static final double fPositionConversion = 3 * Math.PI / 10;
+        public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en inches par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5; 
         public static final double feedforwards  = 0.7;
@@ -254,7 +253,6 @@ public final class Constants {
 
         public static final double maxVelocity = 40; 
         public static final double maxAcceleration = 60;
-        public static final double kVoltageCompensation = 11;
         public static final int kCurrentLimit = 50;
 
         public static final double kInSpeed = 0.8;
@@ -263,10 +261,17 @@ public final class Constants {
         public static final double kThresholdMotorStopped = 500;
     }
 
-    // constantes pour les Lauchers
-    public static final class LauncherConstants {
-        public static final int rightLaucherMotorId = 13;
-        public static final int leftLaucherMotorId = 14;
+    // constantes pour le shooter
+    public static final class ShooterConstants {
+        public static final int rightShooterMotorId = 13;
+        public static final int leftShooterMotorId = 14;
+        public static final double kp = 0.0;
+        public static final double ki = 0.0;
+        public static final double kd = 0.0;
+        public static final int kCurrentLimit = 65;
+        //RPM -> degrés par seconde
+        public static final double fPositionConversion = 90;
+        public static final double fVelocityConversion = fPositionConversion / 60;
     }
 
     // constantes pour la base du shooter
@@ -274,7 +279,6 @@ public final class Constants {
         public static final int shooterBaseMotorId = 12;
         public static final double maxVelocity = 40; 
         public static final double maxAcceleration = 60;
-        public static final double kVoltageCompensation = 11;
         public static final int kCurrentLimit = 50;
 
         public static final double kInSpeed = 0.8;

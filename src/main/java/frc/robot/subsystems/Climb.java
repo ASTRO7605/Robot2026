@@ -53,7 +53,7 @@ public class Climb extends SubsystemBase {
         climbConstraints = new TrapezoidProfile.Constraints(ClimbConstants.maxVelocity, ClimbConstants.maxAcceleration);
 
         // limitation du courant et de la tension pour protéger le moteur et la batterie
-        currentConfig.voltageCompensation(ClimbConstants.kVoltageCompensation);
+        currentConfig.voltageCompensation(Constants.kVoltageCompensation);
         currentConfig.smartCurrentLimit(ClimbConstants.kCurrentLimit);
 
         // Conversion des unités de l'encodeur
@@ -72,8 +72,8 @@ public class Climb extends SubsystemBase {
         SmartDashboard.putNumber(getSubsystem() + ".position", climbEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", climbEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
-        SmartDashboard.putNumber("elevatorAppliedOutput", climbMotor.getAppliedOutput());
-        SmartDashboard.putNumber("elevatorRightCurrent", climbMotor.getOutputCurrent());
+        SmartDashboard.putNumber("climbAppliedOutput", climbMotor.getAppliedOutput());
+        SmartDashboard.putNumber("climbRightCurrent", climbMotor.getOutputCurrent());
 
     }
 

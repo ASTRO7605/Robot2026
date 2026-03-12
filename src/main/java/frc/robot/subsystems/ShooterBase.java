@@ -7,6 +7,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ShooterBaseConstants;
  
 public class ShooterBase extends SubsystemBase {
@@ -21,7 +22,7 @@ public class ShooterBase extends SubsystemBase {
      currentConfig.inverted(false);
  
      // limitation du courant et de la tension pour protéger le moteur et la batterie
-        currentConfig.voltageCompensation(ShooterBaseConstants.kVoltageCompensation);
+        currentConfig.voltageCompensation(Constants.kVoltageCompensation);
         currentConfig.smartCurrentLimit(ShooterBaseConstants.kCurrentLimit);
        
         ShooterBaseMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);

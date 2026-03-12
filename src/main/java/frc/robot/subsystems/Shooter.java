@@ -1,16 +1,128 @@
 package frc.robot.subsystems;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.PersistMode;
+import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
+import frc.robot.Constants.ShooterConstants;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class Shooter extends SubsystemBase {
+    private SparkMax rightShootMotor = new SparkMax(ShooterConstants.rightShooterMotorId, MotorType.kBrushless);
+    private SparkMax leftShootMotor = new SparkMax(ShooterConstants.leftShooterMotorId, MotorType.kBrushless);
+
+    private RelativeEncoder rightShootEncoder = rightShootMotor.getEncoder();
+    private RelativeEncoder leftShootEncoder = leftShootMotor.getEncoder();
+
+    private SparkClosedLoopController rightShootController = rightShootMotor.getClosedLoopController();
+    private SparkClosedLoopController leftShootController = leftShootMotor.getClosedLoopController();
+
+
+    //table de calcul de la vitesse en fonction de la distance
+    InterpolatingDoubleTreeMap distanceTable = new InterpolatingDoubleTreeMap();
     
+
+    //pour le PID
+    private SparkMaxConfig currentConfig;
+
     public Shooter() {
-        super();
+        // configutation du moteur (le temp d'attente de réponse du moteur)
+        rightShootMotor.setCANTimeout(Constants.kCANTimeout);
+        rightShootMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
+
+        currentConfig = new SparkMaxConfig();
+        var leftConfig = new SparkMaxConfig();
+
+        currentConfig.idleMode(IdleMode.kBrake);
+        currentConfig.inverted(false);
+        // configuration du pid
+        currentConfig.closedLoop
+                .p(ShooterConstants.kp)
+                .i(ShooterConstants.ki)
+                .d(ShooterConstants.kd);
+        // limitation du courant et de la tension pour protéger le moteur et la batterie
+        currentConfig.voltageCompensation(Constants.kVoltageCompensation);
+        currentConfig.smartCurrentLimit(ShooterConstants.kCurrentLimit);
+
+        // Conversion des unités de l'encodeur
+        currentConfig.encoder.positionConversionFactor(ShooterConstants.fPositionConversion);
+        currentConfig.encoder.velocityConversionFactor(ShooterConstants.fVelocityConversion);
+
+     
+        
+        rightShootMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftConfig.follow(rightShootMotor, true);
+        leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        // Remplissage de la table de distance et de vitesse
+        distanceTable.put(0.0, 0.0);
+        distanceTable.put(1.0, 1000.0);
+        distanceTable.put(2.0, 2000.0);
+        distanceTable.put(3.0, 3000.0); // Remplacez ces valeurs par les distances et vitesses réelles
     }
+
 
      @Override
      public void periodic() {
-         super.periodic();
+         SmartDashboard.putNumber(getSubsystem() + ".RightShootVelocity", rightShootEncoder.getVelocity());
+         SmartDashboard.putNumber(getSubsystem() + ".LeftShootVelocity", leftShootEncoder.getVelocity());
+         SmartDashboard.putNumber("shooterRightAppliedOutput", rightShootMotor.getAppliedOutput());
+         SmartDashboard.putNumber("shooterLeftAppliedOutput", leftShootMotor.getAppliedOutput());
+         SmartDashboard.putNumber("shooterRightCurrent", rightShootMotor.getOutputCurrent());
+         SmartDashboard.putNumber("shooterLeftCurrent", leftShootMotor.getOutputCurrent());
+         SmartDashboard.putNumber(getSubsystem() + ".encoderPosition", getPosition());
      }
+
+         // fait rouler le moteur à partir du controleur
+    public void setMotorSpeed(double speed) {
+        leftShootController.setSetpoint(
+                speed, 
+                ControlType.kDutyCycle,
+                ClosedLoopSlot.kSlot0,
+                0);
+
+        rightShootController.setSetpoint(
+                speed, 
+                ControlType.kDutyCycle,
+                ClosedLoopSlot.kSlot0,
+                0);
+    }
+    
+    // controle le moteur directement avec le voltage
+    public void setMotorVoltage(double voltage) {
+        leftShootMotor.setVoltage(voltage);
+        rightShootMotor.setVoltage(voltage);
+    }
+
+    
+        /**
+     * Retourne la position actuelle de l'encodeur 
+     * @return
+     */
+    public double getPosition() {
+        return rightShootEncoder.getPosition();
+    }
+
+    public double GetShooterInterpolatingSpeed(double distance) {
+        return distanceTable.get(distance);
+    }
+
+    /**
+     * Fait tourner le moteur à la vitesse calculée à partir de la distance
+     * @param distance la distance à laquelle le robot doit tirer
+     */
+    public void shootByDistance(double distance) {
+        double speed = GetShooterInterpolatingSpeed(distance);
+        setMotorSpeed(speed);
+    }
+
     
 }

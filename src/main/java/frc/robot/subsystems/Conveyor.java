@@ -33,7 +33,7 @@ public class Conveyor extends SubsystemBase {
         currentConfig.inverted(false);
         
         // limitation du courant et de la tension pour protéger le moteur et la batterie
-        currentConfig.voltageCompensation(ConveyorConstants.kVoltageCompensation);
+        currentConfig.voltageCompensation(Constants.kVoltageCompensation);
         currentConfig.smartCurrentLimit(ConveyorConstants.kCurrentLimit);
 
         

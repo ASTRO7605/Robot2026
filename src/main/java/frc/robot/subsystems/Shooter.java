@@ -81,7 +81,7 @@ public class Shooter extends SubsystemBase {
          SmartDashboard.putNumber(getSubsystem() + ".encoderPosition", getPosition());
      }
 
-         // fait rouler le moteur à partir du controleur
+         // fait rouler les moteurs à partir du controleur
     public void setMotorSpeed(double speed) {
         leftShootController.setSetpoint(
                 speed, 
@@ -116,7 +116,7 @@ public class Shooter extends SubsystemBase {
     }
 
     /**
-     * Fait tourner le moteur à la vitesse calculée à partir de la distance
+     * Fait rouler les moteurs à la vitesse calculée à partir de la distance
      * @param distance la distance à laquelle le robot doit tirer
      */
     public void shootByDistance(double distance) {
@@ -124,5 +124,12 @@ public class Shooter extends SubsystemBase {
         setMotorSpeed(speed);
     }
 
-    
+    public void freezeAllMotorFunctions() {
+        rightShootMotor.stopMotor();
+        leftShootMotor.stopMotor();
+    }
+
+    public void safeStop() {
+        setMotorSpeed(0);
+    }
 }

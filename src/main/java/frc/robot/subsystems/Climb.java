@@ -36,7 +36,6 @@ public class Climb extends SubsystemBase {
     private TrapezoidProfile.Constraints climbConstraints;
 
     public Climb() {
-        checkInit();
         // configutation du moteur (le temp d'attente de réponse du moteur)
         climbMotor.setCANTimeout(Constants.kCANTimeout);
         climbMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
@@ -68,6 +67,7 @@ public class Climb extends SubsystemBase {
 
     @Override
     public void periodic() {
+        checkInit();
         SmartDashboard.putBoolean(getSubsystem() + ".limitSwitch", limitSwitch.isPressed());
         SmartDashboard.putNumber(getSubsystem() + ".position", climbEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", climbEncoder.getVelocity());
@@ -153,7 +153,6 @@ public class Climb extends SubsystemBase {
     public boolean isAtPosition(double position) {
         return Math.abs(getPosition() - position) < ClimbConstants.kPositionThreshold;
     }
-
     /**
      * Vérifie si le Climb a atteint la position de départ en utilisant le limit switch.
      * Si le switch est activé alors que le switch n'était pas activé lors du dernier check, 
@@ -191,5 +190,8 @@ public class Climb extends SubsystemBase {
 
     public boolean isBottomSwitchActivated() {
         return limitSwitch.isPressed();
+    }
+    public void safeStop() {
+        setMotorSpeed(0, false);
     }
 }

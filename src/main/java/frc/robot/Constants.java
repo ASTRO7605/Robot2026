@@ -246,6 +246,20 @@ public final class Constants {
     // constantes pour les intakes
     public static final class IntakeConstants {
         public static final int rightIntakeMotorId = 9;
+        public static final int kCurrentLimit = 50;
+        public static final double kp = 0.0;
+        public static final double ki = 0.0;
+        public static final double kd = 0.0;
+        //(Rotations –> °)
+        public static final double fPositionConversion = 810/31;
+        //RPM -> degrés par seconde
+        public static final double fVelocityConversion = fPositionConversion / 60;
+
+        public static final double maxVelocity = 400;
+        public static final double maxAcceleration = 1250;
+        public static final double kSoftLimitForward = 55.5;
+        public static final double kMaxFF = 0.32;
+        public static final double kLimitSwitchPosition = 0;
     }
 
     // constantes pour le convoyeur
@@ -292,6 +306,21 @@ public final class Constants {
     // constantes pour les tourelles
     public static final class TurretConstants {
         public static final int turretMotorId = 15;
+        public static final double kp = 0.0;
+        public static final double ki = 0.0;
+        public static final double kd = 0.0;
+        public static final int kCurrentLimit = 50;
+        //(Rotations –> 0.1°)
+        public static final double fPositionConversion = 90;
+        //RPM -> degrés par seconde
+        public static final double fVelocityConversion = fPositionConversion / 60;
+
+        public static final double maxVelocity = 400;
+        public static final double maxAcceleration = 1250;
+        public static final double kSoftLimitForward = 55.5;
+        public static final double kMaxFF = 0.32;
+        public static final double kLimitSwitchPosition = 0;
+
     }
 
     public static final class FieldConstants {

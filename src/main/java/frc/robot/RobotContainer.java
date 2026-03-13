@@ -104,19 +104,19 @@ public class RobotContainer {
                 driverMulti = 1;
             }
 
-            double x = -dir_r * Math.sin(dir_theta);
+            double x = dir_r * Math.sin(dir_theta);
             x *= DriveConstants.kMaxTeleopSpeed * DriveConstants.kGeneralSpeedMulti;
             if (Math.abs(x) >= DriveConstants.kMaxTeleopSpeed * driverMulti) {
                 x = DriveConstants.kMaxTeleopSpeed * driverMulti * (x < 0 ? -1 : 1);
             }
 
-            double y = -dir_r * Math.cos(dir_theta);
+            double y = dir_r * Math.cos(dir_theta);
             y *= DriveConstants.kMaxTeleopSpeed * DriveConstants.kGeneralSpeedMulti;
             if (Math.abs(y) >= DriveConstants.kMaxTeleopSpeed * driverMulti) {
                 y = DriveConstants.kMaxTeleopSpeed * driverMulti * (y < 0 ? -1 : 1);
             }
 
-            turn *= -DriveConstants.kMaxTeleopRotateSpeed * DriveConstants.kGeneralSpeedMulti;
+            turn *= DriveConstants.kMaxTeleopRotateSpeed * DriveConstants.kGeneralSpeedMulti;
             if (Math.abs(turn) >= DriveConstants.kMaxTeleopRotateSpeed * driverMulti) {
                 turn = DriveConstants.kMaxTeleopRotateSpeed * driverMulti * (turn < 0 ? -1 : 1);
             }

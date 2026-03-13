@@ -286,7 +286,9 @@ public class Base extends SubsystemBase {
     }
 
     public void setLimelight4IMUMode(VisionConstants.LimelightIMUModes mode) {
-        m_visionModules.get(VisionConstants.limelight4Name).setIMUMode(mode);
+        if (useVision) {
+            m_visionModules.get(VisionConstants.limelight4Name).setIMUMode(mode);
+        }
     }
 
     public Optional<Pose2d> getAveragePoseFromCameras() {

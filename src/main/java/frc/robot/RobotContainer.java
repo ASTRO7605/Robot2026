@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.ManualClimb;
 import frc.robot.subsystems.Base;
+import frc.robot.subsystems.Climb;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -41,12 +44,14 @@ public class RobotContainer {
 
     /* Subsystems */
     private Base m_base;
+    private Climb m_climb;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
         m_base = new Base();
+        m_climb = new Climb();
 
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
@@ -144,8 +149,9 @@ public class RobotContainer {
         }));
 
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
-
         /* Copilot Buttons */
+        m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
+         new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
 
     }
 

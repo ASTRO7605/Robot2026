@@ -241,6 +241,8 @@ public final class Constants {
                 this.position = position;
             }
         }
+
+        public static final double kManualSpeed = 0.1;
     }
 
     // constantes pour les intakes
@@ -260,6 +262,8 @@ public final class Constants {
         public static final double kSoftLimitForward = 55.5;
         public static final double kMaxFF = 0.32;
         public static final double kLimitSwitchPosition = 0;
+
+        public static final double kVoltageCompensation = 11;
     }
 
     // constantes pour le convoyeur

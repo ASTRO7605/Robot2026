@@ -18,7 +18,7 @@ import frc.robot.Constants.IntakeConstants;
 import frc.robot.utils.SparkMaxTunableMotorSystem;
 
 
-public abstract class Intake extends SubsystemBase implements SparkMaxTunableMotorSystem  {
+public class Intake extends SubsystemBase {
     private SparkMax IntakeMotor = new SparkMax(IntakeConstants.rightIntakeMotorId, MotorType.kBrushless);
     private RelativeEncoder intakeEncoder = IntakeMotor.getEncoder();
 
@@ -98,9 +98,4 @@ public abstract class Intake extends SubsystemBase implements SparkMaxTunableMot
         return intakeEncoder.getPosition();
     }
 
-    @Override
-    public void apply(SparkMaxConfig config, TrapezoidProfile.Constraints constraints) {
-        IntakeMotor.configure(config, ResetMode.kNoResetSafeParameters, PersistMode.kNoPersistParameters);
-        this.intakeConstraints = constraints;
-    }
 }

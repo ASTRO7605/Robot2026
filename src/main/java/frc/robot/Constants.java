@@ -314,8 +314,8 @@ public final class Constants {
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         public static final int kCurrentLimit = 50;
-        //(Rotations –> 0.1°)
-        public static final double fPositionConversion = 90;
+        //(Rotations –> °)
+        public static final double fPositionConversion = 9;
         //RPM -> degrés par seconde
         public static final double fVelocityConversion = fPositionConversion / 60;
 

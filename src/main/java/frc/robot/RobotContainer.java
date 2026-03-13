@@ -23,6 +23,7 @@ import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
+import frc.robot.subsystems.Tourelle;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -49,6 +50,7 @@ public class RobotContainer {
     private Climb m_climb;
     private ShooterBase m_shooterBase;
     private Shooter m_shooter;
+    private Tourelle m_tourelle;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -58,6 +60,7 @@ public class RobotContainer {
         m_climb = new Climb();
         m_shooterBase = new ShooterBase();
         m_shooter = new Shooter();
+        m_tourelle = new Tourelle();
 
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
@@ -167,10 +170,15 @@ public class RobotContainer {
         //  m_driverController.a().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
         //  m_driverController.a().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
 
-         m_driverController.b().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(0.1)));
-         m_driverController.b().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
-         m_driverController.a().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(-0.1)));
-         m_driverController.a().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
+        //  m_driverController.b().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(0.1)));
+        //  m_driverController.b().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
+        //  m_driverController.a().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(-0.1)));
+        //  m_driverController.a().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
+
+        m_driverController.b().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(0.1)));
+         m_driverController.b().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
+         m_driverController.a().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(-0.1)));
+         m_driverController.a().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
     }
 
     /**

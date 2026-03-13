@@ -152,7 +152,8 @@ public class RobotContainer {
         /* Copilot Buttons */
         m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
          new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
-
+         m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
+         new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
     }
 
     /**

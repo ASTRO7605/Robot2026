@@ -223,7 +223,7 @@ public final class Constants {
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en inches par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5;
-        public static final double feedforwards = 0.7;
+        public static final double feedforwards = 0; // tune with built climber
         public static final double kPositionThreshold = 0.25;
         public static final double kLimitSwitchPosition = 0;
 

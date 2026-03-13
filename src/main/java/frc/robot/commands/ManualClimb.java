@@ -30,7 +30,8 @@ public class ManualClimb extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        climb.keepPosition();
+        // climb.keepPosition();
+        climb.setMotorSpeed(0, true);
     }
     
 

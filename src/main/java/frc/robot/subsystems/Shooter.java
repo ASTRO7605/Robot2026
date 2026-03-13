@@ -34,7 +34,7 @@ public class Shooter extends SubsystemBase {
     private SparkMaxConfig currentConfig;
 
     public Shooter() {
-        // configutation du moteur (le temp d'attente de réponse du moteur)
+        // configuration du moteur (le temp d'attente de réponse du moteur)
         rightShootMotor.setCANTimeout(Constants.kCANTimeout);
         rightShootMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
 
@@ -56,8 +56,6 @@ public class Shooter extends SubsystemBase {
         currentConfig.encoder.positionConversionFactor(ShooterConstants.fPositionConversion);
         currentConfig.encoder.velocityConversionFactor(ShooterConstants.fVelocityConversion);
 
-     
-        
         rightShootMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         leftConfig.follow(rightShootMotor, true);
         leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
@@ -82,7 +80,7 @@ public class Shooter extends SubsystemBase {
      }
 
          // fait rouler les moteurs à partir du controleur
-    public void setMotorSpeed(double speed) {
+    public void setManualMotorSpeed(double speed) {
         leftShootController.setSetpoint(
                 speed, 
                 ControlType.kDutyCycle,
@@ -101,7 +99,6 @@ public class Shooter extends SubsystemBase {
         leftShootMotor.setVoltage(voltage);
         rightShootMotor.setVoltage(voltage);
     }
-
     
         /**
      * Retourne la position actuelle de l'encodeur 
@@ -121,7 +118,7 @@ public class Shooter extends SubsystemBase {
      */
     public void shootByDistance(double distance) {
         double speed = GetShooterInterpolatingSpeed(distance);
-        setMotorSpeed(speed);
+        setManualMotorSpeed(speed);
     }
 
     public void freezeAllMotorFunctions() {
@@ -130,6 +127,6 @@ public class Shooter extends SubsystemBase {
     }
 
     public void safeStop() {
-        setMotorSpeed(0);
+        setManualMotorSpeed(0);
     }
 }

@@ -21,6 +21,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.ManualClimb;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
 
 /**
@@ -47,6 +48,7 @@ public class RobotContainer {
     private Base m_base;
     private Climb m_climb;
     private ShooterBase m_shooterBase;
+    private Shooter m_shooter;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -55,6 +57,7 @@ public class RobotContainer {
         m_base = new Base();
         m_climb = new Climb();
         m_shooterBase = new ShooterBase();
+        m_shooter = new Shooter();
 
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
@@ -153,15 +156,21 @@ public class RobotContainer {
 
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
         /* Copilot Buttons */
-        m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
-         new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
-         m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
-         new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
 
-         m_driverController.b().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
-         m_driverController.b().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
-         m_driverController.a().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
-         m_driverController.a().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+        // m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
+        //  new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
+        //  m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
+        //  new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
+
+        //  m_driverController.b().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
+        //  m_driverController.b().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+        //  m_driverController.a().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
+        //  m_driverController.a().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+
+         m_driverController.b().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(0.1)));
+         m_driverController.b().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
+         m_driverController.a().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(-0.1)));
+         m_driverController.a().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
     }
 
     /**

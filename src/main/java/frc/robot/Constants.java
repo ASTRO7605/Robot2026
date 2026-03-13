@@ -301,8 +301,8 @@ public final class Constants {
         public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
 
-        public static final double kInSpeed = 0.8;
-        public static final double kOutSpeed = -1;
+        public static final double kInSpeed = 0.5;
+        public static final double kOutSpeed = -0.5;
 
         public static final double kThresholdMotorStopped = 500;
     }

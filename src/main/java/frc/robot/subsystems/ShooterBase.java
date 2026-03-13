@@ -19,7 +19,7 @@ public class ShooterBase extends SubsystemBase {
     public ShooterBase() {
      currentConfig = new SparkMaxConfig();
      currentConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
-     currentConfig.inverted(false);
+     currentConfig.inverted(true);
  
      // limitation du courant et de la tension pour protéger le moteur et la batterie
         currentConfig.voltageCompensation(Constants.kVoltageCompensation);
@@ -31,6 +31,10 @@ public class ShooterBase extends SubsystemBase {
     // fait tourner les roues de la shooter base pour faire entrer et apporter les balles
     public void ShooterBaseWheelsIn(){
         ShooterBaseMotor.set(ShooterBaseConstants.kInSpeed);
+    }
+
+    public void ShooterBaseWheelsOut(){
+        ShooterBaseMotor.set(ShooterBaseConstants.kOutSpeed);
     }
  
      // arrête les roues du shooter

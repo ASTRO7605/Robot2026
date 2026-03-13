@@ -21,6 +21,7 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.commands.ManualClimb;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.ShooterBase;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -45,6 +46,7 @@ public class RobotContainer {
     /* Subsystems */
     private Base m_base;
     private Climb m_climb;
+    private ShooterBase m_shooterBase;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -52,6 +54,7 @@ public class RobotContainer {
     public RobotContainer() {
         m_base = new Base();
         m_climb = new Climb();
+        m_shooterBase = new ShooterBase();
 
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
@@ -154,6 +157,11 @@ public class RobotContainer {
          new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
          m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
          new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
+
+         m_driverController.b().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
+         m_driverController.b().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+         m_driverController.a().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
+         m_driverController.a().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
     }
 
     /**

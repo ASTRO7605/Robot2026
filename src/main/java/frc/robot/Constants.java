@@ -264,6 +264,21 @@ public final class Constants {
         public static final double kLimitSwitchPosition = 0;
 
         public static final double kVoltageCompensation = 11;
+
+        
+
+         // enum pour les positions de l'intake
+        public static enum intakePos {
+            // in inches
+            Stowed(0),
+            Down(27);
+
+            public final double position;
+
+            intakePos(double position) {
+                this.position = position;
+            }
+        }
     }
 
     // constantes pour le convoyeur

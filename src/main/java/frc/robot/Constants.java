@@ -1,35 +1,19 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Radians;
-import static edu.wpi.first.units.Units.Seconds;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import org.photonvision.PhotonUtils;
 
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
-import com.revrobotics.spark.ClosedLoopSlot;
-
-import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Time;
 import frc.lib.util.COTSTalonFXSwerveConstants;
 import frc.lib.util.SwerveModuleConstants;
 
@@ -248,15 +232,15 @@ public final class Constants {
     // constantes pour les intakes
     public static final class IntakeConstants {
         public static final int rightIntakeMotorId = 9;
-        public static final int kCurrentLimit = 50;
-        public static final double kp = 0.0;
+        public static final int kCurrentLimit = 70;
+        public static final double kp = 0.11;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         //(Rotations –> °)
         public static final double fPositionConversion = 810/31;
         //RPM -> degrés par seconde
         public static final double fVelocityConversion = fPositionConversion / 60;
-
+        
         public static final double maxVelocity = 400;
         public static final double maxAcceleration = 1250;
         public static final double kSoftLimitForward = 55.5;
@@ -264,8 +248,8 @@ public final class Constants {
         public static final double kLimitSwitchPosition = 0;
 
         public static final double kVoltageCompensation = 11;
+        public static final double motorSpeed = 0.225;
 
-        
 
          // enum pour les positions de l'intake
         public static enum intakePos {
@@ -290,8 +274,9 @@ public final class Constants {
         public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
 
-        public static final double kInSpeed = 0.8;
-        public static final double kOutSpeed = -1;
+        public static final double kInSpeed = 0.4;
+        public static final double kOutSpeed = -0.4;
+        public static final double kIntakeInSpeed = 1;
 
         public static final double kThresholdMotorStopped = 500;
     }

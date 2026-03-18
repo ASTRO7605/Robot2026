@@ -17,14 +17,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakePos;
 import frc.robot.commands.TrapezoidProfileMovement;
-import frc.robot.utils.SparkMaxTunableMotorSystem;
 
 public class Intake extends SubsystemBase {
     private SparkMax IntakeMotor = new SparkMax(IntakeConstants.rightIntakeMotorId, MotorType.kBrushless);
@@ -45,8 +42,8 @@ public class Intake extends SubsystemBase {
         IntakeMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
 
         currentConfig = new SparkMaxConfig();
-        currentConfig.idleMode(IdleMode.kBrake);
-        currentConfig.inverted(false);
+        currentConfig.idleMode(IdleMode.kCoast);
+        currentConfig.inverted(true);
         currentConfig.closedLoop
                 .p(IntakeConstants.kp)
                 .i(IntakeConstants.ki)
@@ -70,11 +67,15 @@ public class Intake extends SubsystemBase {
     public void periodic() {
         checkInit();
         SmartDashboard.putBoolean(getSubsystem() + ".limitSwitch", limitSwitch.isPressed());
-        SmartDashboard.putNumber(getSubsystem() + ".position", getEncoderPosition());
+        SmartDashboard.putNumber(getSubsystem() + ".encoderPosition", getEncoderPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", intakeEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
         SmartDashboard.putNumber("intakeAppliedOutput", IntakeMotor.getAppliedOutput());
         SmartDashboard.putNumber("intakeRightCurrent", IntakeMotor.getOutputCurrent());
+        SmartDashboard.putNumber("intake.kP", IntakeConstants.kp);
+        SmartDashboard.putNumber("intake.kI", IntakeConstants.ki);
+        SmartDashboard.putNumber("intake.kD", IntakeConstants.kd);
+        SmartDashboard.putNumber("Intake FeedForward", computeFF());
     }
 
     private void checkInit() {
@@ -119,8 +120,12 @@ public class Intake extends SubsystemBase {
             return new InstantCommand(() -> System.out.println("Not initialized. Ignoring command"));
         }
 
-        var command = new TrapezoidProfileMovement(IntakeMotor, target, intakeConstraints, this::computeFF,
-                ClosedLoopSlot.kSlot0);
+        var command = new TrapezoidProfileMovement(
+        IntakeMotor, 
+        target, intakeConstraints, 
+        this::computeFF,
+        ClosedLoopSlot.kSlot0);
+
         command.addRequirements(this);
         CommandScheduler.getInstance().schedule(command);
         return command;
@@ -155,5 +160,9 @@ public class Intake extends SubsystemBase {
             ControlType.kDutyCycle, 
             ClosedLoopSlot.kSlot0, 
             computeFF());
+    }
+
+    public void safeStop() {
+        setMotorSpeed(0);
     }
 }

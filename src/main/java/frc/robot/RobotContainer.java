@@ -15,16 +15,17 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.commands.ManualClimb;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
 import frc.robot.subsystems.Tourelle;
-
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Conveyor;
+import frc.robot.Constants.IntakeConstants;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -51,6 +52,8 @@ public class RobotContainer {
     private ShooterBase m_shooterBase;
     private Shooter m_shooter;
     private Tourelle m_tourelle;
+    private Intake m_intake;
+    private Conveyor m_conveyor;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -61,6 +64,8 @@ public class RobotContainer {
         m_shooterBase = new ShooterBase();
         m_shooter = new Shooter();
         m_tourelle = new Tourelle();
+        m_intake = new Intake();
+        m_conveyor = new Conveyor();
 
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
@@ -165,20 +170,32 @@ public class RobotContainer {
         //  m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
         //  new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
 
-        //  m_driverController.b().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
-        //  m_driverController.b().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
-        //  m_driverController.a().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
-        //  m_driverController.a().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+         m_driverController.rightTrigger().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
+         m_driverController.rightTrigger().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+         m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
+         m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
 
-        //  m_driverController.b().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(0.1)));
-        //  m_driverController.b().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
-        //  m_driverController.a().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(-0.1)));
-        //  m_driverController.a().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
+         m_driverController.x().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(0.1)));
+         m_driverController.x().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
+         m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(-0.1)));
+         m_driverController.y().onFalse(new InstantCommand(() -> m_shooter.safeStop()));
 
-        m_driverController.b().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(0.1)));
-         m_driverController.b().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
-         m_driverController.a().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(-0.1)));
-         m_driverController.a().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
+        //  m_driverController.b().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(0.1)));
+        //  m_driverController.b().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
+        //  m_driverController.a().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(-0.1)));
+        //  m_driverController.a().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
+
+        
+        //  m_driverController.x().onTrue(new InstantCommand(() -> m_intake.setMotorSpeed(IntakeConstants.motorSpeed)));
+        //  m_driverController.x().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+        //  m_driverController.y().onTrue(new InstantCommand(() -> m_intake.setMotorSpeed(-IntakeConstants.motorSpeed)));
+        //  m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+
+         m_driverController.b().onTrue(new InstantCommand(() -> m_conveyor.converyorWheelsIn()));
+         m_driverController.b().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+         m_driverController.a().onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut()));
+         m_driverController.a().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+
     }
 
     /**

@@ -18,38 +18,45 @@ public class Conveyor extends SubsystemBase {
     //moteur pour le leftIntake (celui du bas)
     private SparkMax leftIntakeMotor = new SparkMax(ConveyorConstants.leftIntakeMotorId, MotorType.kBrushless);
     private RelativeEncoder convEncoder = ConvMotor.getEncoder();
+    private RelativeEncoder intakeWheelEncoder = leftIntakeMotor.getEncoder();
     private SparkMaxConfig currentConfig;
 
     // constructeur du sous-système
     public Conveyor() {
-        // configutation du moteur (le temp d'attente de réponse du moteur)
+        // configutation du moteur (le temp d'attente de réonse du moteur)
         ConvMotor.setCANTimeout(Constants.kCANTimeout);
         ConvMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
+        var intakeConfig = new SparkMaxConfig();
         leftIntakeMotor.setCANTimeout(Constants.kCANTimeout);
         leftIntakeMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
 
         currentConfig = new SparkMaxConfig();
         currentConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
-        currentConfig.inverted(false);
+        currentConfig.inverted(true);
+        intakeConfig = new SparkMaxConfig();
+        intakeConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
+        intakeConfig.inverted(false);
         
         // limitation du courant et de la tension pour protéger le moteur et la batterie
         currentConfig.voltageCompensation(Constants.kVoltageCompensation);
         currentConfig.smartCurrentLimit(ConveyorConstants.kCurrentLimit);
+        intakeConfig.voltageCompensation(Constants.kVoltageCompensation);
+        intakeConfig.smartCurrentLimit(ConveyorConstants.kCurrentLimit);
 
-        
         ConvMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        leftIntakeMotor.configure(intakeConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    // fait tourner les roues du convoyeur pour faire entrer les balles
+    // fait tourner les roues du convoyeur pour faire entrer les balles *********************************************A FIX
     public void converyorWheelsIn(){
         ConvMotor.set(ConveyorConstants.kInSpeed);
-        leftIntakeMotor.set(ConveyorConstants.kInSpeed);
+        leftIntakeMotor.set(ConveyorConstants.kIntakeInSpeed);
     }
 
     // fait tourner les roues du convoyeur pour faire sortir les balles
     public void conveyorWheelsOut(){
         ConvMotor.set(ConveyorConstants.kOutSpeed);
-        leftIntakeMotor.set(ConveyorConstants.kOutSpeed);
+        leftIntakeMotor.set(-ConveyorConstants.kIntakeInSpeed);
     }
 
     // arrête les roues du convoyeur
@@ -61,11 +68,17 @@ public class Conveyor extends SubsystemBase {
     public boolean isConveyorStopped() {
         return Math.abs(convEncoder.getVelocity()) < ConveyorConstants.kThresholdMotorStopped;
     }
+    public boolean isIntakeWheelStopped() {
+        return Math.abs(intakeWheelEncoder.getVelocity()) < ConveyorConstants.kThresholdMotorStopped;
+    }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("ConveyorVelocity", convEncoder.getVelocity());
         SmartDashboard.putBoolean("ConveyorStopped", isConveyorStopped());
+        SmartDashboard.putNumber("intakeWheelVelocity", intakeWheelEncoder.getVelocity());
+        SmartDashboard.putBoolean("IntakeStopped", isIntakeWheelStopped());
+        SmartDashboard.putNumber("IntakeOutput", leftIntakeMotor.getAppliedOutput());
     }
 
 }

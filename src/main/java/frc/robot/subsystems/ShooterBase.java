@@ -30,10 +30,12 @@ public class ShooterBase extends SubsystemBase {
  
     // fait tourner les roues de la shooter base pour faire entrer et apporter les balles
     public void ShooterBaseWheelsIn(){
+        System.out.println("Button pressed: ");
         ShooterBaseMotor.set(ShooterBaseConstants.kInSpeed);
     }
 
     public void ShooterBaseWheelsOut(){
+        System.out.println("Button pressed: ");
         ShooterBaseMotor.set(ShooterBaseConstants.kOutSpeed);
     }
  

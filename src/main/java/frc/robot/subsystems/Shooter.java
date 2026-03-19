@@ -32,7 +32,10 @@ public class Shooter extends SubsystemBase {
     private double kd = ShooterConstants.kd;
     private double ki = ShooterConstants.ki;
     private double kv = ShooterConstants.kv;
-
+    private double oldKp = ShooterConstants.kp;
+    private double oldKd = ShooterConstants.kd;
+    private double oldKi = ShooterConstants.ki;
+    private double oldKv = ShooterConstants.kv;
     // table de calcul de la vitesse en fonction de la distance
     InterpolatingDoubleTreeMap distanceTable = new InterpolatingDoubleTreeMap();
 
@@ -91,8 +94,22 @@ public class Shooter extends SubsystemBase {
         kd = SmartDashboard.getNumber("shooter.kD", ShooterConstants.kd);
         kv = SmartDashboard.getNumber("shooter.kV", ShooterConstants.kv);
 
-         
-}
+            SparkMaxConfig newConfig = new SparkMaxConfig();
+    newConfig.closedLoop
+        .p(kp)
+        .i(ki)
+        .d(kd);
+
+    FeedForwardConfig ff = new FeedForwardConfig();
+    ff.kV(kv);
+    newConfig.closedLoop.apply(ff);
+
+    // Apply config to the motor
+    rightShootMotor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftConfig.follow(rightShootMotor, true);
+    leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    }
 
     // fait rouler les moteurs à partir du controleur
     public void setManualMotorSpeed(double speed) {

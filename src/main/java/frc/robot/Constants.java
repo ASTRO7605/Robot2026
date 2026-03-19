@@ -1,8 +1,5 @@
 package frc.robot;
 
-
-
-
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
@@ -191,10 +188,12 @@ public final class Constants {
     public static final int kPeriodicFrameTimeout = 500;
 
     ////////////////////////////////////////////////////////
-    /// Constants des moteurs Neo Kraken pour les sous-systèmes autres que le drivebase
-     ////////////////////////////////////////////////////////
-     
-     public static final double kVoltageCompensation = 11;
+    /// Constants des moteurs Neo Kraken pour les sous-systèmes autres que le
+    //////////////////////////////////////////////////////// drivebase
+    ////////////////////////////////////////////////////////
+
+    public static final double kVoltageCompensation = 11;
+
     // constantes pour le climb
     public static final class ClimbConstants {
         public static final int climbMotorId = 16;
@@ -236,11 +235,11 @@ public final class Constants {
         public static final double kp = 0.11;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
-        //(Rotations –> °)
-        public static final double fPositionConversion = 810/31;
-        //RPM -> degrés par seconde
+        // (Rotations –> °)
+        public static final double fPositionConversion = 810 / 31;
+        // RPM -> degrés par seconde
         public static final double fVelocityConversion = fPositionConversion / 60;
-        
+
         public static final double maxVelocity = 400;
         public static final double maxAcceleration = 1250;
         public static final double kSoftLimitForward = 55.5;
@@ -250,8 +249,7 @@ public final class Constants {
         public static final double kVoltageCompensation = 11;
         public static final double motorSpeed = 0.225;
 
-
-         // enum pour les positions de l'intake
+        // enum pour les positions de l'intake
         public static enum intakePos {
             // in inches
             Stowed(0),
@@ -288,8 +286,9 @@ public final class Constants {
         public static final double kp = 0.0;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
+        public static final double kv = 0.0;
         public static final int kCurrentLimit = 65;
-        //RPM -> degrés par seconde
+        // RPM -> degrés par seconde
         public static final double fPositionConversion = 90;
         public static final double fVelocityConversion = fPositionConversion / 60;
     }
@@ -314,9 +313,9 @@ public final class Constants {
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         public static final int kCurrentLimit = 50;
-        //(Rotations –> °)
+        // (Rotations –> °)
         public static final double fPositionConversion = 9;
-        //RPM -> degrés par seconde
+        // RPM -> degrés par seconde
         public static final double fVelocityConversion = fPositionConversion / 60;
 
         public static final double maxVelocity = 400;

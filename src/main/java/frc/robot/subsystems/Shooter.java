@@ -89,10 +89,16 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("shooterRightCurrent", rightShootMotor.getOutputCurrent());
         SmartDashboard.putNumber("shooterLeftCurrent", leftShootMotor.getOutputCurrent());
         SmartDashboard.putNumber(getSubsystem() + ".encoderPosition", getPosition());
+
+        oldKd = kd;
+        oldKi = ki;
+        oldKp = kp;
+        oldKv = kv;
         kp = SmartDashboard.getNumber("shooter.kP", ShooterConstants.kp);
         ki = SmartDashboard.getNumber("shooter.kI", ShooterConstants.ki);
         kd = SmartDashboard.getNumber("shooter.kD", ShooterConstants.kd);
         kv = SmartDashboard.getNumber("shooter.kV", ShooterConstants.kv);
+        
         if(oldKd != kd ||oldKi != ki || oldKp !=kp || oldKv != kv){
 SparkMaxConfig newConfig = new SparkMaxConfig();
     newConfig.closedLoop

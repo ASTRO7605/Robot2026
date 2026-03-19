@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -27,6 +28,10 @@ public class Shooter extends SubsystemBase {
 
     private SparkClosedLoopController rightShootController = rightShootMotor.getClosedLoopController();
     private SparkClosedLoopController leftShootController = leftShootMotor.getClosedLoopController();
+    private double kp = ShooterConstants.kp;
+    private double kd = ShooterConstants.kd;
+    private double ki = ShooterConstants.ki;
+    private double kv = ShooterConstants.kv;
 
     // table de calcul de la vitesse en fonction de la distance
     InterpolatingDoubleTreeMap distanceTable = new InterpolatingDoubleTreeMap();
@@ -47,7 +52,7 @@ public class Shooter extends SubsystemBase {
 
         currentConfig.idleMode(IdleMode.kBrake);
         currentConfig.inverted(false);
-        // configuration du pid
+        // configuration du pid2q
         currentConfig.closedLoop
                 .p(ShooterConstants.kp)
                 .i(ShooterConstants.ki)
@@ -81,21 +86,39 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("shooterRightCurrent", rightShootMotor.getOutputCurrent());
         SmartDashboard.putNumber("shooterLeftCurrent", leftShootMotor.getOutputCurrent());
         SmartDashboard.putNumber(getSubsystem() + ".encoderPosition", getPosition());
+        kp = SmartDashboard.getNumber("shooter.kP", ShooterConstants.kp);
+        ki = SmartDashboard.getNumber("shooter.kI", ShooterConstants.ki);
+        kd = SmartDashboard.getNumber("shooter.kD", ShooterConstants.kd);
+        kv = SmartDashboard.getNumber("shooter.kV", ShooterConstants.kv);
+
+            SparkMaxConfig newConfig = new SparkMaxConfig();
+    newConfig.closedLoop
+        .p(kp)
+        .i(ki)
+        .d(kd);
+
+    FeedForwardConfig ff = new FeedForwardConfig();
+    ff.kV(kv);
+    newConfig.closedLoop.apply(ff);
+
+    // Apply config to the motor
+    rightShootMotor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftConfig.follow(rightShootMotor, true);
+    leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
     }
 
     // fait rouler les moteurs à partir du controleur
     public void setManualMotorSpeed(double speed) {
-        leftShootController.setSetpoint(
-                speed,
-                ControlType.kDutyCycle,
-                ClosedLoopSlot.kSlot0,
-                0);
 
         rightShootController.setSetpoint(
                 speed,
-                ControlType.kDutyCycle,
-                ClosedLoopSlot.kSlot0,
-                0);
+                ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
+    }
+
+    public void stopMotors(){
+        rightShootMotor.stopMotor();
     }
 
     // controle le moteur directement avec le voltage

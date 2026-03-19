@@ -149,7 +149,7 @@ public class Intake extends SubsystemBase {
     }
 
     // controle le moteur directement avec le voltage
-    public void setMsanualMotorVoltage(double voltage) {
+    public void setManualMotorVoltage(double voltage) {
         IntakeMotor.setVoltage(voltage);
     }
 

@@ -78,6 +78,10 @@ public class Shooter extends SubsystemBase {
         distanceTable.put(1.0, 1000.0);
         distanceTable.put(2.0, 2000.0);
         distanceTable.put(3.0, 3000.0); // Remplacez ces valeurs par les distances et vitesses réelles
+        SmartDashboard.putNumber("shooter.kP", kp);
+        SmartDashboard.putNumber("shooter.kI", ki);
+        SmartDashboard.putNumber("shooter.kD", kd);
+        SmartDashboard.putNumber("shooter.kV", kv);
     }
 
     @Override
@@ -98,26 +102,25 @@ public class Shooter extends SubsystemBase {
         ki = SmartDashboard.getNumber("shooter.kI", ShooterConstants.ki);
         kd = SmartDashboard.getNumber("shooter.kD", ShooterConstants.kd);
         kv = SmartDashboard.getNumber("shooter.kV", ShooterConstants.kv);
-        
-        if(oldKd != kd ||oldKi != ki || oldKp !=kp || oldKv != kv){
-SparkMaxConfig newConfig = new SparkMaxConfig();
-    newConfig.closedLoop
-        .p(kp)
-        .i(ki)
-        .d(kd);
-        SparkMaxConfig leftConfig = new SparkMaxConfig();
 
-    FeedForwardConfig ff = new FeedForwardConfig();
-    ff.kV(kv);
-    newConfig.closedLoop.apply(ff);
+        // live tuning the pid
+        if (oldKd != kd || oldKi != ki || oldKp != kp || oldKv != kv) {
 
-    // Apply config to the motor
-    rightShootMotor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    leftConfig.follow(rightShootMotor, true);
-    leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            currentConfig.closedLoop
+                    .p(kp)
+                    .i(ki)
+                    .d(kd);
+            FeedForwardConfig ff = new FeedForwardConfig();
+            ff.kV(kv);
+            currentConfig.closedLoop.apply(ff);
 
+            // Apply config to the motor
+            rightShootMotor.configure(
+                    currentConfig,
+                    ResetMode.kNoResetSafeParameters,
+                    PersistMode.kNoPersistParameters);
         }
-     
+
     }
 
     // fait rouler les moteurs à partir du controleur
@@ -129,7 +132,7 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
                 ClosedLoopSlot.kSlot0);
     }
 
-    public void stopMotors(){
+    public void stopMotors() {
         rightShootMotor.stopMotor();
     }
 

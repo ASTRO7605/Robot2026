@@ -17,6 +17,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class Shooter extends SubsystemBase {
@@ -78,10 +79,25 @@ public class Shooter extends SubsystemBase {
         distanceTable.put(1.0, 1000.0);
         distanceTable.put(2.0, 2000.0);
         distanceTable.put(3.0, 3000.0); // Remplacez ces valeurs par les distances et vitesses réelles
-        SmartDashboard.putNumber("shooter.kP", kp);
-        SmartDashboard.putNumber("shooter.kI", ki);
-        SmartDashboard.putNumber("shooter.kD", kd);
-        SmartDashboard.putNumber("shooter.kV", kv);
+
+                Preferences.initDouble("shooter.kP", kp);
+                Preferences.initDouble("shooter.kV", kv);
+                Preferences.initDouble("shooter.kI", ki);
+                Preferences.initDouble("shooter.kD", kd);
+
+
+        if (SmartDashboard.getNumber("shooter.kP", -1.0) == -1.0) {
+            // SmartDashboard.putNumber("shooter.kP", kp);
+        }
+            if (SmartDashboard.getNumber("shooter.kI", -1.0) == -1.0) {
+            // SmartDashboard.putNumber("shooter.kI", ki);
+     }
+            if (SmartDashboard.getNumber("shooter.kD", -1.0) == -1.0) {
+            // SmartDashboard.putNumber("shooter.kD", kd);
+        }
+        if (SmartDashboard.getNumber("shooter.kV", -1.0) == -1.0) {
+            // SmartDashboard.putNumber("shooter.kV", kv);
+        }
     }
 
     @Override
@@ -98,11 +114,11 @@ public class Shooter extends SubsystemBase {
         oldKi = ki;
         oldKp = kp;
         oldKv = kv;
-        kp = SmartDashboard.getNumber("shooter.kP", ShooterConstants.kp);
-        ki = SmartDashboard.getNumber("shooter.kI", ShooterConstants.ki);
-        kd = SmartDashboard.getNumber("shooter.kD", ShooterConstants.kd);
-        kv = SmartDashboard.getNumber("shooter.kV", ShooterConstants.kv);
-        
+        kp = Preferences.getDouble("shooter.kP", ShooterConstants.kp);
+        ki = Preferences.getDouble("shooter.kI", ShooterConstants.ki);
+        kd = Preferences.getDouble("shooter.kD", ShooterConstants.kd);
+        kv = Preferences.getDouble("shooter.kV", ShooterConstants.kv);
+
         if(oldKd != kd ||oldKi != ki || oldKp !=kp || oldKv != kv){
 SparkMaxConfig newConfig = new SparkMaxConfig();
     newConfig.closedLoop
@@ -124,12 +140,12 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
      
     }
 
-    // fait rouler les moteurs à partir du controleur
-    public void setManualMotorSpeed(double speed) {
+    // percentage de la puissance du moteur, de -100% à 100%
+    public void setManualMotorPercentage(double percentage) {
 
         rightShootController.setSetpoint(
-                speed,
-                ControlType.kVelocity,
+                percentage,
+                ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0);
     }
 
@@ -137,11 +153,19 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
         rightShootMotor.stopMotor();
     }
 
+    public void setMotorSpeed(double speed) {
+        rightShootController.setSetpoint(
+                speed,
+                ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
+    }
     // controle le moteur directement avec le voltage
     public void setMotorVoltage(double voltage) {
         leftShootMotor.setVoltage(voltage);
         rightShootMotor.setVoltage(voltage);
     }
+
+    // 
 
     /**
      * Retourne la position actuelle de l'encodeur
@@ -163,7 +187,7 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
      */
     public void shootByDistance(double distance) {
         double speed = GetShooterInterpolatingSpeed(distance);
-        setManualMotorSpeed(speed);
+        setManualMotorPercentage(speed);
     }
 
     public void freezeAllMotorFunctions() {
@@ -172,6 +196,6 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
     }
 
     public void safeStop() {
-        setManualMotorSpeed(0);
+        setManualMotorPercentage(0);
     }
 }

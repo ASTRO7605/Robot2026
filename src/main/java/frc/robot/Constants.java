@@ -283,13 +283,13 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int rightShooterMotorId = 13;
         public static final int leftShooterMotorId = 14;
-        public static final double kp = 0.000014;
+        public static final double kp = 0.0;
         public static final double ki = 0.0;
-        public static final double kd = 0.000003;
-        public static final double kv = 0.00147999;
+        public static final double kd = 0.0;
+        public static final double kv = 0.0021;
         public static final int kCurrentLimit = 65;
-        // RPM -> degrés par seconde
-        public static final double fPositionConversion = 90;
+        // RPM -> rotations par minute
+        public static final double fPositionConversion = 1;
         public static final double fVelocityConversion = fPositionConversion / 60;
     }
 

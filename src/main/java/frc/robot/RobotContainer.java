@@ -175,7 +175,7 @@ public class RobotContainer {
         //  m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
         //  m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
 
-         m_driverController.x().onTrue(new InstantCommand(() -> m_shooter.setManualMotorSpeed(1000)));
+         m_driverController.x().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(4000)));
          m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.stopMotors()));
 
         //  m_driverController.b().onTrue(new InstantCommand(() -> m_tourelle.setMotorSpeed(0.1)));

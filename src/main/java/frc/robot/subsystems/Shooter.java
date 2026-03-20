@@ -78,6 +78,10 @@ public class Shooter extends SubsystemBase {
         distanceTable.put(1.0, 1000.0);
         distanceTable.put(2.0, 2000.0);
         distanceTable.put(3.0, 3000.0); // Remplacez ces valeurs par les distances et vitesses réelles
+        SmartDashboard.putNumber("shooter.kP", kp);
+        SmartDashboard.putNumber("shooter.kI", ki);
+        SmartDashboard.putNumber("shooter.kD", kd);
+        SmartDashboard.putNumber("shooter.kV", kv);
     }
 
     @Override
@@ -105,6 +109,7 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
         .p(kp)
         .i(ki)
         .d(kd);
+        SparkMaxConfig leftConfig = new SparkMaxConfig();
 
     FeedForwardConfig ff = new FeedForwardConfig();
     ff.kV(kv);
@@ -115,6 +120,8 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
     leftConfig.follow(rightShootMotor, true);
     leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
+        }
+     
     }
 
     // fait rouler les moteurs à partir du controleur
@@ -126,7 +133,7 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
                 ClosedLoopSlot.kSlot0);
     }
 
-    public void stopMotors(){
+    public void stopMotors() {
         rightShootMotor.stopMotor();
     }
 

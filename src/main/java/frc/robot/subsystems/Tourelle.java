@@ -21,8 +21,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.TrapezoidProfileMovement;
+import frc.robot.utils.ShotCalculator;
 
-public class Tourelle extends SubsystemBase{
+public class Tourelle extends SubsystemBase {
     // initialisation du moteur et de l'encodeur
     private SparkMax turretMotor = new SparkMax(TurretConstants.turretMotorId, MotorType.kBrushless);
     private RelativeEncoder turretEncoder = turretMotor.getEncoder();
@@ -37,7 +38,7 @@ public class Tourelle extends SubsystemBase{
     private TrapezoidProfile.Constraints turretConstraints;
 
     // constructeur du sous-système
-    public Tourelle(){
+    public Tourelle() {
         // configutation du moteur (le temp d'attente de réponse du moteur)
         turretMotor.setCANTimeout(Constants.kCANTimeout);
         turretMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
@@ -51,7 +52,8 @@ public class Tourelle extends SubsystemBase{
                 .i(TurretConstants.ki)
                 .d(TurretConstants.kd);
 
-        turretConstraints = new TrapezoidProfile.Constraints(TurretConstants.maxVelocity, TurretConstants.maxAcceleration);
+        turretConstraints = new TrapezoidProfile.Constraints(TurretConstants.maxVelocity,
+                TurretConstants.maxAcceleration);
 
         // limitation du courant et de la tension pour protéger le moteur et la batterie
         currentConfig.voltageCompensation(Constants.kVoltageCompensation);
@@ -65,9 +67,7 @@ public class Tourelle extends SubsystemBase{
         currentConfig.softLimit.forwardSoftLimit(TurretConstants.kSoftLimitForward).forwardSoftLimitEnabled(true);
 
         turretMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
     }
-
 
     @Override
     public void periodic() {
@@ -79,18 +79,21 @@ public class Tourelle extends SubsystemBase{
     }
 
     /**
-     * Vérifie si la tourelle a atteint la position de départ en utilisant le limit switch.
-     * Si le switch est activé alors que le switch n'était pas activé lors du dernier check, 
-
-    public double getPosition() {
-        return turretEncoder.getPosition();
-    }
-    public double getPosition() {
-        return turretEncoder.getPosition();
-    }     * alors on considère que l'initialisation est terminée et on reset la position de l'encodeur.
+     * Vérifie si la tourelle a atteint la position de départ en utilisant le limit
+     * switch.
+     * Si le switch est activé alors que le switch n'était pas activé lors du
+     * dernier check,
+     * 
+     * public double getPosition() {
+     * return turretEncoder.getPosition();
+     * }
+     * public double getPosition() {
+     * return turretEncoder.getPosition();
+     * } * alors on considère que l'initialisation est terminée et on reset la
+     * position de l'encodeur.
      */
     private void checkInit() {
-                final var switchState = limitSwitch.isPressed();
+        final var switchState = limitSwitch.isPressed();
         if (switchState == true && lastSwitchState == false) {
             initDone = true;
             resetEncoderPosition();
@@ -106,13 +109,10 @@ public class Tourelle extends SubsystemBase{
         initDone = true;
     }
 
-
     public double getPosition() {
         return turretEncoder.getPosition();
     }
 
-
-    
     public void setMotorSpeed(double speed) {
         turretController.setSetpoint(speed, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0, 0);
     }
@@ -127,24 +127,30 @@ public class Tourelle extends SubsystemBase{
 
     /**
      * Déplace la tourelle vers la cible (AprilTag) en utilisant
-     * le mouvement trapézoidal afin de ne pas avoir d'accélération ou décélération trop brusque.
-     * MÉTHODE DE VISÉE À REVOIR APRÈS TEST!*********************************************************
-     * @param targetPosition La position de la cible en Ta (limelight)
-     * @param maxSpeed La vitesse maximale du mouvement
+     * le mouvement trapézoidal afin de ne pas avoir d'accélération ou décélération
+     * trop brusque.
+     * MÉTHODE DE VISÉE À REVOIR APRÈS
+     * TEST!*********************************************************
+     * 
+     * @param targetPosition  La position de la cible en Ta (limelight)
+     * @param maxSpeed        La vitesse maximale du mouvement
      * @param maxAcceleration L'accélération maximale du mouvement
-     * @param closedLoopSlot le slot de contrôle à utiliser pour le PID (généralement kSlot0)
+     * @param closedLoopSlot  le slot de contrôle à utiliser pour le PID
+     *                        (généralement kSlot0)
      * @return la commande qui exécute ce mouvement
-     */ 
-    public Command goToTarget(double targetPosition, double maxSpeed, double maxAcceleration, ClosedLoopSlot closedLoopSlot) {
+     */
+    public Command goToTarget(double targetPosition, double maxSpeed, double maxAcceleration,
+            ClosedLoopSlot closedLoopSlot) {
         if (!initDone) {
             return new InstantCommand(() -> System.out.println("Not initialized. Ignoring command"));
         }
         turretConstraints = new TrapezoidProfile.Constraints(maxSpeed, maxAcceleration);
 
-        var command = new TrapezoidProfileMovement(turretMotor, targetPosition, turretConstraints, () -> 0.0, closedLoopSlot);
+        var command = new TrapezoidProfileMovement(turretMotor, targetPosition, turretConstraints, () -> 0.0,
+                closedLoopSlot);
         command.addRequirements(this);
         CommandScheduler.getInstance().schedule(command);
-        return command; 
+        return command;
     }
 
     public void safeStop() {

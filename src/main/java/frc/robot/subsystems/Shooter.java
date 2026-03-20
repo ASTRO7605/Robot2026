@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.utils.ShotCalculator;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -37,8 +38,6 @@ public class Shooter extends SubsystemBase {
     private double oldKd = ShooterConstants.kd;
     private double oldKi = ShooterConstants.ki;
     private double oldKv = ShooterConstants.kv;
-    // table de calcul de la vitesse en fonction de la distance
-    InterpolatingDoubleTreeMap distanceTable = new InterpolatingDoubleTreeMap();
 
     // pour le PID
     private SparkMaxConfig currentConfig;
@@ -74,25 +73,18 @@ public class Shooter extends SubsystemBase {
         leftConfig.follow(rightShootMotor, true);
         leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        // Remplissage de la table de distance et de vitesse
-        distanceTable.put(0.0, 0.0);
-        distanceTable.put(1.0, 1000.0);
-        distanceTable.put(2.0, 2000.0);
-        distanceTable.put(3.0, 3000.0); // Remplacez ces valeurs par les distances et vitesses réelles
-
-                Preferences.initDouble("shooter.kP", kp);
-                Preferences.initDouble("shooter.kV", kv);
-                Preferences.initDouble("shooter.kI", ki);
-                Preferences.initDouble("shooter.kD", kd);
-
+        Preferences.initDouble("shooter.kP", kp);
+        Preferences.initDouble("shooter.kV", kv);
+        Preferences.initDouble("shooter.kI", ki);
+        Preferences.initDouble("shooter.kD", kd);
 
         if (SmartDashboard.getNumber("shooter.kP", -1.0) == -1.0) {
             // SmartDashboard.putNumber("shooter.kP", kp);
         }
-            if (SmartDashboard.getNumber("shooter.kI", -1.0) == -1.0) {
+        if (SmartDashboard.getNumber("shooter.kI", -1.0) == -1.0) {
             // SmartDashboard.putNumber("shooter.kI", ki);
-     }
-            if (SmartDashboard.getNumber("shooter.kD", -1.0) == -1.0) {
+        }
+        if (SmartDashboard.getNumber("shooter.kD", -1.0) == -1.0) {
             // SmartDashboard.putNumber("shooter.kD", kd);
         }
         if (SmartDashboard.getNumber("shooter.kV", -1.0) == -1.0) {
@@ -119,25 +111,25 @@ public class Shooter extends SubsystemBase {
         kd = Preferences.getDouble("shooter.kD", ShooterConstants.kd);
         kv = Preferences.getDouble("shooter.kV", ShooterConstants.kv);
 
-        if(oldKd != kd ||oldKi != ki || oldKp !=kp || oldKv != kv){
-SparkMaxConfig newConfig = new SparkMaxConfig();
-    newConfig.closedLoop
-        .p(kp)
-        .i(ki)
-        .d(kd);
-        SparkMaxConfig leftConfig = new SparkMaxConfig();
+        if (oldKd != kd || oldKi != ki || oldKp != kp || oldKv != kv) {
+            SparkMaxConfig newConfig = new SparkMaxConfig();
+            newConfig.closedLoop
+                    .p(kp)
+                    .i(ki)
+                    .d(kd);
+            SparkMaxConfig leftConfig = new SparkMaxConfig();
 
-    FeedForwardConfig ff = new FeedForwardConfig();
-    ff.kV(kv);
-    newConfig.closedLoop.apply(ff);
+            FeedForwardConfig ff = new FeedForwardConfig();
+            ff.kV(kv);
+            newConfig.closedLoop.apply(ff);
 
-    // Apply config to the motor
-    rightShootMotor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    leftConfig.follow(rightShootMotor, true);
-    leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            // Apply config to the motor
+            rightShootMotor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            leftConfig.follow(rightShootMotor, true);
+            leftShootMotor.configure(leftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         }
-     
+
     }
 
     // percentage de la puissance du moteur, de -100% à 100%
@@ -159,13 +151,14 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
                 ControlType.kVelocity,
                 ClosedLoopSlot.kSlot0);
     }
+
     // controle le moteur directement avec le voltage
     public void setMotorVoltage(double voltage) {
         leftShootMotor.setVoltage(voltage);
         rightShootMotor.setVoltage(voltage);
     }
 
-    // 
+    //
 
     /**
      * Retourne la position actuelle de l'encodeur
@@ -174,20 +167,6 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
      */
     public double getPosition() {
         return rightShootEncoder.getPosition();
-    }
-
-    public double GetShooterInterpolatingSpeed(double distance) {
-        return distanceTable.get(distance);
-    }
-
-    /**
-     * Fait rouler les moteurs à la vitesse calculée à partir de la distance
-     * 
-     * @param distance la distance à laquelle le robot doit tirer
-     */
-    public void shootByDistance(double distance) {
-        double speed = GetShooterInterpolatingSpeed(distance);
-        setManualMotorPercentage(speed);
     }
 
     public void freezeAllMotorFunctions() {

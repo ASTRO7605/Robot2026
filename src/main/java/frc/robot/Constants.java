@@ -7,6 +7,7 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
@@ -43,6 +44,10 @@ public final class Constants {
         // with bumpers
         public static final double kRobotWidth = Units.inchesToMeters(35.69);
         public static final double kRobotLength = Units.inchesToMeters(32.63);
+
+        public static final Transform2d kTurretRobotPosition = new Transform2d(
+                new Translation2d(Units.inchesToMeters(7.25), 0),
+                new Rotation2d());
 
         /*
          * Swerve Kinematics
@@ -337,7 +342,26 @@ public final class Constants {
     }
 
     public static final class FieldConstants {
+        public static final Translation2d kFullFieldCoords = new Translation2d(Units.inchesToMeters(652.22),
+                Units.inchesToMeters(317.69));
 
+        public static enum BluePositions {
+            HUB(new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84))),
+            DEPOT_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(287.69))),
+            OUTPOST_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(30)));
+
+            BluePositions(Translation2d coordinate) {
+                this.translation2d = coordinate;
+            }
+
+            public final Translation2d translation2d;
+        }
+
+        public static Translation2d blueToRedCoord(Translation2d bluePos) {
+            // flip by 180 degrees
+            return new Translation2d(kFullFieldCoords.getX() - bluePos.getX(),
+                    kFullFieldCoords.getY() - bluePos.getY());
+        }
     }
 
     /**

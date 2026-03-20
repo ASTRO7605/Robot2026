@@ -272,11 +272,21 @@ public final class Constants {
         public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
 
-        public static final double kInSpeed = 0.4;
+        public static final double kp = 0.0;
+        public static final double ki = 0.0;
+        public static final double kd = 0.0;
+        public static final double kv = 0.0;
+
+        public static final double setConveyorInSpeed = 1000;
         public static final double kOutSpeed = -0.4;
         public static final double kIntakeInSpeed = 1;
 
+        // Motor RPM -> Roller RPM
+        public static final double fPositionConversion = 1/4;
+        public static final double fVelocityConversion = fPositionConversion / 60;
+
         public static final double kThresholdMotorStopped = 500;
+        
     }
 
     // constantes pour le shooter

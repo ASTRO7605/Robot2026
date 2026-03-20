@@ -232,7 +232,7 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int rightIntakeMotorId = 9;
         public static final int kCurrentLimit = 70;
-        public static final double kp = 0.11;
+        public static final double kp = 0.0;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         // (Rotations –> °)
@@ -240,14 +240,14 @@ public final class Constants {
         // RPM -> degrés par seconde
         public static final double fVelocityConversion = fPositionConversion / 60;
 
-        public static final double maxVelocity = 400;
-        public static final double maxAcceleration = 1250;
-        public static final double kSoftLimitForward = 55.5;
-        public static final double kMaxFF = 0.32;
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
+        public static final double kSoftLimitReverse = -180;
+        public static final double kMaxFF = 0;
         public static final double kLimitSwitchPosition = 0;
 
-        public static final double kVoltageCompensation = 11;
-        public static final double motorSpeed = 0.225;
+        public static final double motorSpeed = 0.15;
+        public static final double initSpeed = 0.1;
 
         // enum pour les positions de l'intake
         public static enum intakePos {

@@ -28,7 +28,7 @@ public class Intake extends SubsystemBase {
     private RelativeEncoder intakeEncoder = IntakeMotor.getEncoder();
 
     private SparkClosedLoopController intakeController = IntakeMotor.getClosedLoopController();
-    private SparkLimitSwitch limitSwitch = IntakeMotor.getReverseLimitSwitch();
+    private SparkLimitSwitch limitSwitch = IntakeMotor.getForwardLimitSwitch();
     private SparkMaxConfig currentConfig;
 
     private boolean initDone = false;
@@ -49,18 +49,20 @@ public class Intake extends SubsystemBase {
                 .i(IntakeConstants.ki)
                 .d(IntakeConstants.kd);
 
-        currentConfig.voltageCompensation(IntakeConstants.kVoltageCompensation);
+        currentConfig.voltageCompensation(Constants.kVoltageCompensation);
         currentConfig.smartCurrentLimit(IntakeConstants.kCurrentLimit);
 
         currentConfig.encoder.positionConversionFactor(IntakeConstants.fPositionConversion);
         currentConfig.encoder.velocityConversionFactor(IntakeConstants.fVelocityConversion);
-        currentConfig.softLimit.forwardSoftLimit(IntakeConstants.kSoftLimitForward).forwardSoftLimitEnabled(true);
+        currentConfig.softLimit.reverseSoftLimit(IntakeConstants.kSoftLimitReverse).reverseSoftLimitEnabled(true);
 
         IntakeMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         intakeConstraints = new TrapezoidProfile.Constraints(
                 IntakeConstants.maxVelocity,
                 IntakeConstants.maxAcceleration);
+
+        initDone = false;
     }
 
     @Override
@@ -121,20 +123,19 @@ public class Intake extends SubsystemBase {
         }
 
         var command = new TrapezoidProfileMovement(
-        IntakeMotor, 
-        target, intakeConstraints, 
-        this::computeFF,
-        ClosedLoopSlot.kSlot0);
+                IntakeMotor,
+                target, intakeConstraints,
+                this::computeFF,
+                ClosedLoopSlot.kSlot0);
 
         command.addRequirements(this);
         CommandScheduler.getInstance().schedule(command);
         return command;
     }
 
-
     /**
-    * Maintient la position actuelle de l'intake avec l'encoder
-    */
+     * Maintient la position actuelle de l'intake avec l'encoder
+     */
     public void keepPosition() {
         intakeController.setSetpoint(
                 getEncoderPosition(),
@@ -143,7 +144,6 @@ public class Intake extends SubsystemBase {
                 computeFF());
     }
 
-    
     public void freezeAllMotorFunctions() {
         IntakeMotor.stopMotor();
     }
@@ -153,16 +153,15 @@ public class Intake extends SubsystemBase {
         IntakeMotor.setVoltage(voltage);
     }
 
-    public void setMotorSpeed(double speed) {
-        // fait rouler le moteur à partir du controleur
+    // fait rouler le moteur à partir du controleur (sans kAf)
+    public void setManualMotorPercentage(double percentage) {
         intakeController.setSetpoint(
-            speed, 
-            ControlType.kDutyCycle, 
-            ClosedLoopSlot.kSlot0, 
-            computeFF());
+                percentage,
+                ControlType.kDutyCycle,
+                ClosedLoopSlot.kSlot0);
     }
 
     public void safeStop() {
-        setMotorSpeed(0);
+        setManualMotorPercentage(0);
     }
 }

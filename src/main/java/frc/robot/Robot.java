@@ -115,6 +115,8 @@ public class Robot extends TimedRobot {
         if (m_autonomousCommand != null) {
             CommandScheduler.getInstance().schedule(m_autonomousCommand);
         }
+
+        m_robotContainer.initSubsystems();
     }
 
     /** This function is called periodically during autonomous. */
@@ -135,6 +137,7 @@ public class Robot extends TimedRobot {
         }
 
         m_robotContainer.resetGyroOffsetEstimatedPose();
+        m_robotContainer.initSubsystems();
     }
 
     /** This function is called periodically during operator control. */

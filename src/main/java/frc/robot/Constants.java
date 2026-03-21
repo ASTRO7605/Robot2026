@@ -236,8 +236,8 @@ public final class Constants {
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         // (Rotations –> °)
-        public static final double fPositionConversion = 810 / 31;
-        // RPM -> degrés par seconde
+        public static final double fPositionConversion = 1;
+        // RPM -> Rotations par minutes
         public static final double fVelocityConversion = fPositionConversion / 60;
 
         public static final double maxVelocity = 0;
@@ -246,7 +246,7 @@ public final class Constants {
         public static final double kMaxFF = 0;
         public static final double kLimitSwitchPosition = 0;
 
-        public static final double motorSpeed = 0.15;
+        public static final double motorSpeed = 0.25;
         public static final double initSpeed = 0.1;
 
         // enum pour les positions de l'intake
@@ -293,9 +293,9 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int rightShooterMotorId = 13;
         public static final int leftShooterMotorId = 14;
-        public static final double kp = 0.0;
+        public static final double kp = 0.00002;
         public static final double ki = 0.0;
-        public static final double kd = 0.0;
+        public static final double kd = 0.00003;
         public static final double kv = 0.0021;
         public static final int kCurrentLimit = 65;
         // RPM -> rotations par minute

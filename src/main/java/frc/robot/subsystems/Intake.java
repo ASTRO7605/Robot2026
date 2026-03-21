@@ -160,6 +160,12 @@ public class Intake extends SubsystemBase {
                 ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0);
     }
+    public void setManualMotorSpeed(double speed) {
+        intakeController.setSetpoint(
+                speed,
+                ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
+    }
 
     public void safeStop() {
         setManualMotorPercentage(0);

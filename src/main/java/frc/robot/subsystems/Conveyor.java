@@ -60,6 +60,7 @@ public class Conveyor extends SubsystemBase {
         intakeConfig.inverted(false);
         
         conveyorConfig.closedLoop
+
                 .p(ConveyorConstants.kp)
                 .i(ConveyorConstants.ki)
                 .d(ConveyorConstants.kd);
@@ -146,13 +147,17 @@ SparkMaxConfig newConfig = new SparkMaxConfig();
     }
 
     
-
+    // fait tourner les roues du intake pour faire entrer les balles
+    public void conveyorWheelsIn(){
+        ConvMotor.set(ConveyorConstants.setConveyorInSpeed);
+        leftIntakeMotor.set(-ConveyorConstants.kIntakeInSpeed);
+    }
 
 
     // fait tourner les roues du convoyeur pour faire sortir les balles
     public void conveyorWheelsOut(){
-        ConvMotor.set(ConveyorConstants.kOutSpeed);
-        leftIntakeMotor.set(-ConveyorConstants.kIntakeInSpeed);
+        ConvMotor.set(-ConveyorConstants.kOutSpeed);
+        leftIntakeMotor.set(ConveyorConstants.kIntakeInSpeed);
     }
 
     // arrête les roues du convoyeur

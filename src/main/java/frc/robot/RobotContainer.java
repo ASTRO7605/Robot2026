@@ -173,42 +173,42 @@ public class RobotContainer {
         // m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
         // new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
 
-        // m_driverController.rightTrigger().onTrue(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelsIn()));
-        // m_driverController.rightTrigger().onFalse(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelOff()));
-        // m_driverController.leftTrigger().onTrue(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelsOut()));
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelOff()));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() ->
+        m_shooterBase.ShooterBaseWheelsIn()));
+        m_driverController.rightBumper().onFalse(new InstantCommand(() ->
+        m_shooterBase.ShooterBaseWheelOff()));
+        m_driverController.leftTrigger().onTrue(new InstantCommand(() ->
+        m_shooterBase.ShooterBaseWheelsOut()));
+        m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
+        m_shooterBase.ShooterBaseWheelOff()));
 
-        m_driverController.x().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(4000)));
-        m_driverController.y().onTrue(new InstantCommand(() -> m_shooter.stopMotors()));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(3200)));
+        m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooter.stopMotors()));
 
-        // m_driverController.b().onTrue(new InstantCommand(() ->
-        // m_tourelle.setMotorSpeed(0.1)));
-        // m_driverController.b().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-        // m_driverController.a().onTrue(new InstantCommand(() ->
-        // m_tourelle.setMotorSpeed(-0.1)));
-        // m_driverController.a().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
+        //m_driverController.b().onTrue(new InstantCommand(() ->
+        //m_tourelle.setMotorSpeed(0.1)));
+        //m_driverController.b().onFalse(new InstantCommand(() ->
+        //m_tourelle.safeStop()));
+        //m_driverController.a().onTrue(new InstantCommand(() ->
+        //m_tourelle.setMotorSpeed(-0.1)));
+        //m_driverController.a().onFalse(new InstantCommand(() ->
+        //m_tourelle.safeStop()));
 
         m_driverController.a()
                 .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(IntakeConstants.motorSpeed)));
         m_driverController.a().onFalse(new InstantCommand(() -> m_intake.safeStop()));
-        m_driverController.b()
+        m_driverController.y()
                 .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(-IntakeConstants.motorSpeed)));
-        m_driverController.b().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+        m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
 
-        // m_driverController.b().onTrue(new InstantCommand(() ->
-        // m_conveyor.converyorWheelsIn()));
-        // m_driverController.b().onFalse(new InstantCommand(() ->
-        // m_conveyor.ConveyorWheelOff()));
-        // m_driverController.a().onTrue(new InstantCommand(() ->
-        // m_conveyor.conveyorWheelsOut()));
-        // m_driverController.a().onFalse(new InstantCommand(() ->
-        // m_conveyor.ConveyorWheelOff()));
+        m_driverController.leftBumper().onTrue(new InstantCommand(() ->
+        m_conveyor.conveyorWheelsIn()));
+        m_driverController.leftBumper().onFalse(new InstantCommand(() ->
+        m_conveyor.ConveyorWheelOff()));
+        m_driverController.leftTrigger().onTrue(new InstantCommand(() ->
+        m_conveyor.conveyorWheelsOut()));
+        m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
+        m_conveyor.ConveyorWheelOff()));
 
     }
 

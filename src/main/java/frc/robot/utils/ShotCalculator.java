@@ -7,22 +7,23 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.DriveConstants;
 
 // singleton to contain shot information
 public class ShotCalculator {
     private static ShotCalculator instance = null;
     private ShotInfo currentShotInfo;
-    private Field2d robotToTargetField;
+    private Field2d turretToTargetField;
 
     // table de calcul de la vitesse en fonction de la distance
     private final InterpolatingDoubleTreeMap distanceTable = new InterpolatingDoubleTreeMap();
 
     private ShotCalculator() {
-        robotToTargetField = new Field2d();
+        turretToTargetField = new Field2d();
         // put distance / speed couples
         distanceTable.put(0.0, 0.0);
 
-        SmartDashboard.putData("Robot to Target", robotToTargetField);
+        SmartDashboard.putData("Turret to Target", turretToTargetField);
     }
 
     public static ShotCalculator getInstance() {
@@ -38,15 +39,15 @@ public class ShotCalculator {
     }
 
     public void updateShotInfo(ChassisSpeeds robotSpeeds, Pose2d robotPose, Translation2d target) {
-        robotToTargetField.getObject("Target").setPose(target.getX(), target.getY(),
+        turretToTargetField.getObject("Target").setPose(target.getX(), target.getY(),
                 new Rotation2d());
 
-        var robotToTarget = target.minus(robotPose.getTranslation());
-        robotToTargetField.setRobotPose(robotPose.getX(), robotPose.getY(), robotToTarget.getAngle());
+        var turretToTarget = target.minus(robotPose.transformBy(DriveConstants.kTurretRobotPosition).getTranslation());
+        turretToTargetField.setRobotPose(robotPose.getX(), robotPose.getY(), turretToTarget.getAngle());
 
-        SmartDashboard.putNumber("robotToTargetDistance", robotToTarget.getNorm());
+        SmartDashboard.putNumber("turretToTargetDistance", turretToTarget.getNorm());
 
-        var turretAngle = robotToTarget.getAngle().minus(robotPose.getRotation());
+        var turretAngle = turretToTarget.getAngle().minus(robotPose.getRotation());
         SmartDashboard.putNumber("turretToTargetAngle", turretAngle.getDegrees());
 
         currentShotInfo = new ShotInfo(turretAngle.getDegrees(), 0);

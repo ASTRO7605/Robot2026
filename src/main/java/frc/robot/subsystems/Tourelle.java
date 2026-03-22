@@ -82,15 +82,8 @@ public class Tourelle extends SubsystemBase {
      * Vérifie si la tourelle a atteint la position de départ en utilisant le limit
      * switch.
      * Si le switch est activé alors que le switch n'était pas activé lors du
-     * dernier check,
-     * 
-     * public double getPosition() {
-     * return turretEncoder.getPosition();
-     * }
-     * public double getPosition() {
-     * return turretEncoder.getPosition();
-     * } * alors on considère que l'initialisation est terminée et on reset la
-     * position de l'encodeur.
+     * dernier check, alors on considère que l'initialisation est terminée et on
+     * reset la position de l'encodeur.
      */
     private void checkInit() {
         final var switchState = limitSwitch.isPressed();
@@ -151,6 +144,35 @@ public class Tourelle extends SubsystemBase {
         command.addRequirements(this);
         CommandScheduler.getInstance().schedule(command);
         return command;
+    }
+
+    public void requestTurretAngle(double angle) {
+        // if request is in normal range, go to request
+        // if request is out of range but close to extremes, go to extremes
+        // if request is out of range and too far from extremes, go to middle
+        var target = angle;
+        if (angle > TurretConstants.kMaxSetpoint) {
+            if (angle <= (TurretConstants.kMaxSetpoint + TurretConstants.kExtremesThreshold)) {
+                // over but close to max -> max
+                target = TurretConstants.kMaxSetpoint;
+            } else {
+                // too far over -> middle
+                target = 0;
+            }
+        } else if (angle < TurretConstants.kMinSetpoint) {
+            if (angle >= (TurretConstants.kMinSetpoint - TurretConstants.kExtremesThreshold)) {
+                // under but close to min -> min
+                target = TurretConstants.kMinSetpoint;
+            } else {
+                // too far under -> middle
+                target = 0;
+            }
+        }
+        goToPosition(target);
+    }
+
+    private void goToPosition(double position) {
+        turretController.setSetpoint(position, ControlType.kPosition);
     }
 
     public void safeStop() {

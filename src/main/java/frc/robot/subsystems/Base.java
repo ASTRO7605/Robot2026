@@ -326,7 +326,28 @@ public class Base extends SubsystemBase {
     }
 
     private void updateShotTarget() {
-        m_currentTarget = FieldConstants.BluePositions.HUB.translation2d;
+        var robotTranslation = getPose().getTranslation();
+        // flip to blue to simplify zone checking
+        if (m_allianceColor == Alliance.Red) {
+            robotTranslation = FieldConstants.flipPosColor(robotTranslation);
+        }
+
+        if (robotTranslation.getX() < FieldConstants.kXPosFeed) {
+            // in shooting zone (left of hub)
+            m_currentTarget = FieldConstants.BluePositions.HUB.translation2d;
+        } else {
+            if (robotTranslation.getY() > (FieldConstants.kFullFieldCoords.getY() / 2)) {
+                // in depot half of field
+                m_currentTarget = FieldConstants.BluePositions.DEPOT_DUMP.translation2d;
+            } else {
+                // in outpost half of field
+                m_currentTarget = FieldConstants.BluePositions.OUTPOST_DUMP.translation2d;
+            }
+        }
+
+        if (m_allianceColor == Alliance.Red) {
+            m_currentTarget = FieldConstants.flipPosColor(m_currentTarget);
+        }
     }
 
     @Override

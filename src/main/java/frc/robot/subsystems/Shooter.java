@@ -77,19 +77,6 @@ public class Shooter extends SubsystemBase {
         Preferences.initDouble("shooter.kV", kv);
         Preferences.initDouble("shooter.kI", ki);
         Preferences.initDouble("shooter.kD", kd);
-
-        if (SmartDashboard.getNumber("shooter.kP", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("shooter.kP", kp);
-        }
-        if (SmartDashboard.getNumber("shooter.kI", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("shooter.kI", ki);
-        }
-        if (SmartDashboard.getNumber("shooter.kD", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("shooter.kD", kd);
-        }
-        if (SmartDashboard.getNumber("shooter.kV", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("shooter.kV", kv);
-        }
     }
 
     @Override

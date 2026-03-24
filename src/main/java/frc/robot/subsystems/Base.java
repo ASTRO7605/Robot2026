@@ -3,8 +3,10 @@ package frc.robot.subsystems;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PoseEstimationConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.utils.ShotCalculator;
 import frc.robot.LimelightVisionResult;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -15,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import javax.xml.crypto.dsig.Transform;
 
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
@@ -28,6 +32,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -40,18 +45,22 @@ public class Base extends SubsystemBase {
     private final Pigeon2 m_gyro;
     private final SwerveDrivePoseEstimator m_poseEstimator;
     private final SwerveModule[] m_swerveMods;
-    final CANBus canbus = new CANBus(DriveConstants.kCanivoreBusId);
+    private final CANBus canbus = new CANBus(DriveConstants.kCanivoreBusId);
 
     private Alliance m_allianceColor = Alliance.Red;
 
     private final Field2d m_robotField;
 
-    private Map<String, LimelightVisionModule> m_visionModules = new HashMap<>();
+    private final Map<String, LimelightVisionModule> m_visionModules = new HashMap<>();
     private boolean useVision = false;
+
+    private Translation2d m_currentTarget;
 
     /** radians */
     private double m_gyroOffset = 0.0;
     private boolean m_drivingInFieldRelative = true;
+
+    private final ShotCalculator shotCalculator;
 
     public Base() {
         m_gyro = new Pigeon2(Constants.DriveConstants.pigeonID, canbus);
@@ -123,6 +132,7 @@ public class Base extends SubsystemBase {
                     VisionConstants.limelight2Name, VisionConstants.robotTolimelight2Transform, this::getHeading));
         }
 
+        shotCalculator = ShotCalculator.getInstance();
     }
 
     public boolean shouldPathsFlip() {
@@ -263,7 +273,7 @@ public class Base extends SubsystemBase {
         }
     }
 
-    public void updateVisionEstimate() {
+    private void updateVisionEstimate() {
         for (LimelightVisionModule vis : m_visionModules.values()) {
             LimelightVisionResult o_result = vis.getEstimatedPoses();
             var result = o_result.mt2Estimate();
@@ -315,10 +325,40 @@ public class Base extends SubsystemBase {
         return Optional.of(new Pose2d(averageTranslation, averageRotation));
     }
 
+    private void updateShotTarget() {
+        var robotTranslation = getPose().getTranslation();
+        // flip to blue to simplify zone checking
+        if (m_allianceColor == Alliance.Red) {
+            robotTranslation = FieldConstants.flipPosColor(robotTranslation);
+        }
+
+        if (robotTranslation.getX() < FieldConstants.kXPosFeed) {
+            // in shooting zone (left of hub)
+            m_currentTarget = FieldConstants.BluePositions.HUB.translation2d;
+        } else {
+            if (robotTranslation.getY() > (FieldConstants.kFullFieldCoords.getY() / 2)) {
+                // in depot half of field
+                m_currentTarget = FieldConstants.BluePositions.DEPOT_DUMP.translation2d;
+            } else {
+                // in outpost half of field
+                m_currentTarget = FieldConstants.BluePositions.OUTPOST_DUMP.translation2d;
+            }
+        }
+
+        if (m_allianceColor == Alliance.Red) {
+            m_currentTarget = FieldConstants.flipPosColor(m_currentTarget);
+        }
+    }
+
     @Override
     public void periodic() {
         // update pose estimator with vision, if applicable
         updateVisionEstimate();
+
+        updateShotTarget();
+
+        shotCalculator.updateShotInfo(getRobotRelativeSpeeds(), getPose(), m_currentTarget);
+
         // update pose estimator with gyro and swerve
         m_poseEstimator.update(getGyroYaw(), getModulePositions());
         {

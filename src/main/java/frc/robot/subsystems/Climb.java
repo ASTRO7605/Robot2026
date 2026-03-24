@@ -8,10 +8,12 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -21,19 +23,25 @@ import frc.robot.Constants;
 import frc.robot.Constants.ClimbConstants;
 import frc.robot.commands.TrapezoidProfileMovement;
 import frc.robot.Constants.ClimbConstants.climbLvl;
+
 public class Climb extends SubsystemBase {
     // initialisation du moteur et de l'encodeur
     private SparkMax climbMotor = new SparkMax(ClimbConstants.climbMotorId, MotorType.kBrushless);
     private RelativeEncoder climbEncoder = climbMotor.getEncoder();
 
     private SparkClosedLoopController climbController = climbMotor.getClosedLoopController();
-    private SparkLimitSwitch limitSwitch = climbMotor.getReverseLimitSwitch();
     private SparkMaxConfig currentConfig;
 
     private boolean initDone = false;
-    private boolean lastSwitchState = false;
 
     private TrapezoidProfile.Constraints climbConstraints;
+
+    private double kp = ClimbConstants.kp;
+    private double kd = ClimbConstants.kd;
+    private double ki = ClimbConstants.ki;
+    private double oldKp = ClimbConstants.kp;
+    private double oldKd = ClimbConstants.kd;
+    private double oldKi = ClimbConstants.ki;
 
     public Climb() {
         // configutation du moteur (le temp d'attente de réponse du moteur)
@@ -65,24 +73,44 @@ public class Climb extends SubsystemBase {
         climbMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         climbEncoder.setPosition(0);
+        initDone = false;
+
+        Preferences.initDouble("climb.kP", kp);
+        Preferences.initDouble("climb.kI", ki);
+        Preferences.initDouble("climb.kD", kd);
     }
 
     @Override
     public void periodic() {
-        checkInit();
-        SmartDashboard.putBoolean(getSubsystem() + ".limitSwitch", limitSwitch.isPressed());
         SmartDashboard.putNumber(getSubsystem() + ".position", climbEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", climbEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
         SmartDashboard.putNumber("climbAppliedOutput", climbMotor.getAppliedOutput());
         SmartDashboard.putNumber("climbRightCurrent", climbMotor.getOutputCurrent());
 
+        oldKd = kd;
+        oldKi = ki;
+        oldKp = kp;
+        kp = Preferences.getDouble("climb.kP", ClimbConstants.kp);
+        ki = Preferences.getDouble("climb.kI", ClimbConstants.ki);
+        kd = Preferences.getDouble("climb.kD", ClimbConstants.kd);
+
+        if (oldKd != kd || oldKi != ki || oldKp != kp) {
+            currentConfig.closedLoop
+                    .p(kp)
+                    .i(ki)
+                    .d(kd);
+
+            // Apply config to the motor
+            climbMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        }
+
     }
 
     // fait rouler le moteur à partir du controleur
-    public void setMotorSpeed(double speed, boolean useFeedForward) {
+    public void setMotorPercentage(double percentage, boolean useFeedForward) {
         climbController.setSetpoint(
-                speed, 
+                percentage,
                 ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0,
                 useFeedForward ? ClimbConstants.feedforwards : 0);
@@ -94,11 +122,21 @@ public class Climb extends SubsystemBase {
     }
 
     /**
+     * Send climb to position without using trapezoidal profile
      * 
-     * @param lvl la position désirée du Climb (stowed, Lvl1, Lvl2, Lvl3)
-     * @param maxSpeed la vitesse maximale du mouvement
+     * @param pos
+     */
+    public void directToPosition(double pos) {
+        climbController.setSetpoint(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, ClimbConstants.feedforwards);
+    }
+
+    /**
+     * 
+     * @param lvl             la position désirée du Climb
+     * @param maxSpeed        la vitesse maximale du mouvement
      * @param maxAcceleration l'accélération maximale du mouvement
-     * @param closedLoopSlot le slot de contrôle à utiliser pour le PID (généralement kSlot0)
+     * @param closedLoopSlot  le slot de contrôle à utiliser pour le PID
+     *                        (généralement kSlot0)
      * @return la commande qui exécute ce mouvement
      */
     public Command goToPosition(climbLvl lvl, double maxSpeed, double maxAcceleration,
@@ -107,12 +145,15 @@ public class Climb extends SubsystemBase {
     }
 
     /**
-     * Fait le Climb aller à la position désirée en utilisant le mouvement trapézoïdal 
+     * Fait le Climb aller à la position désirée en utilisant le mouvement
+     * trapézoïdal
      * afin de ne pas avoir d'accélération ou décélération trop brusque.
-     * @param target la position désirée en inches
-     * @param maxSpeed la vitesse maximale du mouvement
+     * 
+     * @param target          la position désirée en inches
+     * @param maxSpeed        la vitesse maximale du mouvement
      * @param maxAcceleration l'accélération maximale du mouvement
-     * @param closedLoopSlot le slot de contrôle à utiliser pour le PID (généralement kSlot0)
+     * @param closedLoopSlot  le slot de contrôle à utiliser pour le PID
+     *                        (généralement kSlot0)
      * @return la commande qui exécute ce mouvement
      */
     public Command goToPosition(double target, double maxSpeed, double maxAcceleration, ClosedLoopSlot closedLoopSlot) {
@@ -130,18 +171,19 @@ public class Climb extends SubsystemBase {
     }
 
     /**
-     * Maintient la position actuelle du Climb 
+     * Maintient la position actuelle du Climb
      */
     public void keepPosition() {
         climbController.setSetpoint(
-            getPosition(), 
-            ControlType.kPosition,
-            ClosedLoopSlot.kSlot0,
-            ClimbConstants.feedforwards);
+                getPosition(),
+                ControlType.kPosition,
+                ClosedLoopSlot.kSlot0,
+                ClimbConstants.feedforwards);
     }
 
     /**
      * Retourne la position actuelle du Climb
+     * 
      * @return
      */
     public double getPosition() {
@@ -155,45 +197,28 @@ public class Climb extends SubsystemBase {
     public boolean isAtPosition(double position) {
         return Math.abs(getPosition() - position) < ClimbConstants.kPositionThreshold;
     }
-    /**
-     * Vérifie si le Climb a atteint la position de départ en utilisant le limit switch.
-     * Si le switch est activé alors que le switch n'était pas activé lors du dernier check, 
-     * alors on considère que l'initialisation est terminée et on reset la position de l'encodeur.
-     */
-    private void checkInit() {
-        final var switchState = limitSwitch.isPressed();
-        if (switchState && !lastSwitchState) {
-            initDone = true;
-            resetEncoderPosition();
-        }
-        lastSwitchState = switchState;
-    }
 
     public boolean isInitDone() {
         return initDone;
     }
 
     public void resetEncoderPosition() {
-        climbEncoder.setPosition(ClimbConstants.kLimitSwitchPosition);
+        climbEncoder.setPosition(ClimbConstants.kInitPosition);
+    }
+
+    public void setInitDone() {
+        initDone = true;
     }
 
     public void freezeAllMotorFunctions() {
         climbMotor.stopMotor();
     }
 
-    /**
-     * Met à jour la limite de courant du moteur pour protéger le moteur et la batterie.
-     * @param currentLimit
-     */
-    public void setCurrentLimit(int currentLimit) {
-        currentConfig.smartCurrentLimit(currentLimit);
-        climbMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    public void safeStop() {
+        setMotorPercentage(0, false);
     }
 
-    public boolean isBottomSwitchActivated() {
-        return limitSwitch.isPressed();
-    }
-    public void safeStop() {
-        setMotorSpeed(0, false);
+    public boolean isMotorStopped() {
+        return Math.abs(climbEncoder.getVelocity()) <= ClimbConstants.kStoppedMotorThreshold;
     }
 }

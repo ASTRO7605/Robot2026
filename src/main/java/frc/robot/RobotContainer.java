@@ -20,6 +20,7 @@ import frc.robot.Constants.ConveyorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.ClimberInit;
 import frc.robot.commands.IntakeInit;
 import frc.robot.subsystems.Base;
 import frc.robot.subsystems.Climb;
@@ -232,6 +233,9 @@ public class RobotContainer {
     public void initSubsystems() {
         if (!m_intake.isInitDone()) {
             // CommandScheduler.getInstance().schedule(new IntakeInit(m_intake));
+        }
+        if (!m_climb.isInitDone()) {
+            // CommandScheduler.getInstance().schedule(new ClimberInit(m_climb));
         }
     }
 }

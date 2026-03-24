@@ -1,12 +1,12 @@
 package frc.robot.commands;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climb;
 
-
 public class ManualClimb extends Command {
-    
-    private  final Climb climb;
-    private  double output;
+
+    private final Climb climb;
+    private double output;
 
     public ManualClimb(Climb climb, double output) {
         this.climb = climb;
@@ -15,12 +15,13 @@ public class ManualClimb extends Command {
         addRequirements(climb);
     }
 
-      @Override
-    public void initialize() {}
+    @Override
+    public void initialize() {
+    }
 
     @Override
     public void execute() {
-        climb.setMotorSpeed(output, true);
+        climb.setMotorPercentage(output, true);
     }
 
     @Override
@@ -31,8 +32,7 @@ public class ManualClimb extends Command {
     @Override
     public void end(boolean interrupted) {
         // climb.keepPosition();
-        climb.setMotorSpeed(0, true);
+        climb.setMotorPercentage(0, true);
     }
-    
 
 }

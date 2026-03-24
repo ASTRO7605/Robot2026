@@ -11,6 +11,7 @@ public class IntakeInit extends Command {
     public IntakeInit(Intake intake) {
         this.intake = intake;
         addRequirements(intake);
+        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
     @Override
@@ -26,6 +27,7 @@ public class IntakeInit extends Command {
     @Override
     public void end(boolean interrupted) {
         intake.setManualMotorPercentage(0);
+        // intake.goToPosition(intakePos.Stowed); later when pid works
     }
 
 }

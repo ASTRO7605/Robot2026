@@ -205,23 +205,22 @@ public final class Constants {
         public static final double kp = 0.0;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
-        public static final double maxVelocity = 40;
-        public static final double maxAcceleration = 60;
+        public static final double maxVelocity = 0;
+        public static final double maxAcceleration = 0;
         public static final int kCurrentLimit = 50;
-        public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en inches par tour de moteur
+        public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5;
         public static final double feedforwards = 0; // tune with built climber
         public static final double kPositionThreshold = 0.25;
-        public static final double kLimitSwitchPosition = 0;
 
         // enum pour les positions de climb
         public static enum climbLvl {
             // in inches
-            Stowed(0),
-            Lv1(27),
-            Lv2(45),
-            Lv3(63);
+            // TODO
+            Stowed(10),
+            Hang(15),
+            Extended(20);
 
             public final double position;
 
@@ -230,7 +229,11 @@ public final class Constants {
             }
         }
 
-        public static final double kManualSpeed = 0.1;
+        public static final double kManualPercentage = 0.1;
+        public static final double kInitPercentage = -0.1;
+        public static final double kInitTimeDelaySeconds = 0.1;
+        public static final double kStoppedMotorThreshold = 0.1; // TODO
+        public static final double kInitPosition = 0;
     }
 
     // constantes pour les intakes

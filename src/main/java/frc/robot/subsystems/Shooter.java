@@ -30,6 +30,7 @@ public class Shooter extends SubsystemBase {
 
     private SparkClosedLoopController rightShootController = rightShootMotor.getClosedLoopController();
     private SparkClosedLoopController leftShootController = leftShootMotor.getClosedLoopController();
+    // TODO: cleanup when tuning is done
     private double kp = ShooterConstants.kp;
     private double kd = ShooterConstants.kd;
     private double ki = ShooterConstants.ki;

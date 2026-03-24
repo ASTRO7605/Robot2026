@@ -17,8 +17,6 @@ import frc.robot.Constants;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-
-
 public class Conveyor extends SubsystemBase {
 
     private double kp = ConveyorConstants.kp;
@@ -30,23 +28,28 @@ public class Conveyor extends SubsystemBase {
     private double oldKi = ConveyorConstants.ki;
     private double oldKv = ConveyorConstants.kv;
     // initialisation du moteur et de l'encodeur
-    private SparkMax ConvMotor  = new SparkMax(ConveyorConstants.conveyorMotorId, MotorType.kBrushless);
+    private SparkMax ConvMotor = new SparkMax(ConveyorConstants.conveyorMotorId, MotorType.kBrushless);
 
-    //moteur pour le leftIntake (celui du bas)
-    private SparkMax leftIntakeMotor = new SparkMax(ConveyorConstants.leftIntakeMotorId, MotorType.kBrushless);
+    // moteur pour le leftIntake (celui du bas)
+    private SparkMax intakeRollerMotor = new SparkMax(ConveyorConstants.intakeRollerMotorId, MotorType.kBrushless);
     private RelativeEncoder convEncoder = ConvMotor.getEncoder();
-    private RelativeEncoder intakeWheelEncoder = leftIntakeMotor.getEncoder();
+    private RelativeEncoder intakeRollerEncoder = intakeRollerMotor.getEncoder();
     private SparkMaxConfig conveyorConfig;
-    private SparkClosedLoopController intakeController = leftIntakeMotor.getClosedLoopController();
+    private SparkMaxConfig intakeRollerConfig;
+    private SparkClosedLoopController intakeRollerController = intakeRollerMotor.getClosedLoopController();
     private SparkClosedLoopController convController = ConvMotor.getClosedLoopController();
+
     // constructeur du sous-système
     public Conveyor() {
         // configutation du moteur (le temp d'attente de réonse du moteur)
         ConvMotor.setCANTimeout(Constants.kCANTimeout);
         ConvMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
-        var intakeConfig = new SparkMaxConfig();
-        leftIntakeMotor.setCANTimeout(Constants.kCANTimeout);
-        leftIntakeMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
+
+        intakeRollerMotor.setCANTimeout(Constants.kCANTimeout);
+        intakeRollerMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
+
+        FeedForwardConfig feedForwardConfig = new FeedForwardConfig();
+        feedForwardConfig.kV(ShooterConstants.kv);
 
         conveyorConfig = new SparkMaxConfig();
         conveyorConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
@@ -55,45 +58,35 @@ public class Conveyor extends SubsystemBase {
         conveyorConfig.encoder.positionConversionFactor(ConveyorConstants.fPositionConversion);
         conveyorConfig.encoder.velocityConversionFactor(ConveyorConstants.fVelocityConversion);
 
-        intakeConfig = new SparkMaxConfig();
-        intakeConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
-        intakeConfig.inverted(false);
-        
+        intakeRollerConfig = new SparkMaxConfig();
+        intakeRollerConfig.idleMode(SparkMaxConfig.IdleMode.kBrake);
+        intakeRollerConfig.inverted(false);
+
+        intakeRollerConfig.encoder.positionConversionFactor(ConveyorConstants.fPositionConversion);
+        intakeRollerConfig.encoder.velocityConversionFactor(ConveyorConstants.fVelocityConversion);
+
         conveyorConfig.closedLoop
-
                 .p(ConveyorConstants.kp)
                 .i(ConveyorConstants.ki)
                 .d(ConveyorConstants.kd);
+        conveyorConfig.closedLoop.apply(feedForwardConfig);
 
-        intakeConfig.closedLoop
+        intakeRollerConfig.closedLoop
                 .p(ConveyorConstants.kp)
                 .i(ConveyorConstants.ki)
                 .d(ConveyorConstants.kd);
+        intakeRollerConfig.closedLoop.apply(feedForwardConfig);
 
-                Preferences.initDouble("Conveyor.kP", kp);
-                Preferences.initDouble("Conveyor.kV", kv);
-                Preferences.initDouble("Conveyor.kI", ki);
-                Preferences.initDouble("Conveyor.kD", kd);
-
-
-        if (SmartDashboard.getNumber("Conveyor.kP", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("Conveyor.kP", kp);
-        }
-            if (SmartDashboard.getNumber("Conveyor.kI", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("Conveyor.kI", ki);
-     }
-            if (SmartDashboard.getNumber("Conveyor.kD", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("Conveyor.kD", kd);
-        }
-        if (SmartDashboard.getNumber("Conveyor.kV", -1.0) == -1.0) {
-            // SmartDashboard.putNumber("Conveyor.kV", kv);
-        }
+        Preferences.initDouble("Conveyor.kP", kp);
+        Preferences.initDouble("Conveyor.kI", ki);
+        Preferences.initDouble("Conveyor.kD", kd);
+        Preferences.initDouble("Conveyor.kV", kv);
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber(getSubsystem() + ".ConveyorVelocity", convEncoder.getVelocity());
-        SmartDashboard.putNumber(getSubsystem() + ".IntakeVelocity", intakeWheelEncoder.getVelocity());
+        SmartDashboard.putNumber(getSubsystem() + ".IntakeVelocity", intakeRollerEncoder.getVelocity());
 
         oldKd = kd;
         oldKi = ki;
@@ -104,76 +97,79 @@ public class Conveyor extends SubsystemBase {
         kd = Preferences.getDouble("Conveyor.kD", ConveyorConstants.kd);
         kv = Preferences.getDouble("Conveyor.kV", ConveyorConstants.kv);
 
-        if(oldKd != kd ||oldKi != ki || oldKp !=kp || oldKv != kv){
-SparkMaxConfig newConfig = new SparkMaxConfig();
-    newConfig.closedLoop
-        .p(kp)
-        .i(ki)
-        .d(kd);
-        SparkMaxConfig leftConfig = new SparkMaxConfig();
+        if (oldKd != kd || oldKi != ki || oldKp != kp || oldKv != kv) {
+            intakeRollerConfig.closedLoop
+                    .p(kp)
+                    .i(ki)
+                    .d(kd);
+            conveyorConfig.closedLoop.p(kp)
+                    .i(ki)
+                    .d(kd);
 
-    FeedForwardConfig ff = new FeedForwardConfig();
-    ff.kV(kv);
-    newConfig.closedLoop.apply(ff);
+            FeedForwardConfig ff = new FeedForwardConfig();
+            ff.kV(kv);
+            intakeRollerConfig.closedLoop.apply(ff);
+            conveyorConfig.closedLoop.apply(ff);
 
-        // limitation du courant et de la tension pour protéger le moteur et la batterie
-        conveyorConfig.voltageCompensation(Constants.kVoltageCompensation);
-        conveyorConfig.smartCurrentLimit(ConveyorConstants.kCurrentLimit);
-        newConfig.voltageCompensation(Constants.kVoltageCompensation);
-        newConfig.smartCurrentLimit(ConveyorConstants.kCurrentLimit);
-
-        ConvMotor.configure(conveyorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        leftIntakeMotor.configure(newConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            ConvMotor.configure(conveyorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+            intakeRollerMotor.configure(intakeRollerConfig, ResetMode.kResetSafeParameters,
+                    PersistMode.kPersistParameters);
         }
         SmartDashboard.putNumber("ConveyorVelocity", convEncoder.getVelocity());
         SmartDashboard.putBoolean("ConveyorStopped", isConveyorStopped());
-        SmartDashboard.putNumber("intakeWheelVelocity", intakeWheelEncoder.getVelocity());
+        SmartDashboard.putNumber("intakeWheelVelocity", intakeRollerEncoder.getVelocity());
         SmartDashboard.putBoolean("IntakeStopped", isIntakeWheelStopped());
-        SmartDashboard.putNumber("IntakeOutput", leftIntakeMotor.getAppliedOutput());
-    
-}
+        SmartDashboard.putNumber("IntakeOutput", intakeRollerMotor.getAppliedOutput());
 
-    // fait tourner les roues du intake pour faire entrer les balles *********************************************A FIX
-    public void setConveyorWheelsSpeed(double speed){
-        intakeController.setSetpoint(
-            speed,
-            ControlType.kVelocity,
-            ClosedLoopSlot.kSlot0);
-        convController.setSetpoint(
-           speed,
-            ControlType.kVelocity,
-            ClosedLoopSlot.kSlot0);
-    
     }
 
-    
     // fait tourner les roues du intake pour faire entrer les balles
-    public void conveyorWheelsIn(){
-        ConvMotor.set(ConveyorConstants.setConveyorInSpeed);
-        leftIntakeMotor.set(-ConveyorConstants.kIntakeInSpeed);
+    // *********************************************A FIX
+    public void setConveyorWheelsSpeed(double speed) {
+        intakeRollerController.setSetpoint(
+                speed,
+                ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
+        convController.setSetpoint(
+                speed,
+                ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
+
     }
 
+    // fait tourner les roues du intake pour faire entrer les balles
+    public void conveyorWheelsIn() {
+        setConveyorWheelsSpeed(ConveyorConstants.setConveyorInSpeed);
+    }
 
     // fait tourner les roues du convoyeur pour faire sortir les balles
-    public void conveyorWheelsOut(){
-        ConvMotor.set(-ConveyorConstants.kOutSpeed);
-        leftIntakeMotor.set(ConveyorConstants.kIntakeInSpeed);
+    public void conveyorWheelsOut() {
+        setConveyorWheelsSpeed(ConveyorConstants.setConveyorOutSpeed);
+    }
+
+    public void setConveyorOutputPercentage(double percentage) {
+        intakeRollerController.setSetpoint(
+                percentage,
+                ControlType.kDutyCycle,
+                ClosedLoopSlot.kSlot0);
+        convController.setSetpoint(
+                percentage,
+                ControlType.kDutyCycle,
+                ClosedLoopSlot.kSlot0);
     }
 
     // arrête les roues du convoyeur
-    public void ConveyorWheelOff(){
+    public void ConveyorWheelOff() {
         ConvMotor.stopMotor();
-        leftIntakeMotor.stopMotor();
+        intakeRollerMotor.stopMotor();
     }
 
     public boolean isConveyorStopped() {
         return Math.abs(convEncoder.getVelocity()) < ConveyorConstants.kThresholdMotorStopped;
     }
+
     public boolean isIntakeWheelStopped() {
-        return Math.abs(intakeWheelEncoder.getVelocity()) < ConveyorConstants.kThresholdMotorStopped;
+        return Math.abs(intakeRollerEncoder.getVelocity()) < ConveyorConstants.kThresholdMotorStopped;
     }
 
-    
-    }
-
-
+}

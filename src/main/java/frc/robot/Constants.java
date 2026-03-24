@@ -236,27 +236,28 @@ public final class Constants {
     // constantes pour les intakes
     public static final class IntakeConstants {
         public static final int rightIntakeMotorId = 9;
-        public static final int kCurrentLimit = 70;
+        public static final int kCurrentLimit = 50;
         public static final double kp = 0.0;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
+        public static final double kv = 0.0;
         // (Rotations –> °)
-        public static final double fPositionConversion = 1;
-        // RPM -> Rotations par minutes
+        public static final double fPositionConversion = 810 / 31;
+        // RPM -> ° / s
         public static final double fVelocityConversion = fPositionConversion / 60;
 
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
         public static final double kSoftLimitReverse = -180;
-        public static final double kMaxFF = 0;
-        public static final double kLimitSwitchPosition = 0;
+        public static final double kMaxAf = 0;
+        public static final double kLimitSwitchPosition = 0; // degrees
 
-        public static final double motorSpeed = 0.25;
+        public static final double manualSpeed = 0.25;
         public static final double initSpeed = 0.1;
 
         // enum pour les positions de l'intake
         public static enum intakePos {
-            // in inches
+            // in degrees
             Stowed(0),
             Down(27);
 
@@ -270,11 +271,9 @@ public final class Constants {
 
     // constantes pour le convoyeur
     public static final class ConveyorConstants {
-        public static final int leftIntakeMotorId = 10;
+        public static final int intakeRollerMotorId = 10;
         public static final int conveyorMotorId = 11;
 
-        public static final double maxVelocity = 40;
-        public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
 
         public static final double kp = 0.0;
@@ -283,11 +282,13 @@ public final class Constants {
         public static final double kv = 0.0;
 
         public static final double setConveyorInSpeed = 1000;
-        public static final double kOutSpeed = -0.4;
-        public static final double kIntakeInSpeed = 1;
+        public static final double setConveyorOutSpeed = -1000;
+
+        public static final double manualPercentageIn = 1.0;
+        public static final double manualPercentageOut = -0.5;
 
         // Motor RPM -> Roller RPM
-        public static final double fPositionConversion = 1 / 4;
+        public static final double fPositionConversion = 1.0 / 4.0;
         public static final double fVelocityConversion = fPositionConversion / 60;
 
         public static final double kThresholdMotorStopped = 500;

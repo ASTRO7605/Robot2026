@@ -9,10 +9,12 @@ import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLimitSwitch;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.FeedForwardConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -21,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakePos;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.commands.TrapezoidProfileMovement;
 
 public class Intake extends SubsystemBase {
@@ -36,10 +39,22 @@ public class Intake extends SubsystemBase {
 
     private TrapezoidProfile.Constraints intakeConstraints;
 
+    private double kp = IntakeConstants.kp;
+    private double kd = IntakeConstants.kd;
+    private double ki = IntakeConstants.ki;
+    private double kv = IntakeConstants.kv;
+    private double oldKp = IntakeConstants.kp;
+    private double oldKd = IntakeConstants.kd;
+    private double oldKi = IntakeConstants.ki;
+    private double oldKv = IntakeConstants.kv;
+
     // constructeur du sous-système
     public Intake() {
         IntakeMotor.setCANTimeout(Constants.kCANTimeout);
         IntakeMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
+
+        FeedForwardConfig feedForwardConfig = new FeedForwardConfig();
+        feedForwardConfig.kV(IntakeConstants.kv);
 
         currentConfig = new SparkMaxConfig();
         currentConfig.idleMode(IdleMode.kCoast);
@@ -48,6 +63,7 @@ public class Intake extends SubsystemBase {
                 .p(IntakeConstants.kp)
                 .i(IntakeConstants.ki)
                 .d(IntakeConstants.kd);
+        currentConfig.closedLoop.apply(feedForwardConfig);
 
         currentConfig.voltageCompensation(Constants.kVoltageCompensation);
         currentConfig.smartCurrentLimit(IntakeConstants.kCurrentLimit);
@@ -63,6 +79,11 @@ public class Intake extends SubsystemBase {
                 IntakeConstants.maxAcceleration);
 
         initDone = false;
+
+        Preferences.initDouble("intake.kP", kp);
+        Preferences.initDouble("intake.kI", ki);
+        Preferences.initDouble("intake.kD", kd);
+        Preferences.initDouble("intake.kV", kv);
     }
 
     @Override
@@ -74,10 +95,30 @@ public class Intake extends SubsystemBase {
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
         SmartDashboard.putNumber("intakeAppliedOutput", IntakeMotor.getAppliedOutput());
         SmartDashboard.putNumber("intakeRightCurrent", IntakeMotor.getOutputCurrent());
-        SmartDashboard.putNumber("intake.kP", IntakeConstants.kp);
-        SmartDashboard.putNumber("intake.kI", IntakeConstants.ki);
-        SmartDashboard.putNumber("intake.kD", IntakeConstants.kd);
-        SmartDashboard.putNumber("Intake FeedForward", computeFF());
+        SmartDashboard.putNumber("Intake FeedForward", computeAf());
+
+        oldKd = kd;
+        oldKi = ki;
+        oldKp = kp;
+        oldKv = kv;
+        kp = Preferences.getDouble("intake.kP", IntakeConstants.kp);
+        ki = Preferences.getDouble("intake.kI", IntakeConstants.ki);
+        kd = Preferences.getDouble("intake.kD", IntakeConstants.kd);
+        kv = Preferences.getDouble("intake.kV", IntakeConstants.kv);
+
+        if (oldKd != kd || oldKi != ki || oldKp != kp || oldKv != kv) {
+            currentConfig.closedLoop
+                    .p(kp)
+                    .i(ki)
+                    .d(kd);
+
+            FeedForwardConfig ff = new FeedForwardConfig();
+            ff.kV(kv);
+            currentConfig.closedLoop.apply(ff);
+
+            // Apply config to the motor
+            IntakeMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        }
     }
 
     private void checkInit() {
@@ -97,8 +138,8 @@ public class Intake extends SubsystemBase {
         initDone = true;
     }
 
-    public double computeFF() {
-        return (IntakeConstants.kMaxFF * Math.cos(Math.toRadians(getEncoderPosition())));
+    public double computeAf() {
+        return (IntakeConstants.kMaxAf * Math.cos(Math.toRadians(getEncoderPosition())));
     }
 
     public void resetEncoderPosition() {
@@ -113,6 +154,15 @@ public class Intake extends SubsystemBase {
         return limitSwitch.isPressed();
     }
 
+    /**
+     * Send intake to position without using trapezoidal profile
+     * 
+     * @param pos
+     */
+    public void directToPosition(double pos) {
+        intakeController.setSetpoint(pos, ControlType.kPosition, ClosedLoopSlot.kSlot0, computeAf());
+    }
+
     public Command goToPosition(intakePos pos) {
         return goToPosition(pos.position);
     }
@@ -125,7 +175,7 @@ public class Intake extends SubsystemBase {
         var command = new TrapezoidProfileMovement(
                 IntakeMotor,
                 target, intakeConstraints,
-                this::computeFF,
+                this::computeAf,
                 ClosedLoopSlot.kSlot0);
 
         command.addRequirements(this);
@@ -141,7 +191,7 @@ public class Intake extends SubsystemBase {
                 getEncoderPosition(),
                 ControlType.kPosition,
                 ClosedLoopSlot.kSlot0,
-                computeFF());
+                computeAf());
     }
 
     public void freezeAllMotorFunctions() {
@@ -160,11 +210,12 @@ public class Intake extends SubsystemBase {
                 ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0);
     }
-    public void setManualMotorSpeed(double speed) {
+
+    public void setMotorSpeed(double speed) {
         intakeController.setSetpoint(
                 speed,
                 ControlType.kVelocity,
-                ClosedLoopSlot.kSlot0);
+                ClosedLoopSlot.kSlot0, computeAf());
     }
 
     public void safeStop() {

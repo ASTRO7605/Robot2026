@@ -46,6 +46,9 @@ public class RobotContainer {
             DriveConstants.kXboxControllerID);
     private final CommandJoystick m_turnStick = new CommandJoystick(DriveConstants.kTurnStickID);
     private final CommandJoystick m_throttleStick = new CommandJoystick(DriveConstants.kThrottleStickID);
+    private int ShooterButtonCounter = 0;
+
+    
     private double driverMulti = 1;
 
     private final SendableChooser<Command> m_chooser;
@@ -70,6 +73,8 @@ public class RobotContainer {
         m_tourelle = new Tourelle();
         m_intake = new Intake();
         m_conveyor = new Conveyor();
+
+
 
         if (m_base != null) {
             m_base.setDefaultCommand(getBaseDefaultCommand());
@@ -169,16 +174,27 @@ public class RobotContainer {
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
         /* Copilot Buttons */
 
-        // Pour tests *******
-    
-        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> m_climb.directToPosition(10)));
-        m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_climb.directToPosition(0)));
-        m_driverController.leftBumper().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new ClimberInit(m_climb))));
-        
+        // m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
+        // new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
+        // m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
+        // new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
+
         // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
         // m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
         // m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
         // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
+
+         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+            if (ShooterButtonCounter == 0) {
+                m_shooter.setMotorSpeed(3200);
+                ShooterButtonCounter += 1;
+         }else if (ShooterButtonCounter ==1){
+                m_shooter.setMotorSpeed(0);   
+                ShooterButtonCounter -= 1;      
+         }
+        }));
+         
+        
 
         // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(3200)));
         // m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooter.stopMotors()));
@@ -206,25 +222,6 @@ public class RobotContainer {
         //         () -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
         // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
 
-
-        //Préparation au commande copilot********
-
-       // m_driverController.a().onTrue(Rentrer l'intake)
-
-    //     m_driverController.b().and(!isPreparedToClimb)
-    //    .onTrue(prepare to climb);
-
-    //    m_driverController.b().multiPress(2, 30)
-    //    .and(isPreparedToClimb))
-    //    .onTrue(climb);
-
-    // m_driverController.y().onTrue(sortir Intake);
-    // m_driverController.y().debounce(0.5).onTrue(partir convoyeur);
-
-    // m_driverController.leftStick().debounce(0.2)
-    // .onTrue(Changement cible);
-
-        
     }
 
     /**
@@ -257,6 +254,4 @@ public class RobotContainer {
             // CommandScheduler.getInstance().schedule(new ClimberInit(m_climb));
         }
     }
-
-      
 }

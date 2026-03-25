@@ -219,8 +219,8 @@ public final class Constants {
             // in inches
             // TODO
             Stowed(10),
-            Hang(15),
-            Extended(20);
+            Hang(22),
+            Extended(30);
 
             public final double position;
 

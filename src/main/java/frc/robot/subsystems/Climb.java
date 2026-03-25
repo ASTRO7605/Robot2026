@@ -87,7 +87,6 @@ public class Climb extends SubsystemBase {
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
         SmartDashboard.putNumber("climbAppliedOutput", climbMotor.getAppliedOutput());
         SmartDashboard.putNumber("climbRightCurrent", climbMotor.getOutputCurrent());
-
         oldKd = kd;
         oldKi = ki;
         oldKp = kp;

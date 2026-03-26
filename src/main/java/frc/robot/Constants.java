@@ -202,7 +202,7 @@ public final class Constants {
     // constantes pour le climb
     public static final class ClimbConstants {
         public static final int climbMotorId = 16;
-        public static final double kp = 0.0;
+        public static final double kp = 0.77;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         public static final double maxVelocity = 0;
@@ -211,16 +211,16 @@ public final class Constants {
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5;
-        public static final double feedforwards = 0; // tune with built climber
+        public static final double feedforwards = 0.8; // tune with built climber
         public static final double kPositionThreshold = 0.25;
 
         // enum pour les positions de climb
         public static enum climbLvl {
             // in inches
             // TODO
-            Stowed(10),
-            Hang(22),
-            Extended(30);
+            Stowed(0),// hauteur de la boite de l'intake 
+            Hang(5.5), //~22 inch / position estimé, à testé TODO************
+            Extended(8.5);// ~30 inch
 
             public final double position;
 

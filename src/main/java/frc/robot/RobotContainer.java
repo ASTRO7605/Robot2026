@@ -16,10 +16,12 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.ConveyorConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.ClimbConstants.climbLvl;
 import frc.robot.commands.ClimberInit;
 import frc.robot.commands.IntakeInit;
 import frc.robot.subsystems.Base;
@@ -175,6 +177,12 @@ public class RobotContainer {
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
         /* Copilot Buttons */
 
+            
+        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> m_climb.directToPosition(climbLvl.Extended.position)));
+        m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_climb.setMotorPercentage(0.2, false)));
+        m_driverController.leftBumper().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new ClimberInit(m_climb))));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_climb.safeStop()));
+        m_driverController.x().onTrue(new InstantCommand(() -> m_climb.setMotorPercentage(-0.2, false)));
         // m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
         // new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
         // m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
@@ -185,15 +193,15 @@ public class RobotContainer {
         // m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsOut()));
         // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
 
-         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-            if (ShooterButtonCounter == 0) {
-                m_shooter.setMotorSpeed(3200);
-                ShooterButtonCounter += 1;
-         }else if (ShooterButtonCounter ==1){
-                m_shooter.setMotorSpeed(0);   
-                ShooterButtonCounter -= 1;      
-         }
-        }));
+        //  m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+        //     if (ShooterButtonCounter == 0) {
+        //         m_shooter.setMotorSpeed(3200);
+        //         ShooterButtonCounter += 1;
+        //  }else if (ShooterButtonCounter ==1){
+        //         m_shooter.setMotorSpeed(0);   
+        //         ShooterButtonCounter -= 1;      
+        //  }
+        // }));
          
         
 
@@ -216,7 +224,7 @@ public class RobotContainer {
         //         .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(-IntakeConstants.manualSpeed)));
         // m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
 
-        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
+        // m_driverController.rightTrigger().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
         // m_driverController.leftBumper().onTrue(
         //         new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
         // m_driverController.leftBumper().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));

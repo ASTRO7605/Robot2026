@@ -30,6 +30,7 @@ import frc.robot.subsystems.Tourelle;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.Constants.IntakeConstants;
+import frc.robot.commands.IntakeOut;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -215,6 +216,7 @@ public class RobotContainer {
         //         .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(-IntakeConstants.manualSpeed)));
         // m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
 
+        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
         // m_driverController.leftBumper().onTrue(
         //         new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
         // m_driverController.leftBumper().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));

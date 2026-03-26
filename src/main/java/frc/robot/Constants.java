@@ -258,8 +258,13 @@ public final class Constants {
         public static final double manualSpeed = 0.25;
         public static final double initSpeed = 0.1;
 
+        public double downPositionThreshold = 50; // degrees
+        public static final double kPositionThreshold = 0.25; // degrees
+
+         
+
         // enum pour les positions de l'intake
-        public static enum intakePos {
+        public static enum intakePos{
             // in degrees
             Stowed(0),
             Down(27);

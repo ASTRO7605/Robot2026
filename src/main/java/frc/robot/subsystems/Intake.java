@@ -48,6 +48,10 @@ public class Intake extends SubsystemBase {
     private double oldKi = IntakeConstants.ki;
     private double oldKv = IntakeConstants.kv;
 
+    public boolean isDown() {
+        return getEncoderPosition() > IntakeConstants.kPositionThreshold;
+    }
+
     // constructeur du sous-système
     public Intake() {
         IntakeMotor.setCANTimeout(Constants.kCANTimeout);

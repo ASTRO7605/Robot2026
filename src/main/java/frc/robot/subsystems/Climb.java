@@ -50,7 +50,7 @@ public class Climb extends SubsystemBase {
 
         currentConfig = new SparkMaxConfig();
         currentConfig.idleMode(IdleMode.kBrake);
-        currentConfig.inverted(false);
+        currentConfig.inverted(true);
         // configuration du pid
         currentConfig.closedLoop
                 .p(ClimbConstants.kp)

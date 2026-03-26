@@ -32,7 +32,7 @@ public class ClimberInit extends Command {
 
     @Override
     public boolean isFinished() {
-        return timer.get() > ClimbConstants.kInitTimeDelaySeconds  || climb.isMotorStopped();
+        return timer.get() > ClimbConstants.kInitTimeDelaySeconds && climb.isMotorStopped();
     }
 
     @Override

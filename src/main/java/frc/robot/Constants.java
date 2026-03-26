@@ -205,13 +205,13 @@ public final class Constants {
         public static final double kp = 0.77;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
-        public static final double maxVelocity = 0;
-        public static final double maxAcceleration = 0;
+        public static final double maxVelocity = 10;
+        public static final double maxAcceleration = 15;
         public static final int kCurrentLimit = 50;
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5;
-        public static final double feedforwards = 0.8; // tune with built climber
+        public static final double feedforwards = 1; // tune with built climber
         public static final double kPositionThreshold = 0.25;
 
         // enum pour les positions de climb

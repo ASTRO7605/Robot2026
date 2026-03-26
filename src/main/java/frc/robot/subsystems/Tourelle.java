@@ -13,12 +13,14 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.TrapezoidProfileMovement;
 import frc.robot.utils.ShotCalculator;
@@ -36,6 +38,13 @@ public class Tourelle extends SubsystemBase {
     private boolean lastSwitchState = false;
 
     private TrapezoidProfile.Constraints turretConstraints;
+
+    private double kp = ClimbConstants.kp;
+    private double kd = ClimbConstants.kd;
+    private double ki = ClimbConstants.ki;
+    private double oldKp = ClimbConstants.kp;
+    private double oldKd = ClimbConstants.kd;
+    private double oldKi = ClimbConstants.ki;
 
     // constructeur du sous-système
     public Tourelle() {
@@ -67,6 +76,10 @@ public class Tourelle extends SubsystemBase {
         currentConfig.softLimit.forwardSoftLimit(TurretConstants.kSoftLimitForward).forwardSoftLimitEnabled(true);
 
         turretMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+        Preferences.initDouble("climb.kP", kp);
+        Preferences.initDouble("climb.kI", ki);
+        Preferences.initDouble("climb.kD", kd);
     }
 
     @Override
@@ -76,6 +89,23 @@ public class Tourelle extends SubsystemBase {
         SmartDashboard.putNumber(getSubsystem() + ".position", turretEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", turretEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
+
+        oldKd = kd;
+        oldKi = ki;
+        oldKp = kp;
+        kp = Preferences.getDouble("tourelle.kP", TurretConstants.kp);
+        ki = Preferences.getDouble("tourelle.kI", TurretConstants.ki);
+        kd = Preferences.getDouble("tourelle.kD", TurretConstants.kd);
+
+        if (oldKd != kd || oldKi != ki || oldKp != kp) {
+            currentConfig.closedLoop
+                    .p(kp)
+                    .i(ki)
+                    .d(kd);
+
+            // Apply config to the motor
+            turretMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        }
     }
 
     /**

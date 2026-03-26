@@ -178,7 +178,7 @@ public class RobotContainer {
         /* Copilot Buttons */
 
             
-        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> m_climb.directToPosition(climbLvl.Extended.position)));
+        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Extended, ClimbConstants.maxVelocity, ClimbConstants.maxAcceleration)));
         m_driverController.leftTrigger().onTrue(new InstantCommand(() -> m_climb.setMotorPercentage(0.2, false)));
         m_driverController.leftBumper().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new ClimberInit(m_climb))));
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_climb.safeStop()));

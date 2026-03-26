@@ -57,9 +57,11 @@ public class TrapezoidProfileMovement extends Command {
     }
 
     private void setState(TrapezoidProfile.State current) {
-        controller.setSetpoint(current.position, ControlType.kPosition,
-                closedLoopSlot,
-                feedForward.get());
+        controller.setSetpoint(
+            current.position, 
+            ControlType.kPosition,
+            closedLoopSlot,
+            0);
     }
 
     @Override

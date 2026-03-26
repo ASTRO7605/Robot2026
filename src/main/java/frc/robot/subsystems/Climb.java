@@ -134,13 +134,10 @@ public class Climb extends SubsystemBase {
      * @param lvl             la position désirée du Climb
      * @param maxSpeed        la vitesse maximale du mouvement
      * @param maxAcceleration l'accélération maximale du mouvement
-     * @param closedLoopSlot  le slot de contrôle à utiliser pour le PID
-     *                        (généralement kSlot0)
      * @return la commande qui exécute ce mouvement
      */
-    public Command goToPosition(climbLvl lvl, double maxSpeed, double maxAcceleration,
-            ClosedLoopSlot closedLoopSlot) {
-        return goToPosition(lvl.position, maxSpeed, maxAcceleration, closedLoopSlot);
+    public Command goToPosition(climbLvl lvl, double maxSpeed, double maxAcceleration) {
+        return goToPosition(lvl.position, maxSpeed, maxAcceleration, ClosedLoopSlot.kSlot0);
     }
 
     /**

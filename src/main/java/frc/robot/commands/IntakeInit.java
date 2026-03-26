@@ -11,7 +11,7 @@ public class IntakeInit extends Command {
     public IntakeInit(Intake intake) {
         this.intake = intake;
         addRequirements(intake);
-        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
+        //withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
     @Override

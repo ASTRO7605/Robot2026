@@ -216,7 +216,11 @@ public class RobotContainer {
         //         .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(-IntakeConstants.manualSpeed)));
         // m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
 
-        m_driverController.rightTrigger().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
+        m_driverController.y().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
+        m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+        m_driverController.a().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeInit(m_intake))));
+        m_driverController.a().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+
         // m_driverController.leftBumper().onTrue(
         //         new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
         // m_driverController.leftBumper().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));

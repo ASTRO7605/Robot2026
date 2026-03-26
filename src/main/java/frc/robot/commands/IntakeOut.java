@@ -16,13 +16,13 @@ public class IntakeOut extends Command {
    
     @Override
     public void execute(){
-        intake.setManualMotorPercentage(0.1);
+        intake.directToPosition(3);
     }
 
 
     @Override
     public boolean isFinished() {
-        return true;
+        return false;
     }
 
     @Override

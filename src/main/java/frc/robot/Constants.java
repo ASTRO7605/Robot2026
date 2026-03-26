@@ -42,8 +42,8 @@ public final class Constants {
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         // with bumpers
-        public static final double kRobotWidth = Units.inchesToMeters(35.69);
-        public static final double kRobotLength = Units.inchesToMeters(32.63);
+        public static final double kRobotWidth = Units.inchesToMeters(32.63);
+        public static final double kRobotLength = Units.inchesToMeters(35.69);
 
         public static final Transform2d kTurretRobotPosition = new Transform2d(
                 new Translation2d(Units.inchesToMeters(7.25), 0),

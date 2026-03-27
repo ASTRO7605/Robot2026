@@ -12,6 +12,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -176,21 +177,21 @@ public class Tourelle extends SubsystemBase {
         return command;
     }
 
-    public void requestTurretAngle(double angle) {
+    public void requestTurretAngle(Rotation2d angle) {
         // if request is in normal range, go to request
         // if request is out of range but close to extremes, go to extremes
         // if request is out of range and too far from extremes, go to middle
-        var target = angle;
-        if (angle > TurretConstants.kMaxSetpoint) {
-            if (angle <= (TurretConstants.kMaxSetpoint + TurretConstants.kExtremesThreshold)) {
+        double target = angle.getDegrees();
+        if (angle.getDegrees() > TurretConstants.kMaxSetpoint) {
+            if (angle.getDegrees() <= (TurretConstants.kMaxSetpoint + TurretConstants.kExtremesThreshold)) {
                 // over but close to max -> max
                 target = TurretConstants.kMaxSetpoint;
             } else {
                 // too far over -> middle
                 target = 0;
             }
-        } else if (angle < TurretConstants.kMinSetpoint) {
-            if (angle >= (TurretConstants.kMinSetpoint - TurretConstants.kExtremesThreshold)) {
+        } else if (angle.getDegrees() < TurretConstants.kMinSetpoint) {
+            if (angle.getDegrees() >= (TurretConstants.kMinSetpoint - TurretConstants.kExtremesThreshold)) {
                 // under but close to min -> min
                 target = TurretConstants.kMinSetpoint;
             } else {

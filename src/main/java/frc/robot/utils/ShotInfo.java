@@ -1,4 +1,6 @@
 package frc.robot.utils;
 
-public record ShotInfo(double turretAngleDeg, double wheelSpeeds) {
+import edu.wpi.first.math.geometry.Rotation2d;
+
+public record ShotInfo(Rotation2d turretAngle, double wheelSpeeds) {
 }

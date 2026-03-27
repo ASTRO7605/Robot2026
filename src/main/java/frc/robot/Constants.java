@@ -315,6 +315,8 @@ public final class Constants {
         // RPM -> rotations par minute
         public static final double fPositionConversion = 1;
         public static final double fVelocityConversion = fPositionConversion / 60;
+
+        public static final double kPredictPoseLatency = 0.1; // seconds
     }
 
     // constantes pour la base du shooter

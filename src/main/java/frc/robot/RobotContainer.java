@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ClimbConstants;
@@ -183,9 +184,6 @@ public class RobotContainer {
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_climb.safeStop()));
         m_driverController.x().onTrue(new InstantCommand(() -> m_climb.setMotorPercentage(-0.2, false)));
 
-        m_driverController.a().onTrue(new InstantCommand(() -> m_intake.testMotorVoltage()));
-        m_driverController.a().onFalse(new InstantCommand(() -> m_intake.safeStop()));
-
         // m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
         // new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
         // m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
@@ -224,16 +222,13 @@ public class RobotContainer {
         // m_driverController.a().onFalse(new InstantCommand(() ->
         // m_tourelle.safeStop()));
 
-        // m_driverController.a()
-        // .onTrue(new InstantCommand(() ->
-        // m_intake.setManualMotorPercentage(IntakeConstants.manualSpeed)));
-        // m_driverController.a().onFalse(new InstantCommand(() ->
-        // m_intake.safeStop()));
-        // m_driverController.y()
-        // .onTrue(new InstantCommand(() ->
-        // m_intake.setManualMotorPercentage(-IntakeConstants.manualSpeed)));
-        // m_driverController.y().onFalse(new InstantCommand(() ->
-        // m_intake.safeStop()));
+        m_driverController.a()
+                .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(IntakeConstants.manualSpeed, true)));
+        m_driverController.a().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+        m_driverController.y()
+                .onTrue(new InstantCommand(
+                        () -> m_intake.setManualMotorPercentage(-IntakeConstants.manualSpeed, true)));
+        m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
 
         // m_driverController.y()
         // .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
@@ -284,7 +279,8 @@ public class RobotContainer {
 
     public void initSubsystems() {
         if (!m_intake.isInitDone()) {
-            // CommandScheduler.getInstance().schedule(new IntakeInit(m_intake));
+            CommandScheduler.getInstance()
+                    .schedule(new IntakeInit(m_intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
         }
         if (!m_climb.isInitDone()) {
             // CommandScheduler.getInstance().schedule(new ClimberInit(m_climb));

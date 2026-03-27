@@ -149,7 +149,8 @@ public class Intake extends SubsystemBase {
     }
 
     public double computeAf() {
-        return (IntakeConstants.kMaxAf * Math.cos(Math.toRadians(getEncoderPosition())));
+        return (IntakeConstants.kMaxAf
+                * Math.cos(Math.toRadians(getEncoderPosition()) + Math.toRadians(IntakeConstants.kAfOffset)));
     }
 
     public void resetEncoderPosition() {
@@ -214,11 +215,13 @@ public class Intake extends SubsystemBase {
     }
 
     // fait rouler le moteur à partir du controleur (sans kAf)
-    public void setManualMotorPercentage(double percentage) {
+    public void setManualMotorPercentage(double percentage, boolean useKaf) {
+        double feedforward = useKaf ? computeAf() : 0;
         intakeController.setSetpoint(
                 percentage,
                 ControlType.kDutyCycle,
-                ClosedLoopSlot.kSlot0);
+                ClosedLoopSlot.kSlot0,
+                feedforward);
     }
 
     public void setMotorSpeed(double speed) {
@@ -229,6 +232,6 @@ public class Intake extends SubsystemBase {
     }
 
     public void safeStop() {
-        setManualMotorPercentage(0);
+        setManualMotorPercentage(0, false);
     }
 }

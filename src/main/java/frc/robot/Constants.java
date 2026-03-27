@@ -252,11 +252,12 @@ public final class Constants {
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
         public static final double kSoftLimitReverse = -180;
-        public static final double kMaxAf = 0;
+        public static final double kMaxAf = 0.65;
         public static final double kLimitSwitchPosition = 0; // degrees
+        public static final double kAfOffset = 140; // degrés
 
-        public static final double manualSpeed = 0.25;
-        public static final double initSpeed = 0.1;
+        public static final double manualSpeed = 0.1;
+        public static final double initSpeed = 0.08;
 
         public double downPositionThreshold = 50; // degrees
         public static final double kPositionThreshold = 0.25; // degrees
@@ -265,7 +266,7 @@ public final class Constants {
         public static enum intakePos {
             // in degrees
             Stowed(0),
-            Down(27);
+            Down(-140);
 
             public final double position;
 

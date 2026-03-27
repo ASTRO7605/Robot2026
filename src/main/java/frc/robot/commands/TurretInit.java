@@ -6,17 +6,19 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ClimbConstants;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.Constants.ClimbConstants.climbLvl;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Tourelle;
 
-public class ClimberInit extends Command {
-    private final Climb climb;
+public class TurretInit extends Command {
+    private final Tourelle tourelle;
     private final Timer timer;
 
-    public ClimberInit(Climb climb) {
-        this.climb = climb;
+    public TurretInit(Tourelle tourelle) {
+        this.tourelle = tourelle;
         this.timer = new Timer();
-        addRequirements(climb);
+        addRequirements(tourelle);
         withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
@@ -27,23 +29,20 @@ public class ClimberInit extends Command {
 
     @Override
     public void execute() {
-        climb.setMotorPercentage(ClimbConstants.kInitPercentage, true);
+        tourelle.setMotorPercentage(TurretConstants.kInitPercentage);
     }
 
     @Override
     public boolean isFinished() {
-        return timer.get() > ClimbConstants.kInitTimeDelaySeconds && climb.isMotorStopped();
+        return tourelle.isInitDone();
     }
 
     @Override
     public void end(boolean interrupted) {
         if (!interrupted) {
-            climb.setInitDone();
-            climb.resetEncoderPosition();
-            climb.setMotorPercentage(0, true);
-            // climb.goToPosition(climbLvl.Stowed, ClimbConstants.maxVelocity,
-            // ClimbConstants.maxVelocity,
-            // ClosedLoopSlot.kSlot0); later when pid works
+            tourelle.setInitAsDone();
+            tourelle.resetEncoderPosition();
+            tourelle.setMotorPercentage(0);
         }
     }
 

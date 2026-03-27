@@ -32,7 +32,7 @@ public class Tourelle extends SubsystemBase {
     private RelativeEncoder turretEncoder = turretMotor.getEncoder();
 
     private SparkClosedLoopController turretController = turretMotor.getClosedLoopController();
-    private SparkLimitSwitch limitSwitch = turretMotor.getReverseLimitSwitch();
+    private SparkLimitSwitch limitSwitch = turretMotor.getForwardLimitSwitch();
     private SparkMaxConfig currentConfig;
 
     private boolean initDone = false;
@@ -40,12 +40,12 @@ public class Tourelle extends SubsystemBase {
 
     private TrapezoidProfile.Constraints turretConstraints;
 
-    private double kp = ClimbConstants.kp;
-    private double kd = ClimbConstants.kd;
-    private double ki = ClimbConstants.ki;
-    private double oldKp = ClimbConstants.kp;
-    private double oldKd = ClimbConstants.kd;
-    private double oldKi = ClimbConstants.ki;
+    private double kp = TurretConstants.kp;
+    private double kd = TurretConstants.kd;
+    private double ki = TurretConstants.ki;
+    private double oldKp = TurretConstants.kp;
+    private double oldKd = TurretConstants.kd;
+    private double oldKi = TurretConstants.ki;
 
     // constructeur du sous-système
     public Tourelle() {
@@ -74,13 +74,13 @@ public class Tourelle extends SubsystemBase {
         currentConfig.encoder.velocityConversionFactor(TurretConstants.fVelocityConversion);
 
         // limitation du mouvement du moteur pour éviter les dommages mécaniques
-        currentConfig.softLimit.forwardSoftLimit(TurretConstants.kSoftLimitForward).forwardSoftLimitEnabled(true);
+        currentConfig.softLimit.reverseSoftLimit(TurretConstants.kSoftLimitReverse).forwardSoftLimitEnabled(true);
 
         turretMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        Preferences.initDouble("climb.kP", kp);
-        Preferences.initDouble("climb.kI", ki);
-        Preferences.initDouble("climb.kD", kd);
+        Preferences.initDouble("tourelle.kP", kp);
+        Preferences.initDouble("tourelle.kI", ki);
+        Preferences.initDouble("tourelle.kD", kd);
     }
 
     @Override
@@ -137,7 +137,7 @@ public class Tourelle extends SubsystemBase {
         return turretEncoder.getPosition();
     }
 
-    public void setMotorSpeed(double speed) {
+    public void setMotorPercentage(double speed) {
         turretController.setSetpoint(speed, ControlType.kDutyCycle, ClosedLoopSlot.kSlot0, 0);
     }
 
@@ -202,11 +202,11 @@ public class Tourelle extends SubsystemBase {
         goToPosition(target);
     }
 
-    private void goToPosition(double position) {
+    public void goToPosition(double position) {
         turretController.setSetpoint(position, ControlType.kPosition);
     }
 
     public void safeStop() {
-        setMotorSpeed(0);
+        setMotorPercentage(0);
     }
 }

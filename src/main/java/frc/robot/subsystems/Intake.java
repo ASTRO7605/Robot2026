@@ -88,6 +88,8 @@ public class Intake extends SubsystemBase {
         Preferences.initDouble("intake.kI", ki);
         Preferences.initDouble("intake.kD", kd);
         Preferences.initDouble("intake.kV", kv);
+
+        SmartDashboard.putNumber("Intake manual voltage", 0);
     }
 
     @Override
@@ -123,6 +125,10 @@ public class Intake extends SubsystemBase {
             // Apply config to the motor
             IntakeMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         }
+    }
+
+    public void testMotorVoltage() {
+        setManualMotorVoltage(SmartDashboard.getNumber("Intake manual voltage", 0));
     }
 
     private void checkInit() {

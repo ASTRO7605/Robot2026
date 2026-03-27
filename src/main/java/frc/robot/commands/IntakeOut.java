@@ -11,14 +11,12 @@ public class IntakeOut extends Command {
     public IntakeOut(Intake intake) {
         this.intake = intake;
         addRequirements(intake);
-        //withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
-    }
-   
-    @Override
-    public void execute(){
-        intake.directToPosition(3);
     }
 
+    @Override
+    public void execute() {
+        intake.directToPosition(3);
+    }
 
     @Override
     public boolean isFinished() {
@@ -26,10 +24,8 @@ public class IntakeOut extends Command {
     }
 
     @Override
-    public void end(boolean interrupted){
+    public void end(boolean interrupted) {
         intake.keepPosition();
     }
-
-
 
 }

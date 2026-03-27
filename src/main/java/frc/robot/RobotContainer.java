@@ -223,12 +223,9 @@ public class RobotContainer {
         // m_tourelle.safeStop()));
 
         m_driverController.a()
-                .onTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(IntakeConstants.manualSpeed, true)));
-        m_driverController.a().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+                .onTrue(new InstantCommand(() -> m_intake.goToPosition(-140)));
         m_driverController.y()
-                .onTrue(new InstantCommand(
-                        () -> m_intake.setManualMotorPercentage(-IntakeConstants.manualSpeed, true)));
-        m_driverController.y().onFalse(new InstantCommand(() -> m_intake.safeStop()));
+                .onTrue(new InstantCommand(() -> m_intake.goToPosition(-5)));
 
         // m_driverController.y()
         // .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new

@@ -240,17 +240,17 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int rightIntakeMotorId = 9;
         public static final int kCurrentLimit = 50;
-        public static final double kp = 0.0;
+        public static final double kp = 0.016;
         public static final double ki = 0.0;
-        public static final double kd = 0.0;
+        public static final double kd = 0.04;
         public static final double kv = 0.0;
         // (Rotations –> °)
         public static final double fPositionConversion = 810 / 31;
         // RPM -> ° / s
         public static final double fVelocityConversion = fPositionConversion / 60;
 
-        public static final double maxVelocity = 0;
-        public static final double maxAcceleration = 0;
+        public static final double maxVelocity = 240;
+        public static final double maxAcceleration = 700;
         public static final double kSoftLimitReverse = -180;
         public static final double kMaxAf = 0.65;
         public static final double kLimitSwitchPosition = 0; // degrees

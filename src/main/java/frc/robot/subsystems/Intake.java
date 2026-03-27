@@ -61,7 +61,7 @@ public class Intake extends SubsystemBase {
         feedForwardConfig.kV(IntakeConstants.kv);
 
         currentConfig = new SparkMaxConfig();
-        currentConfig.idleMode(IdleMode.kCoast);
+        currentConfig.idleMode(IdleMode.kBrake);
         currentConfig.inverted(true);
         currentConfig.closedLoop
                 .p(IntakeConstants.kp)
@@ -83,7 +83,9 @@ public class Intake extends SubsystemBase {
                 IntakeConstants.maxAcceleration);
 
         initDone = false;
-
+        
+        Preferences.initDouble("intake velocity", IntakeConstants.maxVelocity);
+        Preferences.initDouble("intake acceleration", IntakeConstants.maxAcceleration);
         Preferences.initDouble("intake.kP", kp);
         Preferences.initDouble("intake.kI", ki);
         Preferences.initDouble("intake.kD", kd);
@@ -178,10 +180,16 @@ public class Intake extends SubsystemBase {
         return goToPosition(pos.position);
     }
 
-    private Command goToPosition(double target) {
+        
+    public Command goToPosition(double target) {
+         
         if (!initDone) {
             return new InstantCommand(() -> System.out.println("Not initialized. Ignoring command"));
         }
+
+        intakeConstraints = new TrapezoidProfile.Constraints(
+                Preferences.getDouble("intake velocity", IntakeConstants.maxVelocity),
+                Preferences.getDouble("intake acceleration", IntakeConstants.maxAcceleration));
 
         var command = new TrapezoidProfileMovement(
                 IntakeMotor,

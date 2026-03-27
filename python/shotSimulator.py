@@ -58,6 +58,7 @@ class InterpolatingDoubleTreeMap:
 
 FRAMERATE = 60
 HUB_DIAMETER = 1.067
+BALL_DIAMETER = 0.15
 FIELD_WIDTH = 8.069
 ROBOT_LENGTH, ROBOT_WIDTH = (0.907, 0.823)
 MAX_ROBOT_XY_SPEED, MAX_ROBOT_ANGULAR_SPEED = 4, 540
@@ -206,17 +207,31 @@ class Velocity:
             math.atan2(self.vy, self.vx if self.vx != 0 else 0.00001) *
             (180 / math.pi))
 
+    def copy(self) -> Self:
+        return Velocity(self.vx, self.vy, self.vtheta)  # type: ignore
+
+    def plus(self, other: Self) -> Self:
+        return Velocity(self.vx + other.vx, self.vy + other.vy,
+                        self.vtheta + other.vtheta)  # type: ignore
+
+    def unaryMinus(self) -> Self:
+        return Velocity(-self.vx, -self.vy, -self.vtheta)  # type: ignore
+
+    def minus(self, other) -> Self:
+        return self.plus(other.unaryMinus())
+
 
 class CanvasObject:
 
     def __init__(self,
                  master: pygame.Surface,
                  object: pygame.Surface,
-                 coordinates=Position(0, 0, Angle(0))):
+                 coordinates=Position(0, 0, Angle(0)),
+                 velocity=Velocity(0, 0, 0)):
         self._master = master
-        self._velocity = Velocity(0, 0, 0)
         self._object = object
         self._coords = coordinates
+        self._velocity = velocity.copy()
 
     @property
     def velocity(self):
@@ -249,10 +264,46 @@ class Ball(CanvasObject):
 
     def __init__(self,
                  master: pygame.Surface,
-                 object: pygame.Surface,
+                 turretVelocity: Velocity,
+                 shotVelocity: Velocity,
+                 tof: float,
                  coordinates=Position(0, 0, Angle(0))):
+        self._turretVelocity = turretVelocity
+        self._shotVelocity = shotVelocity
+        self._tof = tof
+
         self._active = True
-        super().__init__(master, object, coordinates)
+
+        object = pygame.Surface(
+            (BALL_DIAMETER * METER_TO_PIXEL, BALL_DIAMETER * METER_TO_PIXEL),
+            pygame.SRCALPHA)
+        object.fill(pygame.Color(0, 0, 0, 0))
+        pygame.draw.circle(object, pygame.Color("#e9de0f"),
+                           (object.get_width() // 2, object.get_height() // 2),
+                           BALL_DIAMETER * METER_TO_PIXEL // 2)
+        super().__init__(master, object, coordinates,
+                         turretVelocity.plus(shotVelocity))
+
+    def update(self, dt: float):
+        super().update(dt)
+        self._tof -= dt
+        if self._tof <= 0 and self._active:
+            self._active = False
+            self._velocity = Velocity(0, 0, 0)
+            self._object.fill((0, 0, 0, 0))
+            pygame.draw.circle(self._object, pygame.Color("#e9de0f"),
+                               (self._object.get_width() // 2,
+                                self._object.get_height() // 2), 3)
+
+        if self._active:
+            drawVelocityArrow(self._master, self.position,
+                              self._turretVelocity, pygame.Color("#c823dd"), 3)
+            drawVelocityArrow(self._master, self.position, self._shotVelocity,
+                              pygame.Color("#e9de0f"), 3)
+            drawVelocityArrow(self._master,
+                              self.position,
+                              self.velocity,
+                              lineWidth=3)
 
 
 def drawArrow(surface: pygame.Surface,
@@ -346,6 +397,19 @@ def getTurretVelocity() -> Velocity:
     return turretVelocity
 
 
+def drawVelocityArrow(screen: pygame.Surface,
+                      startPose: Position,
+                      velocity: Velocity,
+                      color: pygame.Color = pygame.Color(0, 0, 0),
+                      lineWidth: int = 5,
+                      headLength: int = 15,
+                      headWidth: int = 15):
+    endArrow = Position(startPose.x + velocity.vx * SPEED_TO_PIXEL,
+                        startPose.y + velocity.vy * SPEED_TO_PIXEL, Angle(0))
+    drawArrow(screen, startPose, endArrow, color, lineWidth, headLength,
+              headWidth)
+
+
 def drawTurret(screen: pygame.Surface):
     turretPose = robot.position.plus(
         TURRET_IN_ROBOT_POS.rotateBy(robot.position.angle))
@@ -353,10 +417,7 @@ def drawTurret(screen: pygame.Surface):
                        turretPose.tupleXYPixels(), 8)
     turretVelocity = getTurretVelocity()
 
-    endArrow = Position(turretPose.x + turretVelocity.vx * SPEED_TO_PIXEL,
-                        turretPose.y + turretVelocity.vy * SPEED_TO_PIXEL,
-                        Angle(0))
-    drawArrow(screen, turretPose, endArrow)
+    drawVelocityArrow(screen, turretPose, turretVelocity)
 
 
 pygame.init()
@@ -387,6 +448,7 @@ pygame.draw.rect(
 robot = CanvasObject(screen, robotSurface, Position(0.5, 0.5, Angle(0)))
 
 running = True
+(shootOnMoveCorrection) = True
 clock = pygame.time.Clock()
 balls: List[Ball] = []
 tofFromDistance = InterpolatingDoubleTreeMap()
@@ -405,13 +467,30 @@ fillTables(4.55, 1.12)
 fillTables(5.68, 1.16)
 
 
-def spawnBall():
+def spawnBall(screen: pygame.Surface):
     turretVelocity = getTurretVelocity()
     turretPose = robot.position.plus(
         TURRET_IN_ROBOT_POS.rotateBy(robot.position.angle))
 
     turretToTarget = hub.position.minus(turretPose)
     targetDistance = turretToTarget.getXYNorm()
+
+    staticSpeed = targetDistance / tofFromDistance.get(targetDistance)
+    staticShot = Velocity(
+        staticSpeed * math.cos(turretToTarget.getXYAngle().angleRad),
+        staticSpeed * math.sin(turretToTarget.getXYAngle().angleRad), 0)
+    # fix to use d / t instead of calculated speed
+    estimatedDistance = targetDistance
+    estimatedTof = tofFromDistance.get(estimatedDistance)
+
+    if not shootOnMoveCorrection:
+        shotSpeedVector = staticShot
+    else:
+        shotSpeedVector = staticShot.minus(turretVelocity)
+
+    balls.append(
+        Ball(screen, turretVelocity, shotSpeedVector, estimatedTof,
+             turretPose))
 
 
 while running:
@@ -424,7 +503,7 @@ while running:
             running = False
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                spawnBall()
+                spawnBall(screen)
 
     keys = pygame.key.get_pressed()
     updateRobotSpeeds(keys, dt)

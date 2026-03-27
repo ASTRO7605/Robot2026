@@ -220,6 +220,10 @@ class Velocity:
     def minus(self, other) -> Self:
         return self.plus(other.unaryMinus())
 
+    def setXYNorm(self, newNorm: float):
+        self.vx = newNorm * math.cos(self.getXYAngle().angleRad)
+        self.vy = newNorm * math.sin(self.getXYAngle().angleRad)
+
 
 class CanvasObject:
 
@@ -448,7 +452,8 @@ pygame.draw.rect(
 robot = CanvasObject(screen, robotSurface, Position(0.5, 0.5, Angle(0)))
 
 running = True
-(shootOnMoveCorrection) = True
+shootOnMoveCorrection = True
+distanceCorrection = True
 clock = pygame.time.Clock()
 balls: List[Ball] = []
 tofFromDistance = InterpolatingDoubleTreeMap()
@@ -479,17 +484,27 @@ def spawnBall(screen: pygame.Surface):
     staticShot = Velocity(
         staticSpeed * math.cos(turretToTarget.getXYAngle().angleRad),
         staticSpeed * math.sin(turretToTarget.getXYAngle().angleRad), 0)
-    # fix to use d / t instead of calculated speed
-    estimatedDistance = targetDistance
-    estimatedTof = tofFromDistance.get(estimatedDistance)
 
     if not shootOnMoveCorrection:
-        shotSpeedVector = staticShot
+        shotVelocityVector = staticShot
     else:
-        shotSpeedVector = staticShot.minus(turretVelocity)
+        shotVelocityVector = staticShot.minus(turretVelocity)
+
+    estimatedDistance = targetDistance
+    estimatedTof = tofFromDistance.get(estimatedDistance)
+    resultingSpeed = estimatedDistance / estimatedTof
+
+    if distanceCorrection:
+        estimatedTof = tofFromDistance.get(estimatedDistance)
+        resultingSpeed = estimatedDistance / estimatedTof
+
+        ratio = shotVelocityVector.getXYNorm() / resultingSpeed
+        estimatedDistance *= ratio
+
+    shotVelocityVector.setXYNorm(estimatedDistance / estimatedTof)
 
     balls.append(
-        Ball(screen, turretVelocity, shotSpeedVector, estimatedTof,
+        Ball(screen, turretVelocity, shotVelocityVector, estimatedTof,
              turretPose))
 
 

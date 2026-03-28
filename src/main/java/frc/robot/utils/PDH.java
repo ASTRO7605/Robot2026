@@ -9,7 +9,7 @@ public class PDH {
     
     public PDH() {
         m_PDH = new PowerDistribution(1, ModuleType.kRev);
-        m_PDH.setSwitchableChannel(false);
+        m_PDH.setSwitchableChannel(true);
     }
 
     public double getChannelCurrent(int channel) {

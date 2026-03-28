@@ -242,7 +242,7 @@ public final class Constants {
         public static final int kCurrentLimit = 50;
         public static final double kp = 0.016;
         public static final double ki = 0.0;
-        public static final double kd = 0.04;
+        public static final double kd = 0.055;
         public static final double kv = 0.0;
         // (Rotations –> °)
         public static final double fPositionConversion = 810 / 31;

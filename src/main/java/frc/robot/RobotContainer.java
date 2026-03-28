@@ -280,10 +280,14 @@ public class RobotContainer {
                     .schedule(new IntakeInit(m_intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
         }
         if (!m_climb.isInitDone()) {
-            // CommandScheduler.getInstance().schedule(new ClimberInit(m_climb));
+            // CommandScheduler.getInstance()
+            // .schedule(new
+            // ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
         }
         if (!m_tourelle.isInitDone()) {
-            // CommandScheduler.getInstance().schedule(new TurretInit(m_tourelle));
+            // CommandScheduler.getInstance()
+            // .schedule(new
+            // TurretInit(m_tourelle).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
         }
     }
 }

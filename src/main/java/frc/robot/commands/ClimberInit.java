@@ -17,7 +17,6 @@ public class ClimberInit extends Command {
         this.climb = climb;
         this.timer = new Timer();
         addRequirements(climb);
-        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
     @Override

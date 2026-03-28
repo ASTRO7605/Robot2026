@@ -19,7 +19,6 @@ public class TurretInit extends Command {
         this.tourelle = tourelle;
         this.timer = new Timer();
         addRequirements(tourelle);
-        withInterruptBehavior(InterruptionBehavior.kCancelIncoming);
     }
 
     @Override

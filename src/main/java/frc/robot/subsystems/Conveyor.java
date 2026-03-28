@@ -40,8 +40,6 @@ public class Conveyor extends SubsystemBase {
     private SparkClosedLoopController intakeRollerController = intakeRollerMotor.getClosedLoopController();
     private SparkClosedLoopController convController = ConvMotor.getClosedLoopController();
 
-    private PDH m_pdh = PDH.getInstance();
-
     // constructeur du sous-système
     public Conveyor() {
         // configutation du moteur (le temp d'attente de réonse du moteur)
@@ -124,7 +122,7 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("IntakeStopped", isIntakeWheelStopped());
         SmartDashboard.putNumber("IntakeOutput", intakeRollerMotor.getAppliedOutput());
         SmartDashboard.putNumber("Intake Roller Motor Current", intakeRollerMotor.getOutputCurrent());
-        SmartDashboard.putNumber("Intake Roller PDH Current", m_pdh.getChannelCurrent(ConveyorConstants.intakeRollerPdhChannel));
+        // SmartDashboard.putNumber("Intake Roller PDH Current", PDH.getInstance().getChannelCurrent(ConveyorConstants.intakeRollerPdhChannel));
 
 
     }
@@ -155,7 +153,7 @@ public class Conveyor extends SubsystemBase {
 
     public void setConveyorOutputPercentage(double percentage) {
         intakeRollerController.setSetpoint(
-                percentage,
+                -percentage,
 
                 ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0);

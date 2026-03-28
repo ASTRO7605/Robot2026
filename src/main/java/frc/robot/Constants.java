@@ -77,7 +77,7 @@ public final class Constants {
         public static final double angleCurrentThresholdTime = 0.1;
         public static final boolean angleEnableCurrentLimit = true;
 
-        public static final int driveCurrentLimit = 70;
+        public static final int driveCurrentLimit = 40;
         public static final int driveCurrentThreshold = 60;
         public static final double driveCurrentThresholdTime = 0.1;
         public static final boolean driveEnableCurrentLimit = true;
@@ -251,21 +251,20 @@ public final class Constants {
 
         public static final double maxVelocity = 240;
         public static final double maxAcceleration = 700;
-        public static final double kSoftLimitReverse = -180;
+        public static final double kSoftLimitReverse = -142;
         public static final double kMaxAf = 0.65;
         public static final double kLimitSwitchPosition = 0; // degrees
         public static final double kAfOffset = 140; // degrés
 
         public static final double manualSpeed = 0.1;
         public static final double initSpeed = 0.08;
-
-        public double downPositionThreshold = 50; // degrees
+        
         public static final double kPositionThreshold = 0.25; // degrees
 
         // enum pour les positions de l'intake
         public static enum intakePos {
             // in degrees
-            Stowed(0),
+            Stowed(-5),
             Down(-140);
 
             public final double position;
@@ -290,7 +289,7 @@ public final class Constants {
         public static final double kd = 0.0;
         public static final double kv = 0.0;
 
-        public static final double setConveyorInSpeed = 1000;
+        public static final double setConveyorInSpeed = 3000;
         public static final double setConveyorOutSpeed = -1000;
 
         public static final double manualPercentageIn = 1.0;

@@ -345,8 +345,7 @@ public final class Constants {
 
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
-
-        public static final double kLimitSwitchPosition = 0;
+        public static final double kLimitSwitchPosition = 65.6;
         public static final double kSoftLimitReverse = -90; // TODO
         public static final double kInitPercentage = 0.1;
 

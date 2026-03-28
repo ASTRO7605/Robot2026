@@ -1,13 +1,15 @@
 package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 public class PDH {
     private static PDH instance;
     private PowerDistribution m_PDH;
     
     public PDH() {
-        m_PDH = new PowerDistribution();
+        m_PDH = new PowerDistribution(1, ModuleType.kRev);
+        m_PDH.setSwitchableChannel(false);
     }
 
     public double getChannelCurrent(int channel) {

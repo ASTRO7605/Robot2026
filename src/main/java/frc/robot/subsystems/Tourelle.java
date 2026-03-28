@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -52,7 +53,7 @@ public class Tourelle extends SubsystemBase {
         // configutation du moteur (le temp d'attente de réponse du moteur)
         turretMotor.setCANTimeout(Constants.kCANTimeout);
         turretMotor.setPeriodicFrameTimeout(Constants.kPeriodicFrameTimeout);
-
+        
         currentConfig = new SparkMaxConfig();
         currentConfig.idleMode(IdleMode.kBrake);
         currentConfig.inverted(true);
@@ -75,6 +76,7 @@ public class Tourelle extends SubsystemBase {
 
         // limitation du mouvement du moteur pour éviter les dommages mécaniques
         currentConfig.softLimit.reverseSoftLimit(TurretConstants.kSoftLimitReverse).forwardSoftLimitEnabled(true);
+        currentConfig.limitSwitch.forwardLimitSwitchType(Type.kNormallyClosed);
 
         turretMotor.configure(currentConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -86,7 +88,7 @@ public class Tourelle extends SubsystemBase {
     @Override
     public void periodic() {
         checkInit();
-        SmartDashboard.putBoolean(getSubsystem() + ".limitSwitch", limitSwitch.isPressed());
+        SmartDashboard.putBoolean(getSubsystem() + ".limitSwitch", isLimitSwitchActivated());
         SmartDashboard.putNumber(getSubsystem() + ".position", turretEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", turretEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
@@ -117,7 +119,7 @@ public class Tourelle extends SubsystemBase {
      * reset la position de l'encodeur.
      */
     private void checkInit() {
-        final var switchState = limitSwitch.isPressed();
+        final var switchState = isLimitSwitchActivated();
         if (switchState == true && lastSwitchState == false) {
             initDone = true;
             resetEncoderPosition();
@@ -142,7 +144,7 @@ public class Tourelle extends SubsystemBase {
     }
 
     public boolean isLimitSwitchActivated() {
-        return limitSwitch.isPressed();
+        return !limitSwitch.isPressed();
     }
 
     public void resetEncoderPosition() {

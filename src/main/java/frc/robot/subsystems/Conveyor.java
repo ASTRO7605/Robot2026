@@ -13,6 +13,7 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ConveyorConstants;
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.utils.PDH;
 import frc.robot.Constants;
 import edu.wpi.first.wpilibj.Preferences;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +39,8 @@ public class Conveyor extends SubsystemBase {
     private SparkMaxConfig intakeRollerConfig;
     private SparkClosedLoopController intakeRollerController = intakeRollerMotor.getClosedLoopController();
     private SparkClosedLoopController convController = ConvMotor.getClosedLoopController();
+
+    private PDH m_pdh = PDH.getInstance();
 
     // constructeur du sous-système
     public Conveyor() {
@@ -120,6 +123,9 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putNumber("intakeWheelVelocity", intakeRollerEncoder.getVelocity());
         SmartDashboard.putBoolean("IntakeStopped", isIntakeWheelStopped());
         SmartDashboard.putNumber("IntakeOutput", intakeRollerMotor.getAppliedOutput());
+        SmartDashboard.putNumber("Intake Roller Motor Current", intakeRollerMotor.getOutputCurrent());
+        SmartDashboard.putNumber("Intake Roller PDH Current", m_pdh.getChannelCurrent(ConveyorConstants.intakeRollerPdhChannel));
+
 
     }
 
@@ -150,6 +156,7 @@ public class Conveyor extends SubsystemBase {
     public void setConveyorOutputPercentage(double percentage) {
         intakeRollerController.setSetpoint(
                 percentage,
+
                 ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0);
         convController.setSetpoint(

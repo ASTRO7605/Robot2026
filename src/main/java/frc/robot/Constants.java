@@ -281,7 +281,9 @@ public final class Constants {
         public static final int intakeRollerMotorId = 10;
         public static final int conveyorMotorId = 11;
 
-        public static final int kCurrentLimit = 50;
+        public static final int intakeRollerPdhChannel = 17;
+
+        public static final int kCurrentLimit = 65;
 
         public static final double kp = 0.0;
         public static final double ki = 0.0;

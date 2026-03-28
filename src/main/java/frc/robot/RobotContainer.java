@@ -258,6 +258,26 @@ public class RobotContainer {
          // m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
          // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
          // m_conveyor.ConveyorWheelOff()));
+        
+         //Préparation au commande copilot********
+
+        m_driverController.a().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
+         IntakeIn(m_intake))));
+
+    //     m_driverController.b().and(!isPreparedToClimb)
+    //    .onTrue(prepare to climb);
+
+    //    m_driverController.b().multiPress(2, 30)
+    //    .and(isPreparedToClimb))
+    //    .onTrue(climb);
+
+     m_driverController.y().onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
+         IntakeOut(m_intake))));
+     m_driverController.y().debounce(0.5).onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
+         ConveyorIn(m_conveyor))));
+
+    // m_driverController.leftStick().debounce(0.2)
+    // .onTrue(Changement cible);
 
     }
 

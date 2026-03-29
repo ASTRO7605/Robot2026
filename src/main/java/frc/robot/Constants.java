@@ -409,9 +409,12 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final String limelight4Name = "limelight-4";
-        public static final String limelight3Name = "limelight-3";
-        public static final String limelight2Name = "limelight-2";
+
+        public static final String limelight4Name = "limelight-quatre";
+        public static final String limelight3Name = "limelight-trois"; // IP: 10.76.5.13:5801
+        public static final String limelight2Name = "limelight-deux";
+
+
 
         public static final Transform3d robotTolimelight4Transform = new Transform3d();
         public static final Transform3d robotTolimelight3Transform = new Transform3d();

@@ -37,8 +37,6 @@ public class ShotCalculator {
 
         // put distance / tof couples
         addDataToTofTables(1.0, 1.0);
-
-        SmartDashboard.putData("Turret to Target", turretToTargetField);
     }
 
     public static ShotCalculator getInstance() {
@@ -54,9 +52,6 @@ public class ShotCalculator {
     }
 
     public void updateShotInfo(ChassisSpeeds robotSpeeds, Pose2d robotPose, Translation2d target) {
-        turretToTargetField.getObject("Target").setPose(target.getX(), target.getY(),
-                new Rotation2d());
-
         // offset the pose by a bit to account for system latency
         Pose2d projectedRobotPose = robotPose.exp(robotSpeeds.toTwist2d(ShooterConstants.kPredictPoseLatency));
         SmartDashboard.putString("projected robot pose", projectedRobotPose.toString());

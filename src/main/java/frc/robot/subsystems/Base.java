@@ -52,7 +52,7 @@ public class Base extends SubsystemBase {
     private final Field2d m_robotField;
 
     private final Map<String, LimelightVisionModule> m_visionModules = new HashMap<>();
-    private boolean useVision = false;
+    private boolean useVision = true;
 
     private Translation2d m_currentTarget;
 
@@ -124,12 +124,12 @@ public class Base extends SubsystemBase {
 
         // initialize vision modules
         if (useVision) {
-            m_visionModules.put(VisionConstants.limelight4Name, new LimelightVisionModule(
-                    VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform, this::getHeading));
+            // m_visionModules.put(VisionConstants.limelight4Name, new LimelightVisionModule(
+            //         VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform, this::getHeading));
             m_visionModules.put(VisionConstants.limelight3Name, new LimelightVisionModule(
                     VisionConstants.limelight3Name, VisionConstants.robotTolimelight3Transform, this::getHeading));
-            m_visionModules.put(VisionConstants.limelight2Name, new LimelightVisionModule(
-                    VisionConstants.limelight2Name, VisionConstants.robotTolimelight2Transform, this::getHeading));
+            // m_visionModules.put(VisionConstants.limelight2Name, new LimelightVisionModule(
+            //         VisionConstants.limelight2Name, VisionConstants.robotTolimelight2Transform, this::getHeading));
         }
 
         shotCalculator = ShotCalculator.getInstance();
@@ -297,7 +297,10 @@ public class Base extends SubsystemBase {
 
     public void setLimelight4IMUMode(VisionConstants.LimelightIMUModes mode) {
         if (useVision) {
-            m_visionModules.get(VisionConstants.limelight4Name).setIMUMode(mode);
+           var limelight4 = m_visionModules.get(VisionConstants.limelight4Name);
+           if (limelight4 != null) {
+            limelight4.setIMUMode(mode);
+           }
         }
     }
 
@@ -348,6 +351,9 @@ public class Base extends SubsystemBase {
         if (m_allianceColor == Alliance.Red) {
             m_currentTarget = FieldConstants.flipPosColor(m_currentTarget);
         }
+
+             m_robotField.getObject("Target").setPose(m_currentTarget.getX(), m_currentTarget.getY(),
+                new Rotation2d());
     }
 
     @Override

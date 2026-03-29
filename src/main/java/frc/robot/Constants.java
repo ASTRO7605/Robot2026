@@ -264,7 +264,7 @@ public final class Constants {
         // enum pour les positions de l'intake
         public static enum intakePos {
             // in degrees
-            Stowed(-5),
+            Stowed(-0.1),
             Down(-140);
 
             public final double position;

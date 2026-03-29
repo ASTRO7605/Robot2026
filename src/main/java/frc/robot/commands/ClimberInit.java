@@ -41,8 +41,7 @@ public class ClimberInit extends Command {
             climb.resetEncoderPosition();
             climb.setMotorPercentage(0, true);
             // climb.goToPosition(climbLvl.Stowed, ClimbConstants.maxVelocity,
-            // ClimbConstants.maxVelocity,
-            // ClosedLoopSlot.kSlot0); later when pid works
+            // ClimbConstants.maxAcceleration); 
         }
     }
 

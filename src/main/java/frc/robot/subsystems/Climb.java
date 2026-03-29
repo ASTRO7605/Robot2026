@@ -42,6 +42,7 @@ public class Climb extends SubsystemBase {
     private double oldKp = ClimbConstants.kp;
     private double oldKd = ClimbConstants.kd;
     private double oldKi = ClimbConstants.ki;
+    private  boolean isPreparedToClimb = false;
 
     public Climb() {
         // configutation du moteur (le temp d'attente de réponse du moteur)
@@ -211,10 +212,22 @@ public class Climb extends SubsystemBase {
     }
 
     public void safeStop() {
-        setMotorPercentage(0, false);
+        setMotorPercentage(0, true);
     }
 
     public boolean isMotorStopped() {
         return Math.abs(climbEncoder.getVelocity()) <= ClimbConstants.kStoppedMotorThreshold;
+    }
+
+    public void isPrepareToClimb(){
+        isPreparedToClimb = true;
+    }
+
+    public void notPrepareToClimb(){
+        isPreparedToClimb = true;
+    }
+
+    public boolean getPrepareClimb(){
+        return isPreparedToClimb;
     }
 }

@@ -1,21 +1,21 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakePos;
 import frc.robot.subsystems.Intake;
 
-public class IntakeOut extends Command {
+
+public class IntakeIn extends Command {
     private final Intake intake;
 
-    public IntakeOut(Intake intake) {
+    public IntakeIn(Intake intake) {
         this.intake = intake;
         addRequirements(intake);
     }
 
     @Override
     public void execute() {
-        intake.goToPosition(intakePos.Down);
+        intake.goToPosition(intakePos.Stowed);
     }
 
     @Override
@@ -27,5 +27,4 @@ public class IntakeOut extends Command {
     public void end(boolean interrupted) {
         intake.keepPosition();
     }
-
 }

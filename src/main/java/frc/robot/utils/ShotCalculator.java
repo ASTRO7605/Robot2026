@@ -33,10 +33,10 @@ public class ShotCalculator {
     private ShotCalculator() {
         turretToTargetField = new Field2d();
         // put distance / speed couples
-        RPMFromDistance.put(0.0, 0.0);
+        RPMFromDistance.put(1.0, 3000.0);
 
         // put distance / tof couples
-        addDataToTofTables(0, 0);
+        addDataToTofTables(1.0, 1.0);
 
         SmartDashboard.putData("Turret to Target", turretToTargetField);
     }
@@ -59,6 +59,7 @@ public class ShotCalculator {
 
         // offset the pose by a bit to account for system latency
         Pose2d projectedRobotPose = robotPose.exp(robotSpeeds.toTwist2d(ShooterConstants.kPredictPoseLatency));
+        SmartDashboard.putString("projected robot pose", projectedRobotPose.toString());
         Pose2d projectedTurretPose = projectedRobotPose.transformBy(DriveConstants.kTurretRobotPosition);
 
         // METHOD 1: vector subtraction to simulate a static shot from where we are
@@ -101,7 +102,6 @@ public class ShotCalculator {
         }
 
         double wheelSpeeds = RPMFromDistance.get(estimatedDistance);
-
         // turret angle
         Rotation2d turretAngle = shotVector.getAngle().minus(projectedRobotPose.getRotation());
         SmartDashboard.putNumber("turretToTargetAngle", turretAngle.getDegrees());

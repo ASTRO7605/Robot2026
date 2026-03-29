@@ -357,8 +357,8 @@ public class Base extends SubsystemBase {
 
         updateShotTarget();
 
-        // shotCalculator.updateShotInfo(getRobotRelativeSpeeds(), getPose(),
-        // m_currentTarget);
+        shotCalculator.updateShotInfo(getRobotRelativeSpeeds(), getPose(),
+                m_currentTarget);
 
         // update pose estimator with gyro and swerve
         m_poseEstimator.update(getGyroYaw(), getModulePositions());

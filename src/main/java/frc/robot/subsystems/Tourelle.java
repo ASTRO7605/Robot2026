@@ -208,6 +208,10 @@ public class Tourelle extends SubsystemBase {
         goToPosition(target);
     }
 
+    public void FollowTarget(double targetPosition) {
+        turretController.setSetpoint(targetPosition, ControlType.kPosition, ClosedLoopSlot.kSlot0, 0);
+    }
+
     public void goToPosition(double position) {
         turretController.setSetpoint(position, ControlType.kPosition);
     }

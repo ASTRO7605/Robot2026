@@ -205,20 +205,20 @@ public final class Constants {
         public static final double kp = 0.77;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
-        public static final double maxVelocity = 10;
-        public static final double maxAcceleration = 15;
+        public static final double maxVelocity = 25;
+        public static final double maxAcceleration = 50;
         public static final int kCurrentLimit = 50;
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5; // TODO
-        public static final double feedforwards = 1; // tune with built climber
+        public static final double feedforwards = 0; // tune with built climber
         public static final double kPositionThreshold = 0.25;
 
         // enum pour les positions de climb
         public static enum climbLvl {
             // in inches
             // TODO
-            Stowed(-2.9), // hauteur de la boite de l'intake
+            Stowed(3.5), // hauteur de la boite de l'intake
             Hang(8.9), // ~22 inch / position estimé, à testé TODO************
             Extended(10.9);// ~30 inch
 
@@ -240,9 +240,9 @@ public final class Constants {
     public static final class IntakeConstants {
         public static final int rightIntakeMotorId = 9;
         public static final int kCurrentLimit = 50;
-        public static final double kp = 0.016;
+        public static final double kp = 0.015;
         public static final double ki = 0.0;
-        public static final double kd = 0.055;
+        public static final double kd = 0.04;
         public static final double kv = 0.0;
         // (Rotations –> °)
         public static final double fPositionConversion = 810 / 31;
@@ -335,9 +335,9 @@ public final class Constants {
     // constantes pour les tourelles
     public static final class TurretConstants {
         public static final int turretMotorId = 15;
-        public static final double kp = 0.0;
+        public static final double kp = 0.06;
         public static final double ki = 0.0;
-        public static final double kd = 0.0;
+        public static final double kd = 0.1;
         public static final int kCurrentLimit = 50;
         // (Rotations –> °)
         public static final double fPositionConversion = 9;
@@ -346,8 +346,8 @@ public final class Constants {
 
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
-        public static final double kLimitSwitchPosition = 65.6;
-        public static final double kSoftLimitReverse = -90; // TODO
+        public static final double kLimitSwitchPosition = 66.85; // degrees
+        public static final double kSoftLimitReverse = -66; // TODO
         public static final double kInitPercentage = 0.1;
 
         public static final double kMaxSetpoint = 85;

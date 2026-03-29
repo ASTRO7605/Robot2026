@@ -41,7 +41,7 @@ public class TurretInit extends Command {
         if (!interrupted) {
             tourelle.setInitAsDone();
             tourelle.resetEncoderPosition();
-            tourelle.setMotorPercentage(0);
+            tourelle.goToPosition(0);
         }
     }
 

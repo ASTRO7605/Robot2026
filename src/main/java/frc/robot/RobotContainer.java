@@ -38,6 +38,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.IntakeOut;
+import frc.robot.commands.ManualClimb;
 import frc.robot.commands.PrepareClimb;
 import frc.robot.commands.TurretInit;
 
@@ -181,10 +182,11 @@ public class RobotContainer {
 
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
         /* Copilot Buttons */
-        // m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
-        // new ManualClimb(m_climb, ClimbConstants.kManualSpeed));
-        // m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
-        // new ManualClimb(m_climb, -ClimbConstants.kManualSpeed));
+
+        m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
+        new ManualClimb(m_climb, ClimbConstants.kManualPercentage));
+        m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
+        new ManualClimb(m_climb, -ClimbConstants.kManualPercentage));
 
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
         m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
@@ -193,25 +195,25 @@ public class RobotContainer {
         // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
         // m_shooterBase.ShooterBaseWheelOff()));
 
-        // m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-        // if (ShooterButtonCounter == 0) {
-        // m_shooter.setMotorSpeed(3200);
-        // ShooterButtonCounter += 1;
-        // }else if (ShooterButtonCounter ==1){
-        // m_shooter.setMotorSpeed(0);
-        // ShooterButtonCounter -= 1;
-        // }
-        // }));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+        if (ShooterButtonCounter == 0) {
+        m_shooter.setMotorSpeed(3200);
+        ShooterButtonCounter += 1;
+        }else if (ShooterButtonCounter ==1){
+        m_shooter.setMotorSpeed(0);
+        ShooterButtonCounter -= 1;
+        }
+        }));
 
-        m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(3000)));
-        m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooter.stopMotors()));
+        // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(3000)));
+        // m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooter.stopMotors()));
 
-        // m_driverController.rightTrigger().onTrue(new InstantCommand(() ->
-        // m_tourelle.setMotorPercentage(0.05)));
-        // m_driverController.rightTrigger().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-        // m_driverController.povLeft().onTrue(new InstantCommand(() ->jkfef
+        // m_driverController.povRight().onTrue(new InstantCommand(() ->
         // m_tourelle.setMotorPercentage(-0.05)));
+        // m_driverController.povRight().onFalse(new InstantCommand(() ->
+        // m_tourelle.safeStop()));
+        // m_driverController.povLeft().onTrue(new InstantCommand(() ->
+        // m_tourelle.setMotorPercentage(0.05)));
         // m_driverController.povLeft().onFalse(new InstantCommand(() ->
         // m_tourelle.safeStop()));
 
@@ -239,12 +241,12 @@ public class RobotContainer {
         // m_intake.safeStop()));
         // m_driverController.a().onTrue(new IntakeInit(m_intake));
 
-        m_driverController.leftBumper().onTrue(
-                new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
-        m_driverController.leftBumper().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
-        m_driverController.leftTrigger().onTrue(new InstantCommand(
-                () -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
-        m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+        // m_driverController.leftBumper().onTrue(
+        //         new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
+        // m_driverController.leftBumper().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+        // m_driverController.leftTrigger().onTrue(new InstantCommand(
+        //         () -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
+        // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
 
         // Intake Commands
         m_driverController.a()
@@ -252,12 +254,17 @@ public class RobotContainer {
         m_driverController.y()
                 .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
 
-        // Climb Commands
-        m_driverController.b().and(() -> !m_climb.getPrepareClimb())
-                .onTrue(new PrepareClimb(m_climb));
 
-        m_driverController.b().multiPress(2, 0.3)
-                .and(() -> m_climb.getPrepareClimb()).onTrue(new ClimbBar(m_climb));
+        m_driverController.b()
+                .onTrue(new InstantCommand(() -> m_tourelle.goToPosition(-60)));
+        m_driverController.x()
+                .onTrue(new InstantCommand(() -> m_tourelle.goToPosition(60)));
+        // // Climb Commands
+        // m_driverController.b().and(() -> !m_climb.getPrepareClimb())
+        //         .onTrue(new PrepareClimb(m_climb));
+
+        // m_driverController.b().multiPress(2, 0.3)
+        //         .and(() -> m_climb.getPrepareClimb()).onTrue(new ClimbBar(m_climb));
 
         // m_driverController.y().debounce(0.5).onTrue(new InstantCommand(() ->
         // CommandScheduler.getInstance().schedule(new
@@ -302,7 +309,7 @@ public class RobotContainer {
                     .schedule(new IntakeInit(m_intake).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
         }
         if (!m_climb.isInitDone()) {
-            // CommandScheduler.getInstance().schedule(new ClimberInit(m_climb));
+            CommandScheduler.getInstance().schedule(new ClimberInit(m_climb));
         }
         if (!m_tourelle.isInitDone()) {
             CommandScheduler.getInstance().schedule(new TurretInit(m_tourelle));

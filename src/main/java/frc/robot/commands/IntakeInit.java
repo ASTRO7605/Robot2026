@@ -25,8 +25,7 @@ public class IntakeInit extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.safeStop();
-        // intake.goToPosition(intakePos.Stowed); later when pid works
+        intake.goToPosition(intakePos.Stowed); //later when pid works
     }
 
 }

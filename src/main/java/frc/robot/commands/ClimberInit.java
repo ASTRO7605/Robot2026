@@ -39,9 +39,8 @@ public class ClimberInit extends Command {
         if (!interrupted) {
             climb.setInitDone();
             climb.resetEncoderPosition();
-            climb.setMotorPercentage(0, true);
-            // climb.goToPosition(climbLvl.Stowed, ClimbConstants.maxVelocity,
-            // ClimbConstants.maxAcceleration); 
+            climb.goToPosition(climbLvl.Stowed, ClimbConstants.maxVelocity,
+            ClimbConstants.maxAcceleration); 
         }
     }
 

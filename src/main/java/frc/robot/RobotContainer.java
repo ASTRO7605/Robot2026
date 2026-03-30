@@ -261,9 +261,12 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
 
         m_driverController.b()
-                .onTrue(new InstantCommand(() -> m_tourelle.goToPosition(-60)));
+                .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Stowed)));
         m_driverController.x()
-                .onTrue(new InstantCommand(() -> m_tourelle.goToPosition(60)));
+                .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Extended)));
+        m_driverController.rightTrigger().onTrue(
+            new InstantCommand(() -> m_climb.goToPosition(climbLvl.Hang)));
+
         // // Climb Commands
         // m_driverController.b().and(() -> !m_climb.getPrepareClimb())
         // .onTrue(new PrepareClimb(m_climb));

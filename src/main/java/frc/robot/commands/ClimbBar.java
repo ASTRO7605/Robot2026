@@ -15,7 +15,7 @@ public class ClimbBar extends Command {
 
     @Override
     public void execute() {
-        climb.goToPosition(climbLvl.Hang,ClimbConstants.maxVelocity, ClimbConstants.maxAcceleration);
+        climb.goToPosition(climbLvl.Hang);
     }
 
     @Override

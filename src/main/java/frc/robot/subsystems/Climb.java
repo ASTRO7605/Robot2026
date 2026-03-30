@@ -132,13 +132,11 @@ public class Climb extends SubsystemBase {
 
     /**
      * 
-     * @param lvl             la position désirée du Climb
-     * @param maxSpeed        la vitesse maximale du mouvement
-     * @param maxAcceleration l'accélération maximale du mouvement
+     * @param lvl             la position désirée du Climb (Stowed, Extended, Hang)
      * @return la commande qui exécute ce mouvement
      */
-    public Command goToPosition(climbLvl lvl, double maxSpeed, double maxAcceleration) {
-        return goToPosition(lvl.position, maxSpeed, maxAcceleration, ClosedLoopSlot.kSlot0);
+    public Command goToPosition(climbLvl lvl) {
+        return goToPosition(lvl.position, ClimbConstants.maxVelocity, ClimbConstants.maxAcceleration, ClosedLoopSlot.kSlot0);
     }
 
     /**

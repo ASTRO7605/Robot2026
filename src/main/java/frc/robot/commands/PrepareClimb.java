@@ -15,7 +15,7 @@ public class PrepareClimb extends Command {
 
     @Override
     public void execute() {
-        climb.goToPosition(climbLvl.Extended,ClimbConstants.maxVelocity, ClimbConstants.maxAcceleration);
+        climb.goToPosition(climbLvl.Extended);
     }
 
     @Override

@@ -209,7 +209,7 @@ public final class Constants {
         public static final double kd = 0.0;
         public static final double maxVelocity = 25;
         public static final double maxAcceleration = 50;
-        public static final int kCurrentLimit = 50;
+        public static final int kCurrentLimit = 70;
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5; // TODO
@@ -220,9 +220,9 @@ public final class Constants {
         public static enum climbLvl {
             // in inches
             // TODO
-            Stowed(3.5), // hauteur de la boite de l'intake
-            Hang(8.9), // ~22 inch / position estimé, à testé TODO************
-            Extended(10.9);// ~30 inch
+            Stowed(2.8), // hauteur de la boite de l'intake
+            Hang(1.9), // ~22 inch / position estimé, à testé TODO************
+            Extended(12.9);// ~30 inch
 
             public final double position;
 

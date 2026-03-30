@@ -105,8 +105,8 @@ public class RobotContainer {
             // double dir_x = m_driverController.getLeftX();
             // double dir_y = m_driverController.getLeftY();
 
-            double dir_x = m_throttleStick.getX();
-            double dir_y = m_throttleStick.getY();
+            double dir_x = -m_throttleStick.getX();
+            double dir_y = -m_throttleStick.getY();
 
             // Convert cartesian vector to polar for circular deadband
             double dir_r = Math.sqrt(Math.pow(dir_x, 2) + Math.pow(dir_y, 2)); // norm of vector

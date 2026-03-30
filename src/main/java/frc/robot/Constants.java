@@ -220,9 +220,9 @@ public final class Constants {
         public static enum climbLvl {
             // in inches
             // TODO
-            Stowed(2.8), // hauteur de la boite de l'intake
-            Hang(1.9), // ~22 inch / position estimé, à testé TODO************
-            Extended(12.9);// ~30 inch
+            Stowed(2.8), // hauteur légale pour le climb
+            Hang(1.9), // hauteur pour accrocher le robot à la barre 
+            Extended(12);// ~30 inch
 
             public final double position;
 

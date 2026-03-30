@@ -6,9 +6,11 @@ import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.Nat;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.numbers.*;
 import edu.wpi.first.math.util.Units;
@@ -258,7 +260,7 @@ public final class Constants {
 
         public static final double manualSpeed = 0.1;
         public static final double initSpeed = 0.08;
-        
+
         public static final double kPositionThreshold = 0.25; // degrees
 
         // enum pour les positions de l'intake
@@ -414,10 +416,10 @@ public final class Constants {
         public static final String limelight3Name = "limelight-trois"; // IP: 10.76.5.13:5801
         public static final String limelight2Name = "limelight-deux";
 
-
-
         public static final Transform3d robotTolimelight4Transform = new Transform3d();
-        public static final Transform3d robotTolimelight3Transform = new Transform3d();
+        public static final Transform3d robotTolimelight3Transform = new Transform3d(new Translation3d(
+                Units.inchesToMeters(13.32), Units.inchesToMeters(-6.38), Units.inchesToMeters(11.31)),
+                new Rotation3d(0, Units.degreesToRadians(24), Units.degreesToRadians(31))); // 0,24,31
         public static final Transform3d robotTolimelight2Transform = new Transform3d();
 
         public static final double kMaxPoseAmbiguityAllowed = 0.2;

@@ -52,7 +52,7 @@ public class LimelightVisionModule {
         var newMt1Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(m_cameraName);
         var newMt2Pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(m_cameraName);
 
-        if ((newMt2Pose.tagCount == 0) || (newMt2Pose.tagCount == 1
+        if ((newMt2Pose == null) || (newMt2Pose.tagCount == 0) || (newMt2Pose.tagCount == 1
                 && newMt2Pose.rawFiducials[0].ambiguity > VisionConstants.kMaxPoseAmbiguityAllowed)) {
             m_closestTagID = OptionalInt.empty(); // no tags or single tag with too high ambiguity
         } else {

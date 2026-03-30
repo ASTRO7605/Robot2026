@@ -174,19 +174,19 @@ public class RobotContainer {
         m_turnStick.button(2).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(false)));
 
         m_turnStick.button(5).whileTrue(new RunCommand(() -> {
-            var latestMeasurement = m_base.getAveragePoseFromCameras();
+            var latestMeasurement = m_base.getAverageMt1PoseFromCameras();
             if (latestMeasurement.isPresent()) {
                 m_base.setPose(latestMeasurement.get());
             }
         }));
 
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
-        /* Copilot Buttons */
 
+        /* Copilot Buttons */
         m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
-        new ManualClimb(m_climb, ClimbConstants.kManualPercentage));
+                new ManualClimb(m_climb, ClimbConstants.kManualPercentage));
         m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
-        new ManualClimb(m_climb, -ClimbConstants.kManualPercentage));
+                new ManualClimb(m_climb, -ClimbConstants.kManualPercentage));
 
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
         m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
@@ -196,17 +196,19 @@ public class RobotContainer {
         // m_shooterBase.ShooterBaseWheelOff()));
 
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-        if (ShooterButtonCounter == 0) {
-        m_shooter.setMotorSpeed(3200);
-        ShooterButtonCounter += 1;
-        }else if (ShooterButtonCounter ==1){
-        m_shooter.setMotorSpeed(0);
-        ShooterButtonCounter -= 1;
-        }
+            if (ShooterButtonCounter == 0) {
+                m_shooter.setMotorSpeed(3200);
+                ShooterButtonCounter += 1;
+            } else if (ShooterButtonCounter == 1) {
+                m_shooter.setMotorSpeed(0);
+                ShooterButtonCounter -= 1;
+            }
         }));
 
-        // m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooter.setMotorSpeed(3000)));
-        // m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooter.stopMotors()));
+        // m_driverController.rightBumper().onTrue(new InstantCommand(() ->
+        // m_shooter.setMotorSpeed(3000)));
+        // m_driverController.rightBumper().onFalse(new InstantCommand(() ->
+        // m_shooter.stopMotors()));
 
         // m_driverController.povRight().onTrue(new InstantCommand(() ->
         // m_tourelle.setMotorPercentage(-0.05)));
@@ -242,11 +244,15 @@ public class RobotContainer {
         // m_driverController.a().onTrue(new IntakeInit(m_intake));
 
         // m_driverController.leftBumper().onTrue(
-        //         new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
-        // m_driverController.leftBumper().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+        // new InstantCommand(() ->
+        // m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
+        // m_driverController.leftBumper().onFalse(new InstantCommand(() ->
+        // m_conveyor.ConveyorWheelOff()));
         // m_driverController.leftTrigger().onTrue(new InstantCommand(
-        //         () -> m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+        // () ->
+        // m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
+        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
+        // m_conveyor.ConveyorWheelOff()));
 
         // Intake Commands
         m_driverController.a()
@@ -254,17 +260,16 @@ public class RobotContainer {
         m_driverController.y()
                 .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
 
-
         m_driverController.b()
                 .onTrue(new InstantCommand(() -> m_tourelle.goToPosition(-60)));
         m_driverController.x()
                 .onTrue(new InstantCommand(() -> m_tourelle.goToPosition(60)));
         // // Climb Commands
         // m_driverController.b().and(() -> !m_climb.getPrepareClimb())
-        //         .onTrue(new PrepareClimb(m_climb));
+        // .onTrue(new PrepareClimb(m_climb));
 
         // m_driverController.b().multiPress(2, 0.3)
-        //         .and(() -> m_climb.getPrepareClimb()).onTrue(new ClimbBar(m_climb));
+        // .and(() -> m_climb.getPrepareClimb()).onTrue(new ClimbBar(m_climb));
 
         // m_driverController.y().debounce(0.5).onTrue(new InstantCommand(() ->
         // CommandScheduler.getInstance().schedule(new

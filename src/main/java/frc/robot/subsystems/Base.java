@@ -124,12 +124,16 @@ public class Base extends SubsystemBase {
 
         // initialize vision modules
         if (useVision) {
-            // m_visionModules.put(VisionConstants.limelight4Name, new LimelightVisionModule(
-            //         VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform, this::getHeading));
+            // m_visionModules.put(VisionConstants.limelight4Name, new
+            // LimelightVisionModule(
+            // VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform,
+            // this::getHeading));
             m_visionModules.put(VisionConstants.limelight3Name, new LimelightVisionModule(
                     VisionConstants.limelight3Name, VisionConstants.robotTolimelight3Transform, this::getHeading));
-            // m_visionModules.put(VisionConstants.limelight2Name, new LimelightVisionModule(
-            //         VisionConstants.limelight2Name, VisionConstants.robotTolimelight2Transform, this::getHeading));
+            // m_visionModules.put(VisionConstants.limelight2Name, new
+            // LimelightVisionModule(
+            // VisionConstants.limelight2Name, VisionConstants.robotTolimelight2Transform,
+            // this::getHeading));
         }
 
         shotCalculator = ShotCalculator.getInstance();
@@ -297,14 +301,38 @@ public class Base extends SubsystemBase {
 
     public void setLimelight4IMUMode(VisionConstants.LimelightIMUModes mode) {
         if (useVision) {
-           var limelight4 = m_visionModules.get(VisionConstants.limelight4Name);
-           if (limelight4 != null) {
-            limelight4.setIMUMode(mode);
-           }
+            var limelight4 = m_visionModules.get(VisionConstants.limelight4Name);
+            if (limelight4 != null) {
+                limelight4.setIMUMode(mode);
+            }
         }
     }
 
-    public Optional<Pose2d> getAveragePoseFromCameras() {
+    public Optional<Pose2d> getAverageMt1PoseFromCameras() {
+        List<Pose2d> poses = new ArrayList<>();
+        for (LimelightVisionModule module : m_visionModules.values()) {
+            var measurement = module.getEstimatedPoses().mt1Estimate();
+            measurement.ifPresent(result -> poses.add(result.pose));
+        }
+
+        if (poses.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Translation2d averageTranslation = new Translation2d();
+        Rotation2d averageRotation = new Rotation2d();
+        for (Pose2d pose : poses) {
+            averageTranslation = averageTranslation.plus(pose.getTranslation());
+            averageRotation = averageRotation.plus(pose.getRotation());
+        }
+
+        averageTranslation = averageTranslation.div(poses.size());
+        averageRotation = averageRotation.div(poses.size());
+
+        return Optional.of(new Pose2d(averageTranslation, averageRotation));
+    }
+
+    public Optional<Pose2d> getAverageMt2PoseFromCameras() {
         List<Pose2d> poses = new ArrayList<>();
         for (LimelightVisionModule module : m_visionModules.values()) {
             var measurement = module.getEstimatedPoses().mt2Estimate();
@@ -352,7 +380,7 @@ public class Base extends SubsystemBase {
             m_currentTarget = FieldConstants.flipPosColor(m_currentTarget);
         }
 
-             m_robotField.getObject("Target").setPose(m_currentTarget.getX(), m_currentTarget.getY(),
+        m_robotField.getObject("Target").setPose(m_currentTarget.getX(), m_currentTarget.getY(),
                 new Rotation2d());
     }
 

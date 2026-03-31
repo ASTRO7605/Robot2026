@@ -58,6 +58,8 @@ public class RobotContainer {
     private final CommandJoystick m_turnStick = new CommandJoystick(DriveConstants.kTurnStickID);
     private final CommandJoystick m_throttleStick = new CommandJoystick(DriveConstants.kThrottleStickID);
     private int ShooterButtonCounter = 0;
+    private int ShooterBaseButtonCounter = 0;
+    private int ClimbButtonCounter = 0;
 
     private double driverMulti = 1;
 
@@ -205,6 +207,20 @@ public class RobotContainer {
             }
         }));
 
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+            if (ShooterBaseButtonCounter == 0){
+                m_shooterBase.setMotorSpeed(500);
+                ShooterBaseButtonCounter += 1;
+            } else if (ShooterBaseButtonCounter == 1){
+                m_shooterBase.setMotorSpeed(0);
+                ShooterBaseButtonCounter -= 1;
+            }
+        }
+        ));
+
+       m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+            m_shooterBase.setMotorSpeed(-500);
+        }));
         // m_driverController.rightBumper().onTrue(new InstantCommand(() ->
         // m_shooter.setMotorSpeed(3000)));
         // m_driverController.rightBumper().onFalse(new InstantCommand(() ->
@@ -221,15 +237,6 @@ public class RobotContainer {
 
         // m_driverController.y()
         // .onTrue(new InstantCommand(() -> m_intake.goToPosition(intakePos.Stowed)));
-
-        // m_driverController.leftBumper()
-        // .onTrue(new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(1)));
-        // m_driverController.leftBumper()
-        // .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
-        // m_driverController.leftTrigger()
-        // .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut()));
-        // m_driverController.leftTrigger()
-        // .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
 
         // m_driverController.y()
         // .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
@@ -260,14 +267,31 @@ public class RobotContainer {
         m_driverController.y()
                 .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
 
-        m_driverController.b()
-                .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Stowed)));
-        m_driverController.x()
-                .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Extended)));
-        m_driverController.rightTrigger().onTrue(
-            new InstantCommand(() -> m_climb.goToPosition(climbLvl.Hang)));
+        m_driverController.leftBumper()
+        .onTrue(new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(1)));
+        m_driverController.leftBumper()
+        .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+        m_driverController.leftTrigger()
+        .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut()));
+        m_driverController.leftTrigger()
+        .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));        
+        // Climb Commands
+        //  m_driverController.b().onTrue(new InstantCommand(() -> {
+        //     if (ClimbButtonCounter == 0) {
+        //         m_climb.goToPosition(climbLvl.Extended);
+        //         ClimbButtonCounter += 1;
+        //     } else if (ClimbButtonCounter == 1) {
+        //         m_climb.goToPosition(climbLvl.Stowed);
+        //         ClimbButtonCounter -= 1;
+        //     }
+        // }));
+        // m_driverController.b()
+        //         .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Stowed)));
+        // m_driverController.x()
+        //         .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Extended)));
+        // m_driverController.rightTrigger().onTrue(
+        //     new InstantCommand(() -> m_climb.goToPosition(climbLvl.Hang)));
 
-        // // Climb Commands
         // m_driverController.b().and(() -> !m_climb.getPrepareClimb())
         // .onTrue(new PrepareClimb(m_climb));
 
@@ -288,6 +312,7 @@ public class RobotContainer {
         // .onTrue(Changement cible);
 
     }
+    
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.

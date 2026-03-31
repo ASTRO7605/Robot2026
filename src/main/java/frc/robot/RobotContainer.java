@@ -218,7 +218,7 @@ public class RobotContainer {
         }
         ));
 
-       m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+       m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
             m_shooterBase.setMotorSpeed(-500);
         }));
         // m_driverController.rightBumper().onTrue(new InstantCommand(() ->

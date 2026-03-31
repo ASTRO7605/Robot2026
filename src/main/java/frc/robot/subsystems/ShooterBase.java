@@ -3,6 +3,9 @@ package frc.robot.subsystems;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -15,6 +18,7 @@ public class ShooterBase extends SubsystemBase {
     private SparkMax ShooterBaseMotor  = new SparkMax(ShooterBaseConstants.shooterBaseMotorId, MotorType.kBrushless);
     private RelativeEncoder ShooterBaseEncoder = ShooterBaseMotor.getEncoder();
     private SparkMaxConfig currentConfig;
+    private SparkClosedLoopController ShooterBaseController = ShooterBaseMotor.getClosedLoopController();
    
     public ShooterBase() {
      currentConfig = new SparkMaxConfig();
@@ -42,6 +46,13 @@ public class ShooterBase extends SubsystemBase {
      // arrête les roues du shooter
     public void ShooterBaseWheelOff(){
         ShooterBaseMotor.stopMotor();
+    }
+
+    public void setMotorSpeed(double speed) {
+        ShooterBaseController.setSetpoint(
+                speed,
+                ControlType.kVelocity,
+                ClosedLoopSlot.kSlot0);
     }
  
     public boolean isShooterBaseStopped() {

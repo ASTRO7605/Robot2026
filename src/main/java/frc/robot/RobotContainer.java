@@ -185,13 +185,7 @@ public class RobotContainer {
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
 
         /* Copilot Buttons */
-        m_driverController.povUp().and(m_driverController.leftTrigger()).whileTrue(
-                new ManualClimb(m_climb, ClimbConstants.kManualPercentage));
-        m_driverController.povDown().and(m_driverController.leftTrigger()).whileTrue(
-                new ManualClimb(m_climb, -ClimbConstants.kManualPercentage));
 
-        m_driverController.rightBumper().onTrue(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelsIn()));
-        m_driverController.rightBumper().onFalse(new InstantCommand(() -> m_shooterBase.ShooterBaseWheelOff()));
         // m_driverController.leftTrigger().onTrue(new InstantCommand(() ->
         // m_shooterBase.ShooterBaseWheelsOut()));
         // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
@@ -276,15 +270,15 @@ public class RobotContainer {
         m_driverController.leftTrigger()
         .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));        
         // Climb Commands
-        //  m_driverController.b().onTrue(new InstantCommand(() -> {
-        //     if (ClimbButtonCounter == 0) {
-        //         m_climb.goToPosition(climbLvl.Extended);
-        //         ClimbButtonCounter += 1;
-        //     } else if (ClimbButtonCounter == 1) {
-        //         m_climb.goToPosition(climbLvl.Stowed);
-        //         ClimbButtonCounter -= 1;
-        //     }
-        // }));
+         m_driverController.b().onTrue(new InstantCommand(() -> {
+            if (ClimbButtonCounter == 0) {
+                m_climb.goToPosition(climbLvl.Extended);
+                ClimbButtonCounter += 1;
+            } else if (ClimbButtonCounter == 1) {
+                m_climb.goToPosition(climbLvl.Stowed);
+                ClimbButtonCounter -= 1;
+            }
+        }));
         // m_driverController.b()
         //         .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Stowed)));
         // m_driverController.x()

@@ -6,14 +6,13 @@ import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
 
-public class Shoot extends Command {
+public class StopShoot extends Command {
 
     private final Shooter shooter;
     private final Conveyor conveyor;
     private final ShooterBase shooterBase;
-    private int shootCounter;
 
-    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase) {
+    public StopShoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase) {
         this.shooter = shooter;
         this.conveyor = conveyor;
         this.shooterBase = shooterBase;
@@ -25,18 +24,9 @@ public class Shoot extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        shooter.setMotorSpeed(3000);
-        conveyor.conveyorWheelsIn();
-        shooterBase.ShooterBaseWheelsIn();
-        // RobotContainer.m_shooter.setMotorSpeed(3000);
-    }
-
-    // Called once the command ends or is interrupted.
-    @Override
-    public void end(boolean interrupted) {
         shooter.setMotorSpeed(0);
-        conveyor.setConveyorOutputPercentage(0);
+        conveyor.ConveyorWheelOff();
         shooterBase.ShooterBaseWheelOff();
     }
-
+    
 }

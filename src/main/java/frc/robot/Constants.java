@@ -294,7 +294,7 @@ public final class Constants {
         public static final double setConveyorOutSpeed = -1000;
 
         public static final double manualPercentageIn = 1;
-        public static final double manualPercentageOut = -0.7;
+        public static final double manualPercentageOut = -1;
 
         // Motor RPM -> Roller RPM
         public static final double fPositionConversion = 1.0 / 4.0;

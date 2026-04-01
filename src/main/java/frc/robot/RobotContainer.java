@@ -292,6 +292,8 @@ public class RobotContainer {
                 ClimbButtonCounter -= 1;
             }
         }));
+        m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.increaseMOtorSpeed()));
+        m_driverController.povDown().onTrue(new InstantCommand(() -> m_shooter.decreaseMotorSpeed()));
         // m_driverController.b()
         // .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Stowed)));
         // m_driverController.x()

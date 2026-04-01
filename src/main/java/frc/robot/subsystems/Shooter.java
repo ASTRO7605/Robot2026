@@ -165,4 +165,21 @@ public class Shooter extends SubsystemBase {
     public void safeStop() {
         setManualMotorPercentage(0);
     }
+
+    public void increaseMOtorSpeed() {
+        double currentVelocity = rightShootEncoder.getVelocity();
+        setMotorSpeed(currentVelocity + 500);
+    }
+
+    public void decreaseMotorSpeed() {
+        double currentVelocity = rightShootEncoder.getVelocity();
+        if(currentVelocity < 1000) {
+            setMotorSpeed(1000);
+        }
+        else{
+            setMotorSpeed(currentVelocity - 500);
+        }
+        
+    }
+
 }

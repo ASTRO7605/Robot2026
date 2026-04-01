@@ -35,11 +35,19 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.MutVoltage;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 public class Base extends SubsystemBase {
     private final Pigeon2 m_gyro;
@@ -55,12 +63,25 @@ public class Base extends SubsystemBase {
     private boolean useVision = true;
 
     private Translation2d m_currentTarget;
+    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
 
     /** radians */
     private double m_gyroOffset = 0.0;
     private boolean m_drivingInFieldRelative = true;
 
     private final ShotCalculator shotCalculator;
+
+    SysIdRoutine routine = new SysIdRoutine(
+            new SysIdRoutine.Config(),
+            new SysIdRoutine.Mechanism(
+                    voltage -> sysIdMotorsVoltage(voltage),
+                    log -> {
+                        log.motor("drive")
+                                .voltage(m_appliedVoltage)
+                                .linearVelocity(MetersPerSecond.of(getRobotRelativeSpeeds().vxMetersPerSecond))
+                                .linearPosition(Meters.of(getPose().getX()));
+                    },
+                    this));
 
     public Base() {
         m_gyro = new Pigeon2(Constants.DriveConstants.pigeonID, canbus);
@@ -415,5 +436,33 @@ public class Base extends SubsystemBase {
         SmartDashboard.putNumber("RobotHeading", getHeading().getRadians());
 
         SmartDashboard.putNumber("CANivore Usage", canbus.getStatus().BusUtilization);
+    }
+
+    public void sysIdMotorsVoltage(Voltage voltage) {
+        m_appliedVoltage.mut_replace(voltage);
+
+        resetModulesToAbsolute();
+        setModulesFacingForward();
+        m_gyro.setYaw(0);
+        double volts = voltage.in(edu.wpi.first.units.Units.Volts);
+        double currentYaw = m_gyro.getYaw().getValueAsDouble();
+        Rotation2d headingCorrection = Rotation2d.fromDegrees(-currentYaw); // Rotate wheels slightly if needed
+
+        for (SwerveModule mod : m_swerveMods) {
+
+            // lock wheel forward
+            Rotation2d targetAngle = new Rotation2d(0).plus(headingCorrection);
+
+            mod.setDesiredState(new SwerveModuleState(0, targetAngle), false);
+            mod.sysIdMotorVoltage(volts);
+        }
+    }
+
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return routine.quasistatic(direction);
+    }
+
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+        return routine.dynamic(direction);
     }
 }

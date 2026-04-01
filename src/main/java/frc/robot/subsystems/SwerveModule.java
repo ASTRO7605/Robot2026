@@ -104,4 +104,9 @@ public class SwerveModule {
         m_driveMotor.setNeutralMode(neutralMode);
         m_angleMotor.setNeutralMode(neutralMode);
     }
+
+     
+    public void sysIdMotorVoltage(double voltage) {
+        m_driveMotor.setVoltage(voltage);
+    }
 }

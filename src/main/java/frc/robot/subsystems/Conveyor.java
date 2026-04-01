@@ -143,18 +143,17 @@ public class Conveyor extends SubsystemBase {
 
     // fait tourner les roues du intake pour faire entrer les balles
     public void conveyorWheelsIn() {
-        setConveyorWheelsSpeed(ConveyorConstants.setConveyorInSpeed);
+        setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn);
     }
 
     // fait tourner les roues du convoyeur pour faire sortir les balles
     public void conveyorWheelsOut() {
-        setConveyorWheelsSpeed(ConveyorConstants.setConveyorOutSpeed);
+        setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut);
     }
 
     public void setConveyorOutputPercentage(double percentage) {
         intakeRollerController.setSetpoint(
                 -percentage,
-
                 ControlType.kDutyCycle,
                 ClosedLoopSlot.kSlot0);
         convController.setSetpoint(

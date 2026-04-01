@@ -212,9 +212,9 @@ public class RobotContainer {
         }
         ));
 
-       m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
-            m_shooterBase.setMotorSpeed(-500);
-        }));
+    //    m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
+    //         m_shooterBase.setMotorSpeed(-500);
+    //     }));
         // m_driverController.rightBumper().onTrue(new InstantCommand(() ->
         // m_shooter.setMotorSpeed(3000)));
         // m_driverController.rightBumper().onFalse(new InstantCommand(() ->
@@ -262,13 +262,9 @@ public class RobotContainer {
                 .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
 
         m_driverController.leftBumper()
-        .onTrue(new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(1)));
-        m_driverController.leftBumper()
-        .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
-        m_driverController.leftTrigger()
         .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut()));
         m_driverController.leftTrigger()
-        .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));        
+        .onTrue(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));  
         // Climb Commands
          m_driverController.b().onTrue(new InstantCommand(() -> {
             if (ClimbButtonCounter == 0) {

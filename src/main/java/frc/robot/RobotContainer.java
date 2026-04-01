@@ -191,6 +191,7 @@ public class RobotContainer {
 
         /* Copilot Buttons */
 
+        //
         // m_driverController.leftTrigger().onTrue(new InstantCommand(() ->
         // m_shooterBase.ShooterBaseWheelsOut()));
         // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
@@ -206,16 +207,23 @@ public class RobotContainer {
         //     }
         // }));
 
-        m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-            if (ShooterBaseButtonCounter == 0){
-                m_shooterBase.setMotorSpeed(500);
-                ShooterBaseButtonCounter += 1;
-            } else if (ShooterBaseButtonCounter == 1){
-                m_shooterBase.setMotorSpeed(0);
-                ShooterBaseButtonCounter -= 1;
-            }
-        }
-        ));
+        m_driverController.rightBumper().whileTrue(new Shoot(m_shooter, m_conveyor, m_shooterBase));
+            
+            
+            
+            
+            // if (ShooterButtonCounter == 0){
+            //     CommandScheduler.getInstance().schedule(new Shoot(m_shooter, m_conveyor, m_shooterBase));
+            //     ShooterButtonCounter += 1;
+            // } else if (ShooterButtonCounter == 1){
+            //     new InstantCommand(()-> m_conveyor.conveyorWheelsIn()).schedule();
+            //     ShooterButtonCounter += 1;
+            // } else if(ShooterButtonCounter == 2){
+            //     CommandScheduler.getInstance().schedule(new StopShoot(m_shooter, m_conveyor, m_shooterBase));
+            //     ShooterButtonCounter = 0;
+
+            // }}));
+        
 
        m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
             m_shooterBase.setMotorSpeed(-500);

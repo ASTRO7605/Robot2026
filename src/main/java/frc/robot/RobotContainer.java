@@ -233,14 +233,14 @@ public class RobotContainer {
         // m_driverController.rightBumper().onFalse(new InstantCommand(() ->
         // m_shooter.stopMotors()));
 
-        // m_driverController.povRight().onTrue(new InstantCommand(() ->
-        // m_tourelle.setMotorPercentage(-0.05)));
-        // m_driverController.povRight().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-        // m_driverController.povLeft().onTrue(new InstantCommand(() ->
-        // m_tourelle.setMotorPercentage(0.05)));
-        // m_driverController.povLeft().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
+        m_driverController.povRight().onTrue(new InstantCommand(() ->
+        m_tourelle.setMotorPercentage(-0.1)));
+        m_driverController.povRight().onFalse(new InstantCommand(() ->
+        m_tourelle.safeStop()));
+        m_driverController.povLeft().onTrue(new InstantCommand(() ->
+        m_tourelle.setMotorPercentage(0.1)));
+        m_driverController.povLeft().onFalse(new InstantCommand(() ->
+        m_tourelle.safeStop()));
 
         // m_driverController.y()
         // .onTrue(new InstantCommand(() -> m_intake.goToPosition(intakePos.Stowed)));

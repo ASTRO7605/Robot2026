@@ -30,7 +30,7 @@ public class Shoot extends Command {
         shooter.setMotorSpeed(3000);
         shooterBase.ShooterBaseWheelsIn();
 
-        shootCommand = new WaitCommand(.2). andThen(() -> conveyor.conveyorWheelsIn());
+        shootCommand = new WaitCommand(.35). andThen(() -> conveyor.conveyorWheelsIn());
         shootCommand.schedule();
     }
     @Override

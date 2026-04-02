@@ -134,10 +134,11 @@ public class Shooter extends SubsystemBase {
     public void stopMotors() {
         rightShootMotor.stopMotor();
     }
-
+    /*Méthode de tirs automatique par distance */
     public void turnOnShooter() {
         setMotorSpeed(ShotCalculator.getInstance().getRpmForDistance());
     }
+    
     public void setMotorSpeed(double speed) {
         rightShootController.setSetpoint(
                 speed,

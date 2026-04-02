@@ -234,11 +234,11 @@ public class RobotContainer {
         // m_shooter.stopMotors()));
 
         m_driverController.povRight().onTrue(new InstantCommand(() ->
-        m_tourelle.setMotorPercentage(-0.1)));
+        m_tourelle.turnRight()));
         m_driverController.povRight().onFalse(new InstantCommand(() ->
         m_tourelle.safeStop()));
         m_driverController.povLeft().onTrue(new InstantCommand(() ->
-        m_tourelle.setMotorPercentage(0.1)));
+        m_tourelle.turnLeft()));
         m_driverController.povLeft().onFalse(new InstantCommand(() ->
         m_tourelle.safeStop()));
 

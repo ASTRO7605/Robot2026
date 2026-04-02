@@ -48,7 +48,7 @@ public class Tourelle extends SubsystemBase {
     private double oldKp = TurretConstants.kp;
     private double oldKd = TurretConstants.kd;
     private double oldKi = TurretConstants.ki;
-
+    private double targetAngle = 0;
     // constructeur du sous-système
     public Tourelle() {
         // configutation du moteur (le temp d'attente de réponse du moteur)
@@ -96,6 +96,7 @@ public class Tourelle extends SubsystemBase {
         SmartDashboard.putNumber(getSubsystem() + ".position", turretEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", turretEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
+        SmartDashboard.putNumber(getSubsystem() + ".targetAngle", targetAngle);
 
         oldKd = kd;
         oldKi = ki;
@@ -103,6 +104,7 @@ public class Tourelle extends SubsystemBase {
         kp = Preferences.getDouble("tourelle.kP", TurretConstants.kp);
         ki = Preferences.getDouble("tourelle.kI", TurretConstants.ki);
         kd = Preferences.getDouble("tourelle.kD", TurretConstants.kd);
+        
 
         if (oldKd != kd || oldKi != ki || oldKp != kp) {
             currentConfig.closedLoop
@@ -183,6 +185,8 @@ public class Tourelle extends SubsystemBase {
         return command;
     }
 
+
+    
     public void requestTurretAngle(Rotation2d angle) {
         // if request is in normal range, go to request
         // if request is out of range but close to extremes, go to extremes
@@ -219,4 +223,21 @@ public class Tourelle extends SubsystemBase {
     public void safeStop() {
         setMotorPercentage(0);
     }
+
+    public void turnRight(){
+        targetAngle -= 5;
+        if(targetAngle < TurretConstants.kMinSetpoint){
+            targetAngle = TurretConstants.kMinSetpoint;
+        } 
+        requestTurretAngle(Rotation2d.fromDegrees(targetAngle));
+    }
+
+    public void turnLeft(){
+        targetAngle += 5;
+        if(targetAngle > TurretConstants.kMaxSetpoint){
+            targetAngle = TurretConstants.kMaxSetpoint;
+        }
+        requestTurretAngle(Rotation2d.fromDegrees(targetAngle));
+    }
+    
 }

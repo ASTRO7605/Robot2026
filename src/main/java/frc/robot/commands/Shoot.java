@@ -27,7 +27,7 @@ public class Shoot extends Command {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void initialize() {
-        shooter.setMotorSpeed(3000);
+        shooter.turnOnShooter();
         shooterBase.ShooterBaseWheelsIn();
 
         shootCommand = new WaitCommand(.35). andThen(() -> conveyor.conveyorWheelsIn());

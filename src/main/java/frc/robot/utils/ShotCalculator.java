@@ -17,9 +17,10 @@ public class ShotCalculator {
     private static ShotCalculator instance = null;
     private ShotInfo currentShotInfo;
     private Field2d turretToTargetField;
+    private double lastTargetDistance = 0;
 
     // table de calcul de la vitesse en fonction de la distance
-    private final InterpolatingDoubleTreeMap RPMFromDistance = new InterpolatingDoubleTreeMap();
+    private final InterpolatingDoubleTreeMap distanceToRpm = new InterpolatingDoubleTreeMap();
     // table de calcul du temps de vol (Time Of Flight) en fonction de la distance
     private final InterpolatingDoubleTreeMap tofFromDistance = new InterpolatingDoubleTreeMap();
     // table de calcul de la distance en fonction du TOF
@@ -30,10 +31,15 @@ public class ShotCalculator {
         distanceFromTof.put(tof, distance);
     }
 
+    public double getRpmForDistance() {
+        return distanceToRpm.get(lastTargetDistance);
+    }   
+
     private ShotCalculator() {
         turretToTargetField = new Field2d();
         // put distance / speed couples
-        RPMFromDistance.put(1.0, 3000.0);
+        distanceToRpm.put(2.23, 2600.0);
+        distanceToRpm.put(4.87, 3500.0);// the farthest point 
 
         // put distance / tof couples
         addDataToTofTables(1.0, 1.0);
@@ -85,6 +91,7 @@ public class ShotCalculator {
 
         // calculate wheel parameters
         double estimatedDistance = targetDistance;
+        lastTargetDistance = targetDistance;
 
         for (int i = 0; i < 3; i++) {
             // calculate the speed of the ball from this estimated distance
@@ -96,7 +103,7 @@ public class ShotCalculator {
             estimatedDistance *= ratio;
         }
 
-        double wheelSpeeds = RPMFromDistance.get(estimatedDistance);
+        double wheelSpeeds = distanceToRpm.get(estimatedDistance);
         // turret angle
         Rotation2d turretAngle = shotVector.getAngle().minus(projectedRobotPose.getRotation());
         SmartDashboard.putNumber("turretToTargetAngle", turretAngle.getDegrees());

@@ -30,6 +30,7 @@ public class Shooter extends SubsystemBase {
 
     private SparkClosedLoopController rightShootController = rightShootMotor.getClosedLoopController();
     private SparkClosedLoopController leftShootController = leftShootMotor.getClosedLoopController();
+    private double targetVelocity = 0;
     // TODO: cleanup when tuning is done
     private double kp = ShooterConstants.kp;
     private double kd = ShooterConstants.kd;
@@ -82,13 +83,14 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber(getSubsystem() + ".RightShootVelocity", rightShootEncoder.getVelocity());
-        SmartDashboard.putNumber(getSubsystem() + ".LeftShootVelocity", leftShootEncoder.getVelocity());
+        SmartDashboard.putNumber(getSubsystem() + ".RightShootVelocity", rightShootEncoder.getVelocity()/ ShooterConstants.fVelocityConversion);
+        SmartDashboard.putNumber(getSubsystem() + ".LeftShootVelocity", leftShootEncoder.getVelocity()/ ShooterConstants.fVelocityConversion);
         SmartDashboard.putNumber("shooterRightAppliedOutput", rightShootMotor.getAppliedOutput());
         SmartDashboard.putNumber("shooterLeftAppliedOutput", leftShootMotor.getAppliedOutput());
         SmartDashboard.putNumber("shooterRightCurrent", rightShootMotor.getOutputCurrent());
         SmartDashboard.putNumber("shooterLeftCurrent", leftShootMotor.getOutputCurrent());
         SmartDashboard.putNumber(getSubsystem() + ".encoderPosition", getPosition());
+        SmartDashboard.putNumber("shooterTargetVelocity", targetVelocity);
 
         oldKd = kd;
         oldKi = ki;
@@ -133,6 +135,9 @@ public class Shooter extends SubsystemBase {
         rightShootMotor.stopMotor();
     }
 
+    public void turnOnShooter() {
+        setMotorSpeed(ShotCalculator.getInstance().getRpmForDistance());
+    }
     public void setMotorSpeed(double speed) {
         rightShootController.setSetpoint(
                 speed,
@@ -167,19 +172,16 @@ public class Shooter extends SubsystemBase {
     }
 
     public void increaseMOtorSpeed() {
-        double currentVelocity = rightShootEncoder.getVelocity();
-        setMotorSpeed(currentVelocity + 500);
+        targetVelocity += 100;
+        setMotorSpeed(targetVelocity);
     }
 
     public void decreaseMotorSpeed() {
-        double currentVelocity = rightShootEncoder.getVelocity();
-        if(currentVelocity < 1000) {
-            setMotorSpeed(1000);
+        targetVelocity -= 100;
+        if(targetVelocity < 1000) {
+            targetVelocity = 1000;
         }
-        else{
-            setMotorSpeed(currentVelocity - 500);
-        }
-        
+        setMotorSpeed(targetVelocity);
     }
 
 }

@@ -18,6 +18,7 @@ public class ShotCalculator {
     private ShotInfo currentShotInfo;
     private Field2d turretToTargetField;
     private double lastTargetDistance = 0;
+    private double targetAngle = 0;
 
     // table de calcul de la vitesse en fonction de la distance
     private final InterpolatingDoubleTreeMap distanceToRpm = new InterpolatingDoubleTreeMap();
@@ -36,7 +37,12 @@ public class ShotCalculator {
     public double getRpmForDistance() {
         return distanceToRpm.get(lastTargetDistance);
     }   
-
+    public double getTargetAngle() {
+        return targetAngle;
+    }
+    public double getAngleForDistance() {
+        return angleFromDistance.get(lastTargetDistance);
+    }
     private ShotCalculator() {
         turretToTargetField = new Field2d();
         // put distance / speed couples
@@ -55,14 +61,14 @@ public class ShotCalculator {
 
         // put distance / angle couples
         angleFromDistance.put(4.0,-40.0);
-        angleFromDistance.put(4.75, -23.61);
-        angleFromDistance.put(1.74, -5.84);
-        angleFromDistance.put(2.57, -1.92);
-        angleFromDistance.put(3.3, 63.75); 
-        angleFromDistance.put(4.18, 43.92);
-        angleFromDistance.put(5.1, 32.5);
-        angleFromDistance.put(3.16, 31.9);
-        angleFromDistance.put(3.09, -30.1);
+        angleFromDistance.put(4.75, -25.0);
+        angleFromDistance.put(1.74, -5.0);
+        angleFromDistance.put(2.57, 0.0);
+        angleFromDistance.put(3.3, 65.0); 
+        angleFromDistance.put(4.18, 45.0);
+        angleFromDistance.put(5.1, 30.0);
+        angleFromDistance.put(3.16, 30.0);
+        angleFromDistance.put(3.09, -30.0);
     }
 
     public static ShotCalculator getInstance() {
@@ -124,8 +130,10 @@ public class ShotCalculator {
         }
 
         double wheelSpeeds = distanceToRpm.get(estimatedDistance);
+    
         // turret angle
         Rotation2d turretAngle = shotVector.getAngle().minus(projectedRobotPose.getRotation());
+        targetAngle = turretAngle.getDegrees();
         SmartDashboard.putNumber("turretToTargetAngle", turretAngle.getDegrees());
 
         currentShotInfo = new ShotInfo(turretAngle, wheelSpeeds);

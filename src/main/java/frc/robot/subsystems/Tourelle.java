@@ -11,7 +11,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.LimitSwitchConfig.Behavior;
 import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.commands.TrapezoidProfileMovement;
 import frc.robot.utils.ShotCalculator;
@@ -96,6 +94,7 @@ public class Tourelle extends SubsystemBase {
         SmartDashboard.putNumber(getSubsystem() + ".position", turretEncoder.getPosition());
         SmartDashboard.putNumber(getSubsystem() + ".velocity", turretEncoder.getVelocity());
         SmartDashboard.putBoolean(getSubsystem() + ".initDone", initDone);
+        targetAngle = ShotCalculator.getInstance().getTargetAngle();
         SmartDashboard.putNumber(getSubsystem() + ".targetAngle", targetAngle);
 
         oldKd = kd;
@@ -239,5 +238,18 @@ public class Tourelle extends SubsystemBase {
         }
         requestTurretAngle(Rotation2d.fromDegrees(targetAngle));
     }
-    
+
+    public void goToAngle() {
+        if(!initDone) {
+            System.out.println("Not initialized. Ignoring command");
+        }
+        else {
+            if(targetAngle > TurretConstants.kMaxSetpoint) {
+                targetAngle = TurretConstants.kMaxSetpoint;
+            } else if (targetAngle < TurretConstants.kMinSetpoint) {
+                targetAngle = TurretConstants.kMinSetpoint;
+            }
+            requestTurretAngle(Rotation2d.fromDegrees(ShotCalculator.getInstance().getTargetAngle()));
+        }
+    }
 }

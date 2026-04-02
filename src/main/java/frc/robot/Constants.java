@@ -351,8 +351,8 @@ public final class Constants {
         public static final double kSoftLimitReverse = -66; // TODO
         public static final double kInitPercentage = 0.1;
 
-        public static final double kMaxSetpoint = 85;
-        public static final double kMinSetpoint = -85;
+        public static final double kMaxSetpoint = 68.85;
+        public static final double kMinSetpoint = -64;
         public static final double kExtremesThreshold = 15;
 
     }

@@ -6,20 +6,23 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
+import frc.robot.subsystems.Tourelle;
 
 public class Shoot extends Command {
 
     private final Shooter shooter;
     private final Conveyor conveyor;
     private final ShooterBase shooterBase;
-    private int shootCounter;
+    private final Tourelle tourelle;
     private Command shootCommand;
 
-    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase) {
+    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase, Tourelle tourelle) {
         this.shooter = shooter;
         this.conveyor = conveyor;
         this.shooterBase = shooterBase;
-        addRequirements(shooter, conveyor, shooterBase);
+        this.tourelle = tourelle;
+
+        addRequirements(shooter, conveyor, shooterBase, tourelle);
         
     }
 
@@ -29,7 +32,7 @@ public class Shoot extends Command {
     public void initialize() {
         shooter.turnOnShooter();
         shooterBase.ShooterBaseWheelsIn();
-
+        tourelle.goToAngle();
     //Pour laisser le temps à la roue de shooter de monter en vitesse avant de faire avancer les balles
         shootCommand = new WaitCommand(.35). andThen(() -> conveyor.conveyorWheelsIn());
         shootCommand.schedule();
@@ -39,6 +42,7 @@ public class Shoot extends Command {
         shooter.setMotorSpeed(0);
         conveyor.ConveyorWheelOff();
         shooterBase.ShooterBaseWheelOff();
+        tourelle.safeStop();
         shootCommand.cancel();
     }
 

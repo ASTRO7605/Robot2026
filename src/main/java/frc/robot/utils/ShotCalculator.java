@@ -38,9 +38,16 @@ public class ShotCalculator {
     private ShotCalculator() {
         turretToTargetField = new Field2d();
         // put distance / speed couples
-        distanceToRpm.put(2.23, 2600.0);
-        distanceToRpm.put(4.87, 3500.0);// the farthest point 
-
+        distanceToRpm.put(3.4, 3000.0);
+        distanceToRpm.put(4.0,3300.0);
+        distanceToRpm.put(4.75, 3500.0);
+        distanceToRpm.put(1.74, 2500.0);
+        distanceToRpm.put(2.57, 2800.0);
+        distanceToRpm.put(3.3, 2900.0); 
+        distanceToRpm.put(4.18, 3300.0);
+        distanceToRpm.put(5.1, 3700.0);
+        distanceToRpm.put(3.16, 2800.0);
+        distanceToRpm.put(3.09, 2800.0);
         // put distance / tof couples
         addDataToTofTables(1.0, 1.0);
     }

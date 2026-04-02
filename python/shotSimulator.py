@@ -1,7 +1,23 @@
 import pygame
-from typing import List, Self
+from typing import List, Self, Callable, Any
 import math
 import bisect
+
+FRAMERATE = 60
+HUB_DIAMETER = 1.067
+BALL_DIAMETER = 0.15
+FIELD_WIDTH = 8.069
+ROBOT_LENGTH, ROBOT_WIDTH = (0.907, 0.823)
+MAX_ROBOT_XY_SPEED, MAX_ROBOT_ANGULAR_SPEED = 4, 540
+ROBOT_XY_ACCEL, ROBOT_ANGULAR_ACCEL = 2, 270
+
+SCREEN_LENGTH, SCREEN_WIDTH = (1200, 800)
+METER_TO_PIXEL = SCREEN_WIDTH / FIELD_WIDTH
+MAX_ARROW_LENGTH = 100
+SPEED_TO_PIXEL = (MAX_ARROW_LENGTH / MAX_ROBOT_XY_SPEED) / METER_TO_PIXEL
+
+TURRET_COLOR = pygame.Color("#c823dd")
+SHOT_COLOR = pygame.Color("#e9de0f")
 
 
 class InterpolatingDoubleTreeMap:
@@ -56,18 +72,69 @@ class InterpolatingDoubleTreeMap:
         return len(self._data)
 
 
-FRAMERATE = 60
-HUB_DIAMETER = 1.067
-BALL_DIAMETER = 0.15
-FIELD_WIDTH = 8.069
-ROBOT_LENGTH, ROBOT_WIDTH = (0.907, 0.823)
-MAX_ROBOT_XY_SPEED, MAX_ROBOT_ANGULAR_SPEED = 4, 540
-ROBOT_XY_ACCEL, ROBOT_ANGULAR_ACCEL = 2, 270
+class PygameButton:
 
-SCREEN_LENGTH, SCREEN_WIDTH = (1200, 800)
-METER_TO_PIXEL = SCREEN_WIDTH / FIELD_WIDTH
-MAX_ARROW_LENGTH = 100
-SPEED_TO_PIXEL = (MAX_ARROW_LENGTH / MAX_ROBOT_XY_SPEED) / METER_TO_PIXEL
+    def __init__(self,
+                 master: pygame.Surface,
+                 centerPos: tuple[int, int],
+                 size: tuple[int, int],
+                 cmd: Callable[[], Any] = lambda: None,
+                 bgColor: str | tuple[int, int, int] = "#BBBBBB",
+                 hoverColor: str | tuple[int, int, int] = "#AAAAAA",
+                 text: pygame.Surface | None = None,
+                 polygon: list[tuple[int, int]] | None = None,
+                 polygonColor: str | tuple[int, int, int] = "white",
+                 soundFile: str = ""):
+        self.master = master
+        self.rect = pygame.Rect(centerPos, size)
+        self.rect.center = centerPos
+        self.cmd = cmd
+        self.bgColor = pygame.Color(bgColor)
+        self.hoverColor = pygame.Color(hoverColor)
+        self.text = text
+        self.polygon = polygon
+        self.polygonColor = polygonColor
+        self.sound = pygame.mixer.Sound(soundFile) if soundFile else None
+        self.actif = False
+
+    def update(self):
+        self.actif = True
+        # changer la couleur si le curseur est dans le bouton
+        couleur = self.hoverColor if self.rect.collidepoint(
+            pygame.mouse.get_pos()) else self.bgColor
+        pygame.draw.rect(self.master,
+                         couleur,
+                         self.rect,
+                         border_radius=self.rect.height // 5)
+
+        # rajouter le texte dans le bouton s'il y en a
+        if self.text:
+            self.master.blit(self.text,
+                             self.text.get_rect(center=self.rect.center))
+        # dessiner la forme sur le bouton s'il y en a une
+        if self.polygon:
+            pygame.draw.polygon(self.master, self.polygonColor, self.polygon)
+
+    def desactive(self):
+        self.actif = False
+
+    def checkClick(self):
+        if not self.actif:
+            return
+        # si clic dans le bouton, appeler la commande et jouer le son
+        if self.rect.collidepoint(pygame.mouse.get_pos()):
+            if self.sound: self.sound.play()
+            self.cmd()
+
+    # changer le texte du bouton
+    def changeText(self, text: pygame.Surface):
+        self.text = text
+
+    def setCmd(self, cmd: Callable[[], Any]):
+        self.cmd = cmd
+
+    def getText(self):
+        return self.text
 
 
 class Angle:
@@ -91,10 +158,10 @@ class Angle:
     def angleRad(self, newAngleRad: float):
         self.angleDeg = newAngleRad * (180 / math.pi)
 
-    def plus(self, other: Self):
+    def plus(self, other: "Angle") -> "Angle":
         return Angle(self.angleDeg + other.angleDeg)
 
-    def unaryMinus(self):
+    def unaryMinus(self) -> "Angle":
         return Angle(-self.angleDeg)
 
 
@@ -282,7 +349,7 @@ class Ball(CanvasObject):
             (BALL_DIAMETER * METER_TO_PIXEL, BALL_DIAMETER * METER_TO_PIXEL),
             pygame.SRCALPHA)
         object.fill(pygame.Color(0, 0, 0, 0))
-        pygame.draw.circle(object, pygame.Color("#e9de0f"),
+        pygame.draw.circle(object, SHOT_COLOR,
                            (object.get_width() // 2, object.get_height() // 2),
                            BALL_DIAMETER * METER_TO_PIXEL // 2)
         super().__init__(master, object, coordinates,
@@ -295,15 +362,15 @@ class Ball(CanvasObject):
             self._active = False
             self._velocity = Velocity(0, 0, 0)
             self._object.fill((0, 0, 0, 0))
-            pygame.draw.circle(self._object, pygame.Color("#e9de0f"),
+            pygame.draw.circle(self._object, SHOT_COLOR,
                                (self._object.get_width() // 2,
                                 self._object.get_height() // 2), 3)
 
         if self._active:
             drawVelocityArrow(self._master, self.position,
-                              self._turretVelocity, pygame.Color("#c823dd"), 3)
+                              self._turretVelocity, TURRET_COLOR, 3)
             drawVelocityArrow(self._master, self.position, self._shotVelocity,
-                              pygame.Color("#e9de0f"), 3)
+                              SHOT_COLOR, 3)
             drawVelocityArrow(self._master,
                               self.position,
                               self.velocity,
@@ -417,11 +484,10 @@ def drawVelocityArrow(screen: pygame.Surface,
 def drawTurret(screen: pygame.Surface):
     turretPose = robot.position.plus(
         TURRET_IN_ROBOT_POS.rotateBy(robot.position.angle))
-    pygame.draw.circle(screen, pygame.Color("#c823dd"),
-                       turretPose.tupleXYPixels(), 8)
+    pygame.draw.circle(screen, TURRET_COLOR, turretPose.tupleXYPixels(), 8)
     turretVelocity = getTurretVelocity()
 
-    drawVelocityArrow(screen, turretPose, turretVelocity)
+    drawVelocityArrow(screen, turretPose, turretVelocity, TURRET_COLOR)
 
 
 pygame.init()
@@ -458,6 +524,34 @@ clock = pygame.time.Clock()
 balls: List[Ball] = []
 tofFromDistance = InterpolatingDoubleTreeMap()
 distanceFromTof = InterpolatingDoubleTreeMap()
+
+correctionBtn = PygameButton(screen, (SCREEN_LENGTH - 100, 150), (100, 50),
+                             text=pygame.font.SysFont(None, 15).render(
+                                 "CORRECTION", True, (0, 0, 0)),
+                             bgColor="#15DD1F",
+                             hoverColor="#5DEF64")
+
+resultingText = pygame.font.SysFont(None, 20).render("RESULTING VELOCITY",
+                                                     True, (0, 0, 0))
+shotText = pygame.font.SysFont(None, 20).render("SHOT VELOCITY", True,
+                                                (0, 0, 0))
+turretText = pygame.font.SysFont(None, 20).render("TURRET VELOCITY", True,
+                                                  (0, 0, 0))
+
+
+def switchCorrectionMode():
+    global shootOnMoveCorrection
+    shootOnMoveCorrection = not shootOnMoveCorrection
+    if shootOnMoveCorrection:
+        correctionBtn.bgColor = pygame.Color("#15DD1F")
+        correctionBtn.hoverColor = pygame.Color("#5DEF64")
+
+    else:
+        correctionBtn.bgColor = pygame.Color("#DD1515")
+        correctionBtn.hoverColor = pygame.Color("#E15454")
+
+
+correctionBtn.setCmd(switchCorrectionMode)
 
 
 def fillTables(distance: float, tof: float):
@@ -519,6 +613,8 @@ while running:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 spawnBall(screen)
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            correctionBtn.checkClick()
 
     keys = pygame.key.get_pressed()
     updateRobotSpeeds(keys, dt)
@@ -529,6 +625,35 @@ while running:
         ball.update(dt)
 
     drawTurret(screen)
+
+    correctionBtn.update()
+    screen.blit(resultingText,
+                resultingText.get_rect(midright=(SCREEN_LENGTH - 150, 50)))
+    drawArrow(
+        screen,
+        Position((SCREEN_LENGTH - 125) / METER_TO_PIXEL,
+                 (SCREEN_WIDTH - 50) / METER_TO_PIXEL, Angle(0)),
+        Position((SCREEN_LENGTH - 50) / METER_TO_PIXEL,
+                 (SCREEN_WIDTH - 50) / METER_TO_PIXEL, Angle(0)))
+
+    screen.blit(shotText,
+                shotText.get_rect(midright=(SCREEN_LENGTH - 150, 75)))
+    drawArrow(
+        screen,
+        Position((SCREEN_LENGTH - 125) / METER_TO_PIXEL,
+                 (SCREEN_WIDTH - 75) / METER_TO_PIXEL, Angle(0)),
+        Position((SCREEN_LENGTH - 50) / METER_TO_PIXEL,
+                 (SCREEN_WIDTH - 75) / METER_TO_PIXEL, Angle(0)), SHOT_COLOR)
+
+    screen.blit(turretText,
+                turretText.get_rect(midright=(SCREEN_LENGTH - 150, 100)))
+    drawArrow(
+        screen,
+        Position((SCREEN_LENGTH - 125) / METER_TO_PIXEL,
+                 (SCREEN_WIDTH - 100) / METER_TO_PIXEL, Angle(0)),
+        Position((SCREEN_LENGTH - 50) / METER_TO_PIXEL,
+                 (SCREEN_WIDTH - 100) / METER_TO_PIXEL, Angle(0)),
+        TURRET_COLOR)
 
     pygame.display.flip()
 

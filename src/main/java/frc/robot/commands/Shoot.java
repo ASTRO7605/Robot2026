@@ -30,6 +30,7 @@ public class Shoot extends Command {
         shooter.turnOnShooter();
         shooterBase.ShooterBaseWheelsIn();
 
+    //Pour laisser le temps à la roue de shooter de monter en vitesse avant de faire avancer les balles
         shootCommand = new WaitCommand(.35). andThen(() -> conveyor.conveyorWheelsIn());
         shootCommand.schedule();
     }

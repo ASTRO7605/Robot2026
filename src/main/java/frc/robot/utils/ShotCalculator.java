@@ -25,6 +25,8 @@ public class ShotCalculator {
     private final InterpolatingDoubleTreeMap tofFromDistance = new InterpolatingDoubleTreeMap();
     // table de calcul de la distance en fonction du TOF
     private final InterpolatingDoubleTreeMap distanceFromTof = new InterpolatingDoubleTreeMap();
+    // table de calcul de l'angle de tir en fonction de la distance
+    private final InterpolatingDoubleTreeMap angleFromDistance = new InterpolatingDoubleTreeMap();
 
     private void addDataToTofTables(double distance, double tof) {
         tofFromDistance.put(distance, tof);
@@ -50,6 +52,17 @@ public class ShotCalculator {
         distanceToRpm.put(3.09, 2800.0);
         // put distance / tof couples
         addDataToTofTables(1.0, 1.0);
+
+        // put distance / angle couples
+        angleFromDistance.put(4.0,-40.0);
+        angleFromDistance.put(4.75, -23.61);
+        angleFromDistance.put(1.74, -5.84);
+        angleFromDistance.put(2.57, -1.92);
+        angleFromDistance.put(3.3, 63.75); 
+        angleFromDistance.put(4.18, 43.92);
+        angleFromDistance.put(5.1, 32.5);
+        angleFromDistance.put(3.16, 31.9);
+        angleFromDistance.put(3.09, -30.1);
     }
 
     public static ShotCalculator getInstance() {

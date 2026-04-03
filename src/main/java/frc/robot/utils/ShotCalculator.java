@@ -58,17 +58,6 @@ public class ShotCalculator {
         distanceToRpm.put(3.09, 2800.0);
         // put distance / tof couples
         addDataToTofTables(1.0, 1.0);
-
-        // put distance / angle couples
-        angleFromDistance.put(4.0,-40.0);
-        angleFromDistance.put(4.75, -25.0);
-        angleFromDistance.put(1.74, -5.0);
-        angleFromDistance.put(2.57, 0.0);
-        angleFromDistance.put(3.3, 65.0); 
-        angleFromDistance.put(4.18, 45.0);
-        angleFromDistance.put(5.1, 30.0);
-        angleFromDistance.put(3.16, 30.0);
-        angleFromDistance.put(3.09, -30.0);
     }
 
     public static ShotCalculator getInstance() {

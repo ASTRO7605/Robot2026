@@ -272,7 +272,7 @@ public class RobotContainer {
         m_driverController.a()
                 .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeIn(m_intake))));
         m_driverController.y()
-                .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake))));
+                .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake, m_conveyor))));
 
         m_driverController.leftBumper()
         .onTrue(new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(1)));

@@ -242,4 +242,12 @@ public class Intake extends SubsystemBase {
     public void safeStop() {
         setManualMotorPercentage(0, false);
     }
+
+    public boolean isAtTarget(double target) {
+        return Math.abs(getEncoderPosition() - target) <= IntakeConstants.kPositionThreshold;
+    }
+
+     public String getSubsystem() {
+        return "Intake";
+     }
 }

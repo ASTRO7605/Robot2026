@@ -45,6 +45,7 @@ import frc.robot.commands.ManualClimb;
 import frc.robot.commands.PrepareClimb;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TurretInit;
+import frc.robot.commands.WiggleIntake;
 import frc.robot.commands.StopShoot;
 
 /**
@@ -193,76 +194,18 @@ public class RobotContainer {
 
         /* Copilot Buttons */
 
-        //
-        // m_driverController.leftTrigger().onTrue(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelsOut()));
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelOff()));
-
-        // m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-        // if (ShooterButtonCounter == 0) {
-        // m_shooter.setMotorSpeed(3200);
-        // ShooterButtonCounter += 1;
-        // } else if (ShooterButtonCounter == 1) {
-        // m_shooter.setMotorSpeed(0);
-        // ShooterButtonCounter -= 1;
-        // }
-        // }));
-
         m_driverController.rightBumper().whileTrue(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle));
-
-        // if (ShooterButtonCounter == 0){
-        // CommandScheduler.getInstance().schedule(new Shoot(m_shooter, m_conveyor,
-        // m_shooterBase));
-        // ShooterButtonCounter += 1;
-        // } else if (ShooterButtonCounter == 1){
-        // new InstantCommand(()-> m_conveyor.conveyorWheelsIn()).schedule();
-        // ShooterButtonCounter += 1;
-        // } else if(ShooterButtonCounter == 2){
-        // CommandScheduler.getInstance().schedule(new StopShoot(m_shooter, m_conveyor,
-        // m_shooterBase));
-        // ShooterButtonCounter = 0;
-
-        // }}));
 
         m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
             m_shooterBase.setMotorSpeed(-500);
+        m_driverController.leftTrigger().onFalse(new InstantCommand(() -> 
+            m_shooterBase.ShooterBaseWheelOff()));
         }));
-        // m_driverController.rightBumper().onTrue(new InstantCommand(() ->
-        // m_shooter.setMotorSpeed(3000)));
-        // m_driverController.rightBumper().onFalse(new InstantCommand(() ->
-        // m_shooter.stopMotors()));
 
         m_driverController.povRight().onTrue(new InstantCommand(() -> m_tourelle.turnRight()));
         m_driverController.povRight().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
         m_driverController.povLeft().onTrue(new InstantCommand(() -> m_tourelle.turnLeft()));
         m_driverController.povLeft().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
-
-        // m_driverController.y()
-        // .onTrue(new InstantCommand(() -> m_intake.goToPosition(intakePos.Stowed)));
-
-        // m_driverController.y()
-        // .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
-        // IntakeOut(m_intake))));
-        // m_driverController.y().onFalse(new InstantCommand(() ->
-        // m_intake.safeStop()));
-        // m_driverController.a()
-        // .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new
-        // IntakeInit(m_intake))));
-        // m_driverController.a().onFalse(new InstantCommand(() ->
-        // m_intake.safeStop()));
-        // m_driverController.a().onTrue(new IntakeInit(m_intake));
-
-        // m_driverController.leftBumper().onTrue(
-        // new InstantCommand(() ->
-        // m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageIn)));
-        // m_driverController.leftBumper().onFalse(new InstantCommand(() ->
-        // m_conveyor.ConveyorWheelOff()));
-        // m_driverController.leftTrigger().onTrue(new InstantCommand(
-        // () ->
-        // m_conveyor.setConveyorOutputPercentage(ConveyorConstants.manualPercentageOut)));
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
-        // m_conveyor.ConveyorWheelOff()));
 
         // Intake Commands
         m_driverController.a()
@@ -270,14 +213,12 @@ public class RobotContainer {
         m_driverController.y()
                 .whileTrue(new IntakeOut(m_intake, m_conveyor));
 
-        m_driverController.leftBumper()
-                .onTrue(new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(1)));
-        m_driverController.leftBumper()
-                .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
         m_driverController.leftTrigger()
                 .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
         m_driverController.leftTrigger()
                 .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+
+        m_driverController.leftBumper().whileTrue(new WiggleIntake(m_intake));
         // Climb Commands
         m_driverController.b().onTrue(new InstantCommand(() -> {
             if (ClimbButtonCounter == 0) {
@@ -290,32 +231,7 @@ public class RobotContainer {
         }));
         m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.increaseMOtorSpeed()));
         m_driverController.povDown().onTrue(new InstantCommand(() -> m_shooter.decreaseMotorSpeed()));
-        // m_driverController.b()
-        // .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Stowed)));
-        // m_driverController.x()
-        // .onTrue(new InstantCommand(() -> m_climb.goToPosition(climbLvl.Extended)));
-        // m_driverController.rightTrigger().onTrue(
-        // new InstantCommand(() -> m_climb.goToPosition(climbLvl.Hang)));
-
-        // m_driverController.b().and(() -> !m_climb.getPrepareClimb())
-        // .onTrue(new PrepareClimb(m_climb));
-
-        // m_driverController.b().multiPress(2, 0.3)
-        // .and(() -> m_climb.getPrepareClimb()).onTrue(new ClimbBar(m_climb));
-
-        // m_driverController.y().debounce(0.5).onTrue(new InstantCommand(() ->
-        // CommandScheduler.getInstance().schedule(new
-        // ConveyorIn(m_conveyor))));
-        // m_driverController.y().onTrue(new InstantCommand(() ->
-        // CommandScheduler.getInstance().schedule(new
-        // IntakeOut(m_intake))));
-        // m_driverController.y().debounce(0.5).onTrue(new InstantCommand(() ->
-        // CommandScheduler.getInstance().schedule(new
-        // ConveyorIn(m_conveyor))));
-
-        // m_driverController.leftStick().debounce(0.2)
-        // .onTrue(Changement cible);
-
+        
     }
 
     /**

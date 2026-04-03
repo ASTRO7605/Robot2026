@@ -260,13 +260,17 @@ public final class Constants {
         public static final double manualSpeed = 0.1;
         public static final double initSpeed = 0.08;
 
-        public static final double kPositionThreshold = 0.25; // degrees
+        public static final double wiggleTime = 1.0; // seconds
+
+        public static final double kPositionThreshold = 3; // degrees
 
         // enum pour les positions de l'intake
         public static enum intakePos {
             // in degrees
             Stowed(-20),
-            Down(-140);
+            Down(-143),
+            WiggleOut(-120),
+            WiggleIn(-70);
 
             public final double position;
 
@@ -292,6 +296,9 @@ public final class Constants {
 
         public static final double setConveyorInSpeed = 3000;
         public static final double setConveyorOutSpeed = -1000;
+
+        public static final double conveyorTimeIn = 1.0; // seconds
+        public static final double conveyorTimeOff = 0.25; // seconds
 
         public static final double manualPercentageIn = 1;
         public static final double manualPercentageOut = -1;

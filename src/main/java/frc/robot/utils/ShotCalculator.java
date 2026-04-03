@@ -19,6 +19,7 @@ public class ShotCalculator {
     private Field2d turretToTargetField;
     private double lastTargetDistance = 0;
     private double targetAngle = 0;
+    private final boolean usingShootOnMove = false;
 
     // table de calcul de la vitesse en fonction de la distance
     private final InterpolatingDoubleTreeMap distanceToRpm = new InterpolatingDoubleTreeMap();
@@ -36,28 +37,39 @@ public class ShotCalculator {
 
     public double getRpmForDistance() {
         return distanceToRpm.get(lastTargetDistance);
-    }   
+    }
+
     public double getTargetAngle() {
         return targetAngle;
     }
+
     public double getAngleForDistance() {
         return angleFromDistance.get(lastTargetDistance);
     }
+
     private ShotCalculator() {
         turretToTargetField = new Field2d();
         // put distance / speed couples
-        distanceToRpm.put(3.4, 3000.0);
-        distanceToRpm.put(4.0,3300.0);
-        distanceToRpm.put(4.75, 3500.0);
-        distanceToRpm.put(1.74, 2500.0);
-        distanceToRpm.put(2.57, 2800.0);
-        distanceToRpm.put(3.3, 2900.0); 
-        distanceToRpm.put(4.18, 3300.0);
-        distanceToRpm.put(5.1, 3700.0);
-        distanceToRpm.put(3.16, 2800.0);
-        distanceToRpm.put(3.09, 2800.0);
+        // distanceToRpm.put(1.74, 2500.0);
+        // distanceToRpm.put(2.57, 2800.0);
+        // distanceToRpm.put(3.09, 2800.0);
+        // distanceToRpm.put(3.16, 2800.0);
+        // distanceToRpm.put(3.3, 2900.0);
+        // distanceToRpm.put(3.4, 3000.0);
+        // distanceToRpm.put(4.0, 3300.0);
+        // distanceToRpm.put(4.18, 3300.0);
+        // distanceToRpm.put(4.75, 3500.0);
+        // distanceToRpm.put(5.1, 3700.0);
+
+        distanceToRpm.put(1.74, 2675.0);
+        distanceToRpm.put(2.0, 2700.0);
+        distanceToRpm.put(2.27, 2750.0);
+        distanceToRpm.put(2.5, 2825.0);
+        distanceToRpm.put(2.75, 2875.0);
         // put distance / tof couples
         addDataToTofTables(1.0, 1.0);
+
+        SmartDashboard.putNumber("Test Shooter Speeds", 0);
     }
 
     public static ShotCalculator getInstance() {
@@ -79,9 +91,10 @@ public class ShotCalculator {
         Pose2d projectedTurretPose = projectedRobotPose.transformBy(DriveConstants.kTurretRobotPosition);
 
         // METHOD 1: vector subtraction to simulate a static shot from where we are
-
         // convert robot relative speeds to field relative
-        ChassisSpeeds fieldSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, robotPose.getRotation());
+        ChassisSpeeds fieldSpeeds = usingShootOnMove
+                ? ChassisSpeeds.fromRobotRelativeSpeeds(robotSpeeds, robotPose.getRotation())
+                : new ChassisSpeeds();
 
         // calculate the x and y speed of the turret
         Translation2d robotToTurretInField = DriveConstants.kTurretRobotPosition.getTranslation()
@@ -99,27 +112,33 @@ public class ShotCalculator {
 
         double desiredBallSpeed = targetDistance
                 / tofFromDistance.get(targetDistance);
-        Translation2d resultVector = new Translation2d(desiredBallSpeed, turretToTargetTranslation.getAngle());
+        Translation2d resultVector = new Translation2d(desiredBallSpeed,
+                turretToTargetTranslation.getAngle());
 
         // result vector - robot speed vector = shot vector
-        Translation2d shotVector = resultVector.minus(new Translation2d(turretXSpeed, turretYSpeed));
+        Translation2d shotVector = resultVector.minus(new Translation2d(turretXSpeed,
+                turretYSpeed));
 
         // calculate wheel parameters
         double estimatedDistance = targetDistance;
         lastTargetDistance = targetDistance;
 
-        for (int i = 0; i < 3; i++) {
-            // calculate the speed of the ball from this estimated distance
-            double estimatedTof = tofFromDistance.get(estimatedDistance);
-            double resultingSpeed = estimatedDistance / estimatedTof;
+        if (usingShootOnMove) {
+            for (int i = 0; i < 3; i++) {
+                // calculate the speed of the ball from this estimated distance
+                double estimatedTof = tofFromDistance.get(estimatedDistance);
+                double resultingSpeed = estimatedDistance / estimatedTof;
 
-            // try to reduce the error by interpolating
-            double ratio = shotVector.getNorm() / resultingSpeed;
-            estimatedDistance *= ratio;
+                // try to reduce the error by interpolating
+                double ratio = shotVector.getNorm() / resultingSpeed;
+                estimatedDistance *= ratio;
+            }
         }
 
         double wheelSpeeds = distanceToRpm.get(estimatedDistance);
-    
+        wheelSpeeds = SmartDashboard.getNumber("Test Shooter Speeds", 0);
+        SmartDashboard.putNumber("turretCalculatedSpeeds", wheelSpeeds);
+
         // turret angle
         Rotation2d turretAngle = shotVector.getAngle().minus(projectedRobotPose.getRotation());
         targetAngle = turretAngle.getDegrees();

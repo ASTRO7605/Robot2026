@@ -83,8 +83,10 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber(getSubsystem() + ".RightShootVelocity", rightShootEncoder.getVelocity()/ ShooterConstants.fVelocityConversion);
-        SmartDashboard.putNumber(getSubsystem() + ".LeftShootVelocity", leftShootEncoder.getVelocity()/ ShooterConstants.fVelocityConversion);
+        SmartDashboard.putNumber(getSubsystem() + ".RightShootVelocity",
+                rightShootEncoder.getVelocity() / ShooterConstants.fVelocityConversion);
+        SmartDashboard.putNumber(getSubsystem() + ".LeftShootVelocity",
+                leftShootEncoder.getVelocity() / ShooterConstants.fVelocityConversion);
         SmartDashboard.putNumber("shooterRightAppliedOutput", rightShootMotor.getAppliedOutput());
         SmartDashboard.putNumber("shooterLeftAppliedOutput", leftShootMotor.getAppliedOutput());
         SmartDashboard.putNumber("shooterRightCurrent", rightShootMotor.getOutputCurrent());
@@ -122,6 +124,10 @@ public class Shooter extends SubsystemBase {
 
     }
 
+    public boolean areWheelsAtSpeed(double speed) {
+        return Math.abs(speed - rightShootEncoder.getVelocity()) <= ShooterConstants.kSpeedShootThreshold;
+    }
+
     // percentage de la puissance du moteur, de -100% à 100%
     public void setManualMotorPercentage(double percentage) {
 
@@ -134,11 +140,12 @@ public class Shooter extends SubsystemBase {
     public void stopMotors() {
         rightShootMotor.stopMotor();
     }
-    /*Méthode de tirs automatique par distance */
+
+    /* Méthode de tirs automatique par distance */
     public void turnOnShooter() {
         setMotorSpeed(ShotCalculator.getInstance().getRpmForDistance());
     }
-    
+
     public void setMotorSpeed(double speed) {
         rightShootController.setSetpoint(
                 speed,
@@ -179,7 +186,7 @@ public class Shooter extends SubsystemBase {
 
     public void decreaseMotorSpeed() {
         targetVelocity -= 100;
-        if(targetVelocity < 1000) {
+        if (targetVelocity < 1000) {
             targetVelocity = 1000;
         }
         setMotorSpeed(targetVelocity);

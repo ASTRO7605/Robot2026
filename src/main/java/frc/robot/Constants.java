@@ -220,7 +220,7 @@ public final class Constants {
         public static enum climbLvl {
             // in inches
             Stowed(2.8), // hauteur légale pour le climb
-            Hang(1.9), // hauteur pour accrocher le robot à la barre 
+            Hang(1.9), // hauteur pour accrocher le robot à la barre
             Extended(12.2);// ~30 inch
 
             public final double position;
@@ -265,7 +265,7 @@ public final class Constants {
         // enum pour les positions de l'intake
         public static enum intakePos {
             // in degrees
-            Stowed(-0.1),
+            Stowed(-20),
             Down(-140);
 
             public final double position;
@@ -283,7 +283,7 @@ public final class Constants {
 
         public static final int intakeRollerPdhChannel = 17;
 
-        public static final int kCurrentLimit = 65;
+        public static final int kCurrentLimit = 50;
 
         public static final double kp = 0.0;
         public static final double ki = 0.0;
@@ -308,16 +308,18 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int rightShooterMotorId = 13;
         public static final int leftShooterMotorId = 14;
-        public static final double kp = 0.00002;
+        public static final double kp = 0.0001;
         public static final double ki = 0.0;
-        public static final double kd = 0.00003;
+        public static final double kd = 0.000175;
         public static final double kv = 0.0021;
         public static final int kCurrentLimit = 65;
         // RPM -> rotations par minute
         public static final double fPositionConversion = 1;
-        public static final double fVelocityConversion = fPositionConversion / 60;
+        public static final double fVelocityConversion = 1;
 
         public static final double kPredictPoseLatency = 0.1; // seconds
+
+        public static final double kSpeedShootThreshold = 100;
     }
 
     // constantes pour la base du shooter
@@ -347,14 +349,15 @@ public final class Constants {
 
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
-        public static final double kLimitSwitchPosition = 66.85; // degrees
-        public static final double kSoftLimitReverse = -66; // TODO
-        public static final double kInitPercentage = 0.1;
+        public static final double kLimitSwitchPosition = 66; // degrees
+        public static final double kSoftLimitReverse = -67;
+        public static final double kInitPercentage = 0.075;
 
-        public static final double kMaxSetpoint = 68.85;
-        public static final double kMinSetpoint = -64;
+        public static final double kMaxSetpoint = 65;
+        public static final double kMinSetpoint = -66;
         public static final double kExtremesThreshold = 15;
 
+        public static final double kAngleShootThreshold = 1;
     }
 
     public static final class FieldConstants {

@@ -47,6 +47,7 @@ public class Tourelle extends SubsystemBase {
     private double oldKd = TurretConstants.kd;
     private double oldKi = TurretConstants.ki;
     private double targetAngle = 0;
+
     // constructeur du sous-système
     public Tourelle() {
         // configutation du moteur (le temp d'attente de réponse du moteur)
@@ -103,7 +104,6 @@ public class Tourelle extends SubsystemBase {
         kp = Preferences.getDouble("tourelle.kP", TurretConstants.kp);
         ki = Preferences.getDouble("tourelle.kI", TurretConstants.ki);
         kd = Preferences.getDouble("tourelle.kD", TurretConstants.kd);
-        
 
         if (oldKd != kd || oldKi != ki || oldKp != kp) {
             currentConfig.closedLoop
@@ -184,12 +184,11 @@ public class Tourelle extends SubsystemBase {
         return command;
     }
 
-
-    
-    public void requestTurretAngle(Rotation2d angle) {
+    public boolean requestTurretAngle(Rotation2d angle) {
         // if request is in normal range, go to request
         // if request is out of range but close to extremes, go to extremes
         // if request is out of range and too far from extremes, go to middle
+        boolean valid = false;
         double target = angle.getDegrees();
         if (angle.getDegrees() > TurretConstants.kMaxSetpoint) {
             if (angle.getDegrees() <= (TurretConstants.kMaxSetpoint + TurretConstants.kExtremesThreshold)) {
@@ -207,8 +206,15 @@ public class Tourelle extends SubsystemBase {
                 // too far under -> middle
                 target = 0;
             }
+        } else {
+            valid = true;
         }
         goToPosition(target);
+        return valid;
+    }
+
+    public boolean isAtTarget(Rotation2d target) {
+        return Math.abs(turretEncoder.getPosition() - target.getDegrees()) <= TurretConstants.kAngleShootThreshold;
     }
 
     public void FollowTarget(double targetPosition) {
@@ -223,28 +229,27 @@ public class Tourelle extends SubsystemBase {
         setMotorPercentage(0);
     }
 
-    public void turnRight(){
+    public void turnRight() {
         targetAngle -= 5;
-        if(targetAngle < TurretConstants.kMinSetpoint){
+        if (targetAngle < TurretConstants.kMinSetpoint) {
             targetAngle = TurretConstants.kMinSetpoint;
-        } 
+        }
         requestTurretAngle(Rotation2d.fromDegrees(targetAngle));
     }
 
-    public void turnLeft(){
+    public void turnLeft() {
         targetAngle += 5;
-        if(targetAngle > TurretConstants.kMaxSetpoint){
+        if (targetAngle > TurretConstants.kMaxSetpoint) {
             targetAngle = TurretConstants.kMaxSetpoint;
         }
         requestTurretAngle(Rotation2d.fromDegrees(targetAngle));
     }
 
     public void goToAngle() {
-        if(!initDone) {
+        if (!initDone) {
             System.out.println("Not initialized. Ignoring command");
-        }
-        else {
-            if(targetAngle > TurretConstants.kMaxSetpoint) {
+        } else {
+            if (targetAngle > TurretConstants.kMaxSetpoint) {
                 targetAngle = TurretConstants.kMaxSetpoint;
             } else if (targetAngle < TurretConstants.kMinSetpoint) {
                 targetAngle = TurretConstants.kMinSetpoint;

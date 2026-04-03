@@ -3,6 +3,7 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.intakePos;
+import frc.lib.math.Conversions;
 import frc.robot.Constants.ConveyorConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
@@ -14,7 +15,7 @@ public class IntakeOut extends Command {
     public IntakeOut(Intake intake, Conveyor conveyor) {
         this.intake = intake;
         this.conveyor = conveyor;
-        addRequirements(intake, conveyor);
+        addRequirements(conveyor);
     }
 
     @Override
@@ -24,7 +25,7 @@ public class IntakeOut extends Command {
 
     @Override
     public void execute() {
-        conveyor.setConveyorWheelsSpeed(ConveyorConstants.setConveyorInSpeed);
+        conveyor.conveyorWheelsIn();
     }
 
     @Override
@@ -34,7 +35,7 @@ public class IntakeOut extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        intake.keepPosition();
+        conveyor.ConveyorWheelOff();
     }
 
 }

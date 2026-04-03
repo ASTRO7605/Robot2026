@@ -266,16 +266,16 @@ public class RobotContainer {
 
         // Intake Commands
         m_driverController.a()
-                .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeIn(m_intake))));
+                .onTrue(new IntakeIn(m_intake));
         m_driverController.y()
-                .onTrue(new InstantCommand(() -> CommandScheduler.getInstance().schedule(new IntakeOut(m_intake, m_conveyor))));
+                .whileTrue(new IntakeOut(m_intake, m_conveyor));
 
         m_driverController.leftBumper()
                 .onTrue(new InstantCommand(() -> m_conveyor.setConveyorOutputPercentage(1)));
         m_driverController.leftBumper()
                 .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
         m_driverController.leftTrigger()
-                .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut()));
+                .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
         m_driverController.leftTrigger()
                 .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
         // Climb Commands

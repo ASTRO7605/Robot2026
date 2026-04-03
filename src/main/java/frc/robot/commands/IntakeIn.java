@@ -4,27 +4,28 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.IntakeConstants.intakePos;
 import frc.robot.subsystems.Intake;
 
-
 public class IntakeIn extends Command {
     private final Intake intake;
 
     public IntakeIn(Intake intake) {
         this.intake = intake;
-        addRequirements(intake);
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
         intake.goToPosition(intakePos.Stowed);
     }
 
     @Override
+    public void execute() {
+    }
+
+    @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
 
     @Override
     public void end(boolean interrupted) {
-        intake.keepPosition();
     }
 }

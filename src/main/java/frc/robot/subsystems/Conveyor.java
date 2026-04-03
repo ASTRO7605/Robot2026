@@ -122,8 +122,8 @@ public class Conveyor extends SubsystemBase {
         SmartDashboard.putBoolean("IntakeStopped", isIntakeWheelStopped());
         SmartDashboard.putNumber("IntakeOutput", intakeRollerMotor.getAppliedOutput());
         SmartDashboard.putNumber("Intake Roller Motor Current", intakeRollerMotor.getOutputCurrent());
-        // SmartDashboard.putNumber("Intake Roller PDH Current", PDH.getInstance().getChannelCurrent(ConveyorConstants.intakeRollerPdhChannel));
-
+        // SmartDashboard.putNumber("Intake Roller PDH Current",
+        // PDH.getInstance().getChannelCurrent(ConveyorConstants.intakeRollerPdhChannel));
 
     }
 

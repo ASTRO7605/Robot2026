@@ -60,7 +60,7 @@ public class Base extends SubsystemBase {
     private final Field2d m_robotField;
 
     private final Map<String, LimelightVisionModule> m_visionModules = new HashMap<>();
-    private boolean useVision = false;
+    private boolean useVision = true;
 
     private Translation2d m_currentTarget;
     private final MutVoltage m_appliedVoltage = Volts.mutable(0);

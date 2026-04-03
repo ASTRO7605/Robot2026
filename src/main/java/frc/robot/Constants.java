@@ -220,7 +220,7 @@ public final class Constants {
         public static enum climbLvl {
             // in inches
             Stowed(2.8), // hauteur légale pour le climb
-            Hang(1.9), // hauteur pour accrocher le robot à la barre
+            Hang(0), // hauteur pour accrocher le robot à la barre
             Extended(12.2);// ~30 inch
 
             public final double position;

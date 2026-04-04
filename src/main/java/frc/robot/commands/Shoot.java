@@ -61,7 +61,7 @@ public class Shoot extends Command {
 
         if (conveyorOn) {
             if(conveyorTimer.hasElapsed(ConveyorConstants.conveyorTimeIn)){
-                conveyor.ConveyorWheelOff();
+                conveyor.conveyorWheelsOff();
                 conveyorOn = false;
                 conveyorTimer.restart();
             }
@@ -79,7 +79,7 @@ public class Shoot extends Command {
     @Override
     public void end(boolean interrupted) {
         shooter.setMotorSpeed(0);
-        conveyor.ConveyorWheelOff();
+        conveyor.conveyorWheelsOff();
         shooterBase.ShooterBaseWheelOff();
         tourelle.requestTurretAngle(new Rotation2d(0));
     }

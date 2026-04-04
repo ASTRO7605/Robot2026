@@ -35,7 +35,7 @@ public class IntakeOut extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        conveyor.ConveyorWheelOff();
+        conveyor.conveyorWheelsOff();
     }
 
 }

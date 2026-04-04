@@ -163,7 +163,7 @@ public class Conveyor extends SubsystemBase {
     }
 
     // arrête les roues du convoyeur
-    public void ConveyorWheelOff() {
+    public void conveyorWheelsOff() {
         ConvMotor.stopMotor();
         intakeRollerMotor.stopMotor();
     }

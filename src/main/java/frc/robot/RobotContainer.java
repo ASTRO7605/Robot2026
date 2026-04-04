@@ -29,6 +29,7 @@ import frc.robot.Constants.ClimbConstants.climbLvl;
 import frc.robot.Constants.IntakeConstants.intakePos;
 import frc.robot.commands.ClimbBar;
 import frc.robot.commands.ClimberInit;
+import frc.robot.commands.EverythingOut;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeInit;
 import frc.robot.subsystems.Base;
@@ -68,10 +69,12 @@ public class RobotContainer {
     private int ClimbButtonCounter = 0;
     private int ShootButtonCounter = 0;
     private int ConveyorButtonCounter = 0;
+    private int intakeButtonCounter = 0;
 
     private double driverMulti = 1;
 
     private final SendableChooser<Command> m_chooser;
+
 
     /* Subsystems */
     private Base m_base;
@@ -194,13 +197,21 @@ public class RobotContainer {
 
         /* Copilot Buttons */
 
-        m_driverController.rightBumper().whileTrue(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle));
+        m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
+            if(ShootButtonCounter == 0) {
+                CommandScheduler.getInstance().schedule(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle));
+                ShootButtonCounter += 1;
+            }else if (ShootButtonCounter == 1){
+                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {}, m_shooter));
+                ShootButtonCounter -= 1;
+            }
+            }));
 
-        m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
-            m_shooterBase.setMotorSpeed(-500);
-        m_driverController.leftTrigger().onFalse(new InstantCommand(() -> 
-            m_shooterBase.ShooterBaseWheelOff()));
-        }));
+        // m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
+        //     m_shooterBase.setMotorSpeed(-500);
+        // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> 
+        //     m_shooterBase.ShooterBaseWheelOff()));
+        // }));
 
         m_driverController.povRight().onTrue(new InstantCommand(() -> m_tourelle.turnRight()));
         m_driverController.povRight().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
@@ -208,15 +219,17 @@ public class RobotContainer {
         m_driverController.povLeft().onFalse(new InstantCommand(() -> m_tourelle.safeStop()));
 
         // Intake Commands
-        m_driverController.a()
-                .onTrue(new IntakeIn(m_intake));
-        m_driverController.y()
-                .whileTrue(new IntakeOut(m_intake, m_conveyor));
+        m_driverController.a().onTrue(new IntakeIn(m_intake));
+        
+        m_driverController.y().whileTrue(new IntakeOut(m_intake, m_conveyor));
+
+        // m_driverController.leftTrigger()
+        //         .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
+        // m_driverController.leftTrigger()
+        //         .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
 
         m_driverController.leftTrigger()
-                .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
-        m_driverController.leftTrigger()
-                .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+                .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
 
         m_driverController.leftBumper().whileTrue(new WiggleIntake(m_intake));
         // Climb Commands

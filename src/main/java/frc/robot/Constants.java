@@ -364,7 +364,7 @@ public final class Constants {
         public static final double kMinSetpoint = -66;
         public static final double kExtremesThreshold = 15;
 
-        public static final double kAngleShootThreshold = 1;
+        public static final double kAngleShootThreshold = 1.5;
     }
 
     public static final class FieldConstants {

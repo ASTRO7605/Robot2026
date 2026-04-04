@@ -25,7 +25,7 @@ public class StopShoot extends Command {
     @Override
     public void execute() {
         shooter.setMotorSpeed(0);
-        conveyor.ConveyorWheelOff();
+        conveyor.conveyorWheelsOff();
         shooterBase.ShooterBaseWheelOff();
     }
     

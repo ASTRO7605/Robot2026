@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.xml.crypto.dsig.Transform;
-
 import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -63,7 +61,7 @@ public class Base extends SubsystemBase {
     private boolean useVision = true;
 
     private Translation2d m_currentTarget;
-    private final MutVoltage m_appliedVoltage = Volts.mutable(0);
+    // private final MutVoltage m_appliedVoltage = Volts.mutable(0);
 
     /** radians */
     private double m_gyroOffset = 0.0;
@@ -71,17 +69,7 @@ public class Base extends SubsystemBase {
 
     private final ShotCalculator shotCalculator;
 
-    SysIdRoutine routine = new SysIdRoutine(
-            new SysIdRoutine.Config(),
-            new SysIdRoutine.Mechanism(
-                    voltage -> sysIdMotorsVoltage(voltage),
-                    log -> {
-                        log.motor("drive")
-                                .voltage(m_appliedVoltage)
-                                .linearVelocity(MetersPerSecond.of(getRobotRelativeSpeeds().vxMetersPerSecond))
-                                .linearPosition(Meters.of(getPose().getX()));
-                    },
-                    this));
+    private final SysIdRoutine routine;
 
     public Base() {
         m_gyro = new Pigeon2(Constants.DriveConstants.pigeonID, canbus);
@@ -94,7 +82,6 @@ public class Base extends SubsystemBase {
         Optional<RobotConfig> robotConfig;
 
         try {
-            // TODO: set config in pathplanner GUI
             robotConfig = Optional.of(RobotConfig.fromGUISettings());
         } catch (Exception e) {
             robotConfig = Optional.empty();
@@ -114,6 +101,18 @@ public class Base extends SubsystemBase {
                 new Pose2d(new Translation2d(0, 0), new Rotation2d(0)),
                 PoseEstimationConstants.kStateStdDevs,
                 PoseEstimationConstants.kVisionStdDevsDefault);
+
+        routine = new SysIdRoutine(
+                new SysIdRoutine.Config(),
+                new SysIdRoutine.Mechanism(
+                        voltage -> sysIdMotorsVoltage(voltage),
+                        log -> {
+                            log.motor("drive")
+                                    .voltage(m_swerveMods[0].getAppliedVoltage())
+                                    .linearVelocity(MetersPerSecond.of(getRobotRelativeSpeeds().vxMetersPerSecond))
+                                    .linearPosition(Meters.of(getPose().getX()));
+                        },
+                        this));
 
         SmartDashboard.putData("Robot Measurement", m_robotField);
 
@@ -309,7 +308,6 @@ public class Base extends SubsystemBase {
                 continue;
             }
 
-            // TODO: decide filter strategy and tune std devs
             var stdDevs = PoseEstimationConstants.kVisionStdDevsPerMeterGlobal.times(distance)
                     .plus(PoseEstimationConstants.kVisionStdDevsBaselineGlobal);
 
@@ -439,21 +437,22 @@ public class Base extends SubsystemBase {
     }
 
     public void sysIdMotorsVoltage(Voltage voltage) {
-        m_appliedVoltage.mut_replace(voltage);
+        // m_appliedVoltage.mut_replace(voltage);
 
-        resetModulesToAbsolute();
-        setModulesFacingForward();
-        m_gyro.setYaw(0);
+        // resetModulesToAbsolute();
+        // setModulesFacingForward();
+        // m_gyro.setYaw(0);
         double volts = voltage.in(edu.wpi.first.units.Units.Volts);
-        double currentYaw = m_gyro.getYaw().getValueAsDouble();
-        Rotation2d headingCorrection = Rotation2d.fromDegrees(-currentYaw); // Rotate wheels slightly if needed
+        // double currentYaw = m_gyro.getYaw().getValueAsDouble();
+        // Rotation2d headingCorrection = Rotation2d.fromDegrees(-currentYaw); // Rotate
+        // wheels slightly if needed
 
         for (SwerveModule mod : m_swerveMods) {
 
             // lock wheel forward
-            Rotation2d targetAngle = new Rotation2d(0).plus(headingCorrection);
+            // Rotation2d targetAngle = new Rotation2d(0).plus(headingCorrection);
 
-            mod.setDesiredState(new SwerveModuleState(0, targetAngle), false);
+            // mod.setDesiredState(new SwerveModuleState(0, targetAngle), false);
             mod.sysIdMotorVoltage(volts);
         }
     }

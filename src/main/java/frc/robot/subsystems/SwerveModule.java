@@ -12,6 +12,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Voltage;
 import frc.lib.math.Conversions;
 import frc.lib.util.SwerveModuleConstants;
 import frc.robot.Constants;
@@ -105,8 +106,11 @@ public class SwerveModule {
         m_angleMotor.setNeutralMode(neutralMode);
     }
 
-     
     public void sysIdMotorVoltage(double voltage) {
         m_driveMotor.setVoltage(voltage);
+    }
+
+    public Voltage getAppliedVoltage() {
+        return m_driveMotor.getMotorVoltage().getValue();
     }
 }

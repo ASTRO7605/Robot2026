@@ -39,8 +39,8 @@ public final class Constants {
                 .KrakenX60(COTSTalonFXSwerveConstants.SDS.MK4i.driveRatios.L2);
 
         /* Drivetrain Constants */
-        public static final double trackWidth = Units.inchesToMeters(20.75);
         public static final double wheelBase = Units.inchesToMeters(23.75);
+        public static final double trackWidth = Units.inchesToMeters(20.75);
         public static final double wheelCircumference = chosenModule.wheelCircumference;
 
         // with bumpers
@@ -108,19 +108,19 @@ public final class Constants {
         public static final double driveKV = 2.4;
         public static final double driveKA = 0.0353;
 
-        public static final double kXYMovementP = 5;
-        public static final double kXYMovementI = 0;
-        public static final double kXYMovementD = 0;
+        // public static final double kXYMovementP = 5;
+        // public static final double kXYMovementI = 0;
+        // public static final double kXYMovementD = 0;
 
-        public static final double kRotationMovementP = 5;
-        public static final double kRotationMovementI = 0;
-        public static final double kRotationMovementD = 0;
+        // public static final double kRotationMovementP = 5;
+        // public static final double kRotationMovementI = 0;
+        // public static final double kRotationMovementD = 0;
 
         /* Swerve Profiling Values */
         /** Meters per Second */
         public static final double kMaxTeleopSpeed = 5.25;
         /** Radians per Second */
-        public static final double kMaxTeleopRotateSpeed = 2 * Math.PI;
+        public static final double kMaxTeleopRotateSpeed = 3 * Math.PI;
 
         public static final double kGeneralSpeedMulti = .8;
         public static final double kDriverMultiSlow = 0.15;
@@ -233,7 +233,7 @@ public final class Constants {
         public static final double kManualPercentage = 0.1;
         public static final double kInitPercentage = -0.1;
         public static final double kInitTimeDelaySeconds = 0.1;
-        public static final double kStoppedMotorThreshold = 0.1; // TODO
+        public static final double kStoppedMotorThreshold = 0.1;
         public static final double kInitPosition = 0;
     }
 

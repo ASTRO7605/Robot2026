@@ -19,7 +19,7 @@ public class ShotCalculator {
     private Field2d turretToTargetField;
     private double lastTargetDistance = 0;
     private double targetAngle = 0;
-    private final boolean usingShootOnMove = false;
+    private final boolean usingShootOnMove = true;
 
     // table de calcul de la vitesse en fonction de la distance
     private final InterpolatingDoubleTreeMap distanceToRpm = new InterpolatingDoubleTreeMap();
@@ -72,7 +72,15 @@ public class ShotCalculator {
         distanceToRpm.put(4.4, 3725.0);
         distanceToRpm.put(4.8, 4100.0);
         // put distance / tof couples
-        addDataToTofTables(1.0, 1.0);
+        addDataToTofTables(1.82, 0.79);
+        addDataToTofTables(2.12, 0.84);
+        addDataToTofTables(2.42, 0.9);
+        addDataToTofTables(2.73, 0.95);
+        addDataToTofTables(3.16, 1.03);
+        addDataToTofTables(3.48, 1.11);
+        addDataToTofTables(3.95, 1.23);
+        addDataToTofTables(4.35, 1.37);
+        addDataToTofTables(4.83, 1.43);
 
         SmartDashboard.putNumber("Test Shooter Speeds", 0);
     }

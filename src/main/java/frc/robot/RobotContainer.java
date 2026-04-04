@@ -238,13 +238,13 @@ public class RobotContainer {
                 m_climb.goToPosition(climbLvl.Extended);
                 ClimbButtonCounter += 1;
             } else if (ClimbButtonCounter == 1) {
-                m_climb.goToPosition(climbLvl.Stowed);
+                m_climb.goToPosition(climbLvl.Hang);
                 ClimbButtonCounter -= 1;
             }
         }));
         m_driverController.povUp().onTrue(new InstantCommand(() -> m_shooter.increaseMOtorSpeed()));
         m_driverController.povDown().onTrue(new InstantCommand(() -> m_shooter.decreaseMotorSpeed()));
-        
+
     }
 
     /**

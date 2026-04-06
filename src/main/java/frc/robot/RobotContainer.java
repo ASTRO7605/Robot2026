@@ -100,7 +100,7 @@ public class RobotContainer {
         m_conveyor = new Conveyor();
 
         if (m_base != null) {
-            // m_base.setDefaultCommand(getBaseDefaultCommand());
+            m_base.setDefaultCommand(getBaseDefaultCommand());
         }
 
         registerNamedCommands();
@@ -225,17 +225,17 @@ public class RobotContainer {
         m_driverController.povLeft().onFalse(new InstantCommand(() ->
         m_tourelle.safeStop()));
 
-        m_driverController.start().onTrue(new InstantCommand(() ->
-        m_base.setModulesFacingForward()));
-        m_driverController.povUp().whileTrue(
-        m_base.sysIdQuasistatic(Direction.kForward));
-        m_driverController.povDown().whileTrue(
-        m_base.sysIdQuasistatic(Direction.kReverse));
+        // m_driverController.start().onTrue(new InstantCommand(() ->
+        // m_base.setModulesFacingForward()));
+        // m_driverController.povUp().whileTrue(
+        // m_base.sysIdQuasistatic(Direction.kForward));
+        // m_driverController.povDown().whileTrue(
+        // m_base.sysIdQuasistatic(Direction.kReverse));
 
-        m_driverController.povLeft().whileTrue(
-        m_base.sysIdDynamic(Direction.kForward));
-        m_driverController.povUp().whileTrue(
-        m_base.sysIdDynamic(Direction.kReverse));
+        // m_driverController.povLeft().whileTrue(
+        // m_base.sysIdDynamic(Direction.kForward));
+        // m_driverController.povUp().whileTrue(
+        // m_base.sysIdDynamic(Direction.kReverse));
 
         // Intake Commands
         m_driverController.a().onTrue(new IntakeIn(m_intake));
@@ -267,7 +267,7 @@ public class RobotContainer {
         }));
 
         m_driverController.povUp().whileTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(0.5, true)));
-        m_driverController.povUp().whileFalse(new InstantCommand(() -> m_intake.setManualMotorPercentage(0, true)));
+        m_driverController.povDown().whileTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(-0.5, true)));
     }
 
     /**

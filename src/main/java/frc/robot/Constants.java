@@ -204,12 +204,12 @@ public final class Constants {
     // constantes pour le climb
     public static final class ClimbConstants {
         public static final int climbMotorId = 16;
-        public static final double kp = 0.77;
+        public static final double kp = 1.10;
         public static final double ki = 0.0;
         public static final double kd = 0.0;
         public static final double maxVelocity = 25;
         public static final double maxAcceleration = 50;
-        public static final int kCurrentLimit = 70;
+        public static final int kCurrentLimit = 80;
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 55.5; // TODO
@@ -221,7 +221,7 @@ public final class Constants {
             // in inches
             Stowed(2.8), // hauteur légale pour le climb
             Hang(0), // hauteur pour accrocher le robot à la barre
-            Extended(12.2);// ~30 inch
+            Extended(14);// ~30 inch
 
             public final double position;
 
@@ -268,7 +268,7 @@ public final class Constants {
         public static enum intakePos {
             // in degrees
             Stowed(-20),
-            Down(-143),
+            Down(-146),
             WiggleOut(-120),
             WiggleIn(-70);
 
@@ -300,8 +300,8 @@ public final class Constants {
         public static final double conveyorTimeIn = 1.0; // seconds
         public static final double conveyorTimeOff = 0.25; // seconds
 
-        public static final double manualPercentageIn = 0.05;
-        public static final double manualPercentageOut = -0.05;
+        public static final double manualPercentageIn = 1;
+        public static final double manualPercentageOut = -1;
 
         // Motor RPM -> Roller RPM
         public static final double fPositionConversion = 1.0 / 4.0;

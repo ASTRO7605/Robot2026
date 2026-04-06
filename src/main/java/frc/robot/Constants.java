@@ -103,10 +103,9 @@ public final class Constants {
         public static final double driveKD = 0;
 
         /* Drive Motor Characterization Values From SYSID */
-        // TODO: retune
-        public static final double driveKS = 0.12498;
-        public static final double driveKV = 2.4;
-        public static final double driveKA = 0.0353;
+        public static final double driveKS = 0.099238;
+        public static final double driveKV = 2.5191;
+        public static final double driveKA = 0.29158;
 
         // public static final double kXYMovementP = 5;
         // public static final double kXYMovementI = 0;
@@ -212,7 +211,7 @@ public final class Constants {
         public static final int kCurrentLimit = 80;
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
-        public static final double kSoftLimitForward = 55.5; // TODO
+        public static final double kSoftLimitForward = 15;
         public static final double feedforwards = 0; // tune with built climber
         public static final double kPositionThreshold = 0.25;
 

@@ -246,10 +246,10 @@ public class RobotContainer {
             m_intake.goToPosition(0);
         }));
 
-        // m_driverController.leftTrigger()
-        //         .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
-        // m_driverController.leftTrigger()
-        //         .onFalse(new InstantCommand(() -> m_conveyor.ConveyorWheelOff()));
+        m_driverController.leftTrigger()
+                .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
+        m_driverController.leftTrigger()
+                .onFalse(new InstantCommand(() -> m_conveyor.conveyorWheelsOff()));
 
         m_driverController.leftTrigger()
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
@@ -265,6 +265,9 @@ public class RobotContainer {
                 ClimbButtonCounter -= 1;
             }
         }));
+
+        m_driverController.povUp().whileTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(0.5, true)));
+        m_driverController.povUp().whileFalse(new InstantCommand(() -> m_intake.setManualMotorPercentage(0, true)));
     }
 
     /**

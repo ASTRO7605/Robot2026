@@ -39,6 +39,6 @@ public class EverythingOut extends Command {
     @Override
     public void end(boolean interrupted) {
         conveyor.conveyorWheelsOff();
-        shooter.setMotorSpeed(0);
-        shooterBase.setMotorSpeed(0);
+        shooter.safeStop();
+        shooterBase.ShooterBaseWheelOff();
     }};

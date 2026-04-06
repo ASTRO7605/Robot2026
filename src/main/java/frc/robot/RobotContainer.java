@@ -100,7 +100,7 @@ public class RobotContainer {
         m_conveyor = new Conveyor();
 
         if (m_base != null) {
-            m_base.setDefaultCommand(getBaseDefaultCommand());
+            // m_base.setDefaultCommand(getBaseDefaultCommand());
         }
 
         registerNamedCommands();
@@ -216,31 +216,35 @@ public class RobotContainer {
         //     m_shooterBase.ShooterBaseWheelOff()));
         // }));
 
-        // m_driverController.povRight().onTrue(new InstantCommand(() ->
-        // m_tourelle.turnRight()));
-        // m_driverController.povRight().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-        // m_driverController.povLeft().onTrue(new InstantCommand(() ->
-        // m_tourelle.turnLeft()));
-        // m_driverController.povLeft().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
+        m_driverController.povRight().onTrue(new InstantCommand(() ->
+        m_tourelle.turnRight()));
+        m_driverController.povRight().onFalse(new InstantCommand(() ->
+        m_tourelle.safeStop()));
+        m_driverController.povLeft().onTrue(new InstantCommand(() ->
+        m_tourelle.turnLeft()));
+        m_driverController.povLeft().onFalse(new InstantCommand(() ->
+        m_tourelle.safeStop()));
 
-        // m_driverController.start().onTrue(new InstantCommand(() ->
-        // m_base.setModulesFacingForward()));
-        // m_driverController.povUp().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kForward));
-        // m_driverController.povDown().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kReverse));
+        m_driverController.start().onTrue(new InstantCommand(() ->
+        m_base.setModulesFacingForward()));
+        m_driverController.povUp().whileTrue(
+        m_base.sysIdQuasistatic(Direction.kForward));
+        m_driverController.povDown().whileTrue(
+        m_base.sysIdQuasistatic(Direction.kReverse));
 
-        // m_driverController.povLeft().whileTrue(
-        // m_base.sysIdDynamic(Direction.kForward));
-        // m_driverController.povUp().whileTrue(
-        // m_base.sysIdDynamic(Direction.kReverse));
+        m_driverController.povLeft().whileTrue(
+        m_base.sysIdDynamic(Direction.kForward));
+        m_driverController.povUp().whileTrue(
+        m_base.sysIdDynamic(Direction.kReverse));
 
         // Intake Commands
         m_driverController.a().onTrue(new IntakeIn(m_intake));
         
         m_driverController.y().whileTrue(new IntakeOut(m_intake, m_conveyor));
+        
+        m_driverController.x().onTrue(new InstantCommand(() -> {
+            m_intake.goToPosition(0);
+        }));
 
         // m_driverController.leftTrigger()
         //         .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));

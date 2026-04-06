@@ -300,8 +300,8 @@ public final class Constants {
         public static final double conveyorTimeIn = 1.0; // seconds
         public static final double conveyorTimeOff = 0.25; // seconds
 
-        public static final double manualPercentageIn = 1;
-        public static final double manualPercentageOut = -1;
+        public static final double manualPercentageIn = 0.05;
+        public static final double manualPercentageOut = -0.05;
 
         // Motor RPM -> Roller RPM
         public static final double fPositionConversion = 1.0 / 4.0;

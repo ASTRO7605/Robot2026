@@ -15,12 +15,11 @@ public class EverythingOut extends Command {
     this.conveyor = conveyor;
     this.shooter = shooter;
     this.shooterBase = shooterBase;
-    addRequirements(shooter, shooterBase, conveyor);
     }
 
     @Override
     public void initialize() {
-    
+    addRequirements(shooter, shooterBase, conveyor);
     }
     
     

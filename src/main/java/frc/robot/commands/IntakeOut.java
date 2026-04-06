@@ -12,10 +12,16 @@ public class IntakeOut extends Command {
     private final Intake intake;
     private final Conveyor conveyor;
 
-    public IntakeOut(Intake intake, Conveyor conveyor) {
+    private boolean useConveyor;
+
+    public IntakeOut(Intake intake, Conveyor conveyor, boolean useConveyor) {
         this.intake = intake;
         this.conveyor = conveyor;
-        addRequirements(conveyor);
+        if (useConveyor) {
+            addRequirements(conveyor);
+        }
+
+        this.useConveyor = useConveyor;
     }
 
     @Override
@@ -25,7 +31,9 @@ public class IntakeOut extends Command {
 
     @Override
     public void execute() {
-        conveyor.conveyorWheelsIn();
+        if (useConveyor) {
+            conveyor.conveyorWheelsIn();
+        }
     }
 
     @Override
@@ -35,7 +43,9 @@ public class IntakeOut extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        conveyor.conveyorWheelsOff();
+        if (useConveyor) {
+            conveyor.conveyorWheelsOff();
+        }
     }
 
 }

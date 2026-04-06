@@ -1,5 +1,7 @@
 package frc.robot.commands;
 
+import java.util.function.BooleanSupplier;
+
 import com.fasterxml.jackson.databind.ser.std.TokenBufferSerializer;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,12 +25,15 @@ public class Shoot extends Command {
     private final Timer conveyorTimer = new Timer();
     private boolean hasStartedShooting;
     private boolean conveyorOn;
+    private BooleanSupplier intakeCmdActive;
 
-    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase, Tourelle tourelle) {
+    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase, Tourelle tourelle,
+            BooleanSupplier intakeCmdActive) {
         this.shooter = shooter;
         this.conveyor = conveyor;
         this.shooterBase = shooterBase;
         this.tourelle = tourelle;
+        this.intakeCmdActive = intakeCmdActive;
 
         addRequirements(shooter, conveyor, shooterBase, tourelle);
     }
@@ -59,23 +64,28 @@ public class Shoot extends Command {
             }
         }
 
-        if (conveyorOn) {
-            if(conveyorTimer.hasElapsed(ConveyorConstants.conveyorTimeIn)){
-                conveyor.conveyorWheelsOff();
-                conveyorOn = false;
-                conveyorTimer.restart();
+        if (!intakeCmdActive.getAsBoolean()) {
+            if (conveyorOn) {
+                if (conveyorTimer.hasElapsed(ConveyorConstants.conveyorTimeIn)) {
+                    conveyor.conveyorWheelsOff();
+                    conveyorOn = false;
+                    conveyorTimer.restart();
+                }
+
             }
 
-        }
-
-        else {
-            if(conveyorTimer.hasElapsed(ConveyorConstants.conveyorTimeOff)){
-                conveyor.conveyorWheelsIn();
-                conveyorOn = true;
-                conveyorTimer.restart();
+            else {
+                if (conveyorTimer.hasElapsed(ConveyorConstants.conveyorTimeOff)) {
+                    conveyor.conveyorWheelsIn();
+                    conveyorOn = true;
+                    conveyorTimer.restart();
+                }
             }
+        } else {
+            conveyor.conveyorWheelsIn();
         }
     }
+
     @Override
     public void end(boolean interrupted) {
         shooter.setMotorSpeed(0);

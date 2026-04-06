@@ -1,6 +1,7 @@
 package frc.robot;
 
 import java.time.Instant;
+import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -77,7 +78,6 @@ public class RobotContainer {
 
     private final SendableChooser<Command> m_chooser;
 
-
     /* Subsystems */
     private Base m_base;
     private Climb m_climb;
@@ -113,7 +113,8 @@ public class RobotContainer {
 
     private void registerNamedCommands() {
         // pathplanner named commands go here
-        NamedCommands.registerCommand("Shoot", new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle));
+        NamedCommands.registerCommand("Shoot",
+                new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle, () -> false));
     }
 
     private Command getBaseDefaultCommand() {
@@ -201,47 +202,52 @@ public class RobotContainer {
         /* Copilot Buttons */
 
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
-            if(ShootButtonCounter == 0) {
-                CommandScheduler.getInstance().schedule(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle));
+            if (ShootButtonCounter == 0) {
+                CommandScheduler.getInstance()
+                        .schedule(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle, m_driverController.y()));
                 ShootButtonCounter += 1;
-            }else if (ShootButtonCounter == 1){
-                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {}, m_shooter));
+            } else if (ShootButtonCounter == 1) {
+                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
+                }, m_shooter));
                 ShootButtonCounter -= 1;
             }
-            }));
+        }));
 
         // m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
-        //     m_shooterBase.setMotorSpeed(-500);
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() -> 
-        //     m_shooterBase.ShooterBaseWheelOff()));
+        // m_shooterBase.setMotorSpeed(-500);
+        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
+        // m_shooterBase.ShooterBaseWheelOff()));
         // }));
 
-        m_driverController.povRight().onTrue(new InstantCommand(() ->
-        m_tourelle.turnRight()));
-        m_driverController.povRight().onFalse(new InstantCommand(() ->
-        m_tourelle.safeStop()));
-        m_driverController.povLeft().onTrue(new InstantCommand(() ->
-        m_tourelle.turnLeft()));
-        m_driverController.povLeft().onFalse(new InstantCommand(() ->
-        m_tourelle.safeStop()));
+        // m_driverController.povRight().onTrue(new InstantCommand(() ->
+        // m_tourelle.turnRight()));
+        // m_driverController.povRight().onFalse(new InstantCommand(() ->
+        // m_tourelle.safeStop()));
+        // m_driverController.povLeft().onTrue(new InstantCommand(() ->
+        // m_tourelle.turnLeft()));
+        // m_driverController.povLeft().onFalse(new InstantCommand(() ->
+        // m_tourelle.safeStop()));
 
-        // m_driverController.start().onTrue(new InstantCommand(() ->
-        // m_base.setModulesFacingForward()));
-        // m_driverController.povUp().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kForward));
-        // m_driverController.povDown().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kReverse));
+        m_driverController.start().onTrue(new InstantCommand(() -> m_base.setModulesFacingForward()));
+        m_driverController.povUp().whileTrue(
+                m_base.sysIdQuasistatic(Direction.kForward));
+        m_driverController.povDown().whileTrue(
+                m_base.sysIdQuasistatic(Direction.kReverse));
 
-        // m_driverController.povLeft().whileTrue(
-        // m_base.sysIdDynamic(Direction.kForward));
-        // m_driverController.povUp().whileTrue(
-        // m_base.sysIdDynamic(Direction.kReverse));
+        m_driverController.povLeft().whileTrue(
+                m_base.sysIdDynamic(Direction.kForward));
+        m_driverController.povRight().whileTrue(
+                m_base.sysIdDynamic(Direction.kReverse));
 
         // Intake Commands
         m_driverController.a().onTrue(new IntakeIn(m_intake));
-        
-        m_driverController.y().whileTrue(new IntakeOut(m_intake, m_conveyor));
-        
+
+        m_driverController.y().and(() -> (ShootButtonCounter == 0))
+                .whileTrue(new IntakeOut(m_intake, m_conveyor, true));
+
+        m_driverController.y().and(() -> (ShootButtonCounter == 1))
+                .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
+
         m_driverController.x().onTrue(new InstantCommand(() -> {
             m_intake.goToPosition(0);
         }));
@@ -266,8 +272,10 @@ public class RobotContainer {
             }
         }));
 
-        m_driverController.povUp().whileTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(0.5, true)));
-        m_driverController.povDown().whileTrue(new InstantCommand(() -> m_intake.setManualMotorPercentage(-0.5, true)));
+        // m_driverController.povUp().whileTrue(new InstantCommand(() ->
+        // m_intake.setManualMotorPercentage(0.5, true)));
+        // m_driverController.povDown().whileTrue(new InstantCommand(() ->
+        // m_intake.setManualMotorPercentage(-0.5, true)));
     }
 
     /**

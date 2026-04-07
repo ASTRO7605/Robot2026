@@ -32,7 +32,7 @@ public class IntakeOut extends Command {
     @Override
     public void execute() {
         if (useConveyor) {
-            conveyor.conveyorWheelsIn();
+            conveyor.intakeWheelsIn();
         }
     }
 

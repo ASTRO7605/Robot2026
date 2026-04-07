@@ -6,6 +6,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.PoseEstimationConstants;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.VisionConstants.LimelightIMUModes;
 import frc.robot.utils.ShotCalculator;
 import frc.robot.LimelightVisionResult;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -225,6 +226,7 @@ public class Base extends SubsystemBase {
     }
 
     public void setPose(Pose2d pose) {
+        setLimelight4IMUMode(LimelightIMUModes.EXTERNAL_SEED);
         m_poseEstimator.resetPosition(getGyroYaw(), getModulePositions(), pose);
     }
 

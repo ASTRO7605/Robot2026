@@ -13,7 +13,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost Pickup 2"
           }
         },
         {
@@ -21,19 +27,25 @@
           "data": {
             "commands": [
               {
+                "type": "wait",
+                "data": {
+                  "waitTime": 10.0
+                }
+              },
+              {
                 "type": "parallel",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "name": "Shoot"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "Wiggle Intake"
                       }
                     }
                   ]

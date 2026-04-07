@@ -297,10 +297,10 @@ public final class Constants {
         public static final double setConveyorOutSpeed = -1000;
 
         public static final double conveyorTimeIn = 1.0; // seconds
-        public static final double conveyorTimeOff = 0.25; // seconds
+        public static final double conveyorTimeOff = 0.15; // seconds
 
-        public static final double manualPercentageInConveyor = 0.5;
-        public static final double manualPercentageOutConveyor = -0.5;
+        public static final double manualPercentageInConveyor = 0.75;
+        public static final double manualPercentageOutConveyor = -0.75;
         public static final double manualPercentageInIntake = 1;
         public static final double manualPercentageOutIntake = -1;
 

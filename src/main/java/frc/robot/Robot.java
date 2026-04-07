@@ -122,7 +122,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during autonomous. */
     @Override
     public void autonomousPeriodic() {
-        m_robotContainer.setLimelight4IMUMode(LimelightIMUModes.INTERNAL_EXTERNAL_ASSIST);
+        // m_robotContainer.setLimelight4IMUMode(LimelightIMUModes.INTERNAL_EXTERNAL_ASSIST);
+        m_robotContainer.setLimelight4IMUMode(LimelightIMUModes.EXTERNAL_ONLY);
 
     }
 
@@ -143,7 +144,8 @@ public class Robot extends TimedRobot {
     /** This function is called periodically during operator control. */
     @Override
     public void teleopPeriodic() {
-        m_robotContainer.setLimelight4IMUMode(LimelightIMUModes.INTERNAL_EXTERNAL_ASSIST);
+        // m_robotContainer.setLimelight4IMUMode(LimelightIMUModes.INTERNAL_EXTERNAL_ASSIST);
+        m_robotContainer.setLimelight4IMUMode(LimelightIMUModes.EXTERNAL_ONLY);
 
     }
 

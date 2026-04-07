@@ -115,6 +115,9 @@ public class RobotContainer {
         // pathplanner named commands go here
         NamedCommands.registerCommand("Shoot",
                 new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle, () -> false));
+        NamedCommands.registerCommand("Wiggle Intake", new WiggleIntake(m_intake));
+        NamedCommands.registerCommand("Intake Out", new IntakeOut(m_intake, m_conveyor, true));
+
     }
 
     private Command getBaseDefaultCommand() {

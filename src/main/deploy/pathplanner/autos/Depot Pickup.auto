@@ -7,7 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Middle Simple 1"
+            "pathName": "Depot Pickup 1"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Pickup 2"
           }
         },
         {
@@ -17,7 +29,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 7.5
+                  "waitTime": 10.0
                 }
               },
               {

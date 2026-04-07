@@ -299,8 +299,10 @@ public final class Constants {
         public static final double conveyorTimeIn = 1.0; // seconds
         public static final double conveyorTimeOff = 0.25; // seconds
 
-        public static final double manualPercentageIn = 1;
-        public static final double manualPercentageOut = -1;
+        public static final double manualPercentageInConveyor = 0.5;
+        public static final double manualPercentageOutConveyor = -0.5;
+        public static final double manualPercentageInIntake = 1;
+        public static final double manualPercentageOutIntake = -1;
 
         // Motor RPM -> Roller RPM
         public static final double fPositionConversion = 1.0 / 4.0;
@@ -424,7 +426,9 @@ public final class Constants {
         public static final String limelight3Name = "limelight-trois"; // IP: 10.76.5.13:5801
         public static final String limelight2Name = "limelight-deux";
 
-        public static final Transform3d robotTolimelight4Transform = new Transform3d();
+        public static final Transform3d robotTolimelight4Transform = new Transform3d(new Translation3d(
+            Units.inchesToMeters(13.06), Units.inchesToMeters(6.65), Units.inchesToMeters(11.15)),
+            new Rotation3d(0, Units.degreesToRadians(26), Units.degreesToRadians(-41))); // 0,24,31
         public static final Transform3d robotTolimelight3Transform = new Transform3d(new Translation3d(
                 Units.inchesToMeters(13.32), Units.inchesToMeters(-6.38), Units.inchesToMeters(11.31)),
                 new Rotation3d(0, Units.degreesToRadians(24), Units.degreesToRadians(31))); // 0,24,31

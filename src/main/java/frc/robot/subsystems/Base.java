@@ -144,10 +144,10 @@ public class Base extends SubsystemBase {
 
         // initialize vision modules
         if (useVision) {
-            // m_visionModules.put(VisionConstants.limelight4Name, new
-            // LimelightVisionModule(
-            // VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform,
-            // this::getHeading));
+            m_visionModules.put(VisionConstants.limelight4Name, new
+            LimelightVisionModule(
+            VisionConstants.limelight4Name, VisionConstants.robotTolimelight4Transform,
+            this::getHeading));
             m_visionModules.put(VisionConstants.limelight3Name, new LimelightVisionModule(
                     VisionConstants.limelight3Name, VisionConstants.robotTolimelight3Transform, this::getHeading));
             // m_visionModules.put(VisionConstants.limelight2Name, new

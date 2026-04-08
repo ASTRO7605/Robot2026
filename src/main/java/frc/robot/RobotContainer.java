@@ -21,18 +21,13 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.ConveyorConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.ClimbConstants.climbLvl;
 import frc.robot.Constants.IntakeConstants.intakePos;
-import frc.robot.commands.ClimbBar;
 import frc.robot.commands.ClimberInit;
 import frc.robot.commands.EverythingOut;
+import frc.robot.commands.FailSafeShoot;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeInit;
 import frc.robot.subsystems.Base;
@@ -40,17 +35,12 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
 import frc.robot.subsystems.Tourelle;
-import frc.robot.utils.PDH;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.IntakeOut;
-import frc.robot.commands.ManualClimb;
-import frc.robot.commands.PrepareClimb;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TurretInit;
 import frc.robot.commands.WiggleIntake;
-import frc.robot.commands.StopShoot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -67,12 +57,8 @@ public class RobotContainer {
             DriveConstants.kXboxControllerID);
     private final CommandJoystick m_turnStick = new CommandJoystick(DriveConstants.kTurnStickID);
     private final CommandJoystick m_throttleStick = new CommandJoystick(DriveConstants.kThrottleStickID);
-    private int ShooterButtonCounter = 0;
-    private int ShooterBaseButtonCounter = 0;
     private int ClimbButtonCounter = 0;
     private int ShootButtonCounter = 0;
-    private int ConveyorButtonCounter = 0;
-    private int intakeButtonCounter = 0;
 
     private double teleopMaxSpeed = DriveConstants.kMaxTeleopSpeed;
 
@@ -204,6 +190,10 @@ public class RobotContainer {
 
         /* Copilot Buttons */
 
+        // Shoot Commands
+        m_driverController.rightTrigger()
+                .whileTrue(new FailSafeShoot(m_shooter, m_conveyor, m_shooterBase, m_driverController.y()));
+
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
             if (ShootButtonCounter == 0) {
                 CommandScheduler.getInstance()
@@ -216,34 +206,9 @@ public class RobotContainer {
             }
         }));
 
-        // m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
-        // m_shooterBase.setMotorSpeed(-500);
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelOff()));
-        // }));
-
-        // m_driverController.povRight().onTrue(new InstantCommand(() ->
-        // m_tourelle.turnRight()));
-        // m_driverController.povRight().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-        // m_driverController.povLeft().onTrue(new InstantCommand(() ->
-        // m_tourelle.turnLeft()));
-        // m_driverController.povLeft().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-
-        // m_driverController.start().onTrue(new InstantCommand(() ->
-        // m_base.setModulesFacingForward()));
-        // m_driverController.povUp().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kForward));
-        // m_driverController.povDown().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kReverse));
-
-        // m_driverController.povLeft().whileTrue(
-        // m_base.sysIdDynamic(Direction.kForward));
-        // m_driverController.povRight().whileTrue(
-        // m_base.sysIdDynamic(Direction.kReverse));
-
         // Intake Commands
+        m_turnStick.trigger().whileTrue(new WiggleIntake(m_intake));
+
         m_driverController.a().onTrue(new IntakeIn(m_intake));
 
         m_driverController.y().and(() -> (ShootButtonCounter == 0))
@@ -263,8 +228,6 @@ public class RobotContainer {
 
         m_driverController.leftTrigger()
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
-
-        m_driverController.leftBumper().whileTrue(new WiggleIntake(m_intake));
         // Climb Commands
         m_driverController.b().onTrue(new InstantCommand(() -> {
             if (ClimbButtonCounter == 0) {
@@ -275,11 +238,6 @@ public class RobotContainer {
                 ClimbButtonCounter -= 1;
             }
         }));
-
-        // m_driverController.povUp().whileTrue(new InstantCommand(() ->
-        // m_intake.setManualMotorPercentage(0.5, true)));
-        // m_driverController.povDown().whileTrue(new InstantCommand(() ->
-        // m_intake.setManualMotorPercentage(-0.5, true)));
     }
 
     /**

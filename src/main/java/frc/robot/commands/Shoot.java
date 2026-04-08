@@ -53,28 +53,17 @@ public class Shoot extends Command {
         shooter.setMotorSpeed(currentShotInfo.wheelSpeeds());
         boolean valid = tourelle.requestTurretAngle(currentShotInfo.turretAngle());
 
-        // shooterbase arrete lorsque mal oriente
+        // shooterbase et conveyor arrêtent lorsque mal orienté
 
         if (!valid) {
             shooterBase.ShooterBaseWheelOff();
-            hasStartedShooting = false;
-        } else if (!hasStartedShooting) {
-            if (shooter.areWheelsAtSpeed(currentShotInfo.wheelSpeeds())
-                    && tourelle.isAtTarget(currentShotInfo.turretAngle())) {
-                shooterBase.ShooterBaseWheelsIn();
-                hasStartedShooting = true;
-            }
-        }
-
-        // conveyor arrete lorsque mal oriente
-
-        if (!valid) {
             conveyor.conveyorWheelsOff();
             hasStartedShooting = false;
         } else if (!hasStartedShooting) {
             if (shooter.areWheelsAtSpeed(currentShotInfo.wheelSpeeds())
                     && tourelle.isAtTarget(currentShotInfo.turretAngle())) {
                 conveyor.conveyorWheelsIn();
+                shooterBase.ShooterBaseWheelsIn();
                 hasStartedShooting = true;
             }
         }

@@ -122,7 +122,7 @@ public final class Constants {
         public static final double kMaxTeleopRotateSpeed = 3 * Math.PI;
 
         public static final double kGeneralSpeedMulti = .8;
-        public static final double kDriverMultiSlow = 0.15;
+        public static final double kDriverSlowSpeed= 0.3;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -208,7 +208,7 @@ public final class Constants {
         public static final double kd = 0.0;
         public static final double maxVelocity = 25;
         public static final double maxAcceleration = 50;
-        public static final int kCurrentLimit = 80;
+        public static final int kCurrentLimit = 70;
         public static final double fPositionConversion = (1.25 * Math.PI) / 15.6; // en pouces par tour de moteur
         public static final double fVelocityConversion = fPositionConversion / 60;
         public static final double kSoftLimitForward = 15;

@@ -74,7 +74,7 @@ public class RobotContainer {
     private int ConveyorButtonCounter = 0;
     private int intakeButtonCounter = 0;
 
-    private double driverMulti = 1;
+    private double teleopMaxSpeed = DriveConstants.kMaxTeleopSpeed;
 
     private final SendableChooser<Command> m_chooser;
 
@@ -151,26 +151,26 @@ public class RobotContainer {
             turn *= (turn > 0) ? -turn : turn;
 
             if (m_throttleStick.button(1).getAsBoolean()) {
-                driverMulti = DriveConstants.kDriverMultiSlow;
+                teleopMaxSpeed = DriveConstants.kDriverSlowSpeed;
             } else {
-                driverMulti = 1;
+                teleopMaxSpeed = DriveConstants.kMaxTeleopSpeed;
             }
 
             double x = dir_r * Math.sin(dir_theta);
             x *= DriveConstants.kMaxTeleopSpeed * DriveConstants.kGeneralSpeedMulti;
-            if (Math.abs(x) >= DriveConstants.kMaxTeleopSpeed * driverMulti) {
-                x = DriveConstants.kMaxTeleopSpeed * driverMulti * (x < 0 ? -1 : 1);
+            if (Math.abs(x) >= teleopMaxSpeed) {
+                x = teleopMaxSpeed * (x < 0 ? -1 : 1);
             }
 
             double y = dir_r * Math.cos(dir_theta);
             y *= DriveConstants.kMaxTeleopSpeed * DriveConstants.kGeneralSpeedMulti;
-            if (Math.abs(y) >= DriveConstants.kMaxTeleopSpeed * driverMulti) {
-                y = DriveConstants.kMaxTeleopSpeed * driverMulti * (y < 0 ? -1 : 1);
+            if (Math.abs(y) >= teleopMaxSpeed) {
+                y = teleopMaxSpeed * (y < 0 ? -1 : 1);
             }
 
             turn *= DriveConstants.kMaxTeleopRotateSpeed * DriveConstants.kGeneralSpeedMulti;
-            if (Math.abs(turn) >= DriveConstants.kMaxTeleopRotateSpeed * driverMulti) {
-                turn = DriveConstants.kMaxTeleopRotateSpeed * driverMulti * (turn < 0 ? -1 : 1);
+            if (Math.abs(turn) >= DriveConstants.kMaxTeleopRotateSpeed) {
+                turn = DriveConstants.kMaxTeleopRotateSpeed * (turn < 0 ? -1 : 1);
             }
 
             m_base.drive(new Translation2d(x, y), turn, false);

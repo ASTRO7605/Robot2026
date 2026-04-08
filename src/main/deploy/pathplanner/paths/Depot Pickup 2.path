@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8937951807228917,
-        "y": 5.925493975903614
+        "x": 2.183265060240964,
+        "y": 5.127771084337349
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5643876016473386,
-        "y": 5.890896859911766
+        "x": 2.8538574811654103,
+        "y": 5.093173968345501
       },
       "isLocked": false,
       "linkedName": "depot-pickup"
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.0
+    "rotation": -45.0
   },
   "useDefaultConstraints": false
 }

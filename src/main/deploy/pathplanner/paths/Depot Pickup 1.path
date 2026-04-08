@@ -16,24 +16,65 @@
     },
     {
       "anchor": {
-        "x": 0.8937951807228917,
-        "y": 5.925493975903614
+        "x": 0.5,
+        "y": 7.204036144578313
       },
       "prevControl": {
-        "x": 1.143366126738137,
-        "y": 5.910853521503033
+        "x": 0.5,
+        "y": 7.8709846953897875
+      },
+      "nextControl": {
+        "x": 0.5,
+        "y": 6.329819277108434
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 0.5,
+        "y": 6.05
+      },
+      "prevControl": {
+        "x": 0.4875479593210046,
+        "y": 6.54158930708733
+      },
+      "nextControl": {
+        "x": 0.522253012048193,
+        "y": 5.171481927710842
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.183265060240964,
+        "y": 5.127771084337349
+      },
+      "prevControl": {
+        "x": 1.407397590361446,
+        "y": 4.963855421686745
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": "depot-pickup"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9965678627145029,
+      "rotationDegrees": 90.0
+    },
+    {
+      "waypointRelativePos": 2.2174726989079474,
+      "rotationDegrees": 90.0
+    }
+  ],
   "constraintZones": [
     {
       "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6501240694789111,
-      "maxWaypointRelativePos": 1.0,
+      "minWaypointRelativePos": 0.8508896797153107,
+      "maxWaypointRelativePos": 2.341281138790011,
       "constraints": {
         "maxVelocity": 0.5,
         "maxAcceleration": 2.0,
@@ -48,7 +89,7 @@
   "eventMarkers": [
     {
       "name": "Intake Out",
-      "waypointRelativePos": 0.24913151364764263,
+      "waypointRelativePos": 0.5,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -68,7 +109,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 0.0
+    "rotation": -45.0
   },
   "reversed": false,
   "folder": null,

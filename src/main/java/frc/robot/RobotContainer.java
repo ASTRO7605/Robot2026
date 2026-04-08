@@ -222,11 +222,6 @@ public class RobotContainer {
         }));
 
         m_driverController.leftTrigger()
-                .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
-        m_driverController.leftTrigger()
-                .onFalse(new InstantCommand(() -> m_conveyor.conveyorWheelsOff()));
-
-        m_driverController.leftTrigger()
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
         // Climb Commands
         m_driverController.b().onTrue(new InstantCommand(() -> {

@@ -325,6 +325,8 @@ public final class Constants {
         public static final double fPositionConversion = 1;
         public static final double fVelocityConversion = 1;
 
+        public static final double FailSafeVelocity = 2900;
+
         public static final double kPredictPoseLatency = 0.1; // seconds
 
         public static final double kSpeedShootThreshold = 100;

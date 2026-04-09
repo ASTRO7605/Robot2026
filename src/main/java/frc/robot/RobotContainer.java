@@ -66,7 +66,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private Base m_base;
-    private Climb m_climb;
+    // private Climb m_climb;
     private ShooterBase m_shooterBase;
     private Shooter m_shooter;
     private Tourelle m_tourelle;
@@ -78,7 +78,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         m_base = new Base();
-        m_climb = new Climb();
+       // m_climb = new Climb();
         m_shooterBase = new ShooterBase();
         m_shooter = new Shooter();
         m_tourelle = new Tourelle();
@@ -224,16 +224,16 @@ public class RobotContainer {
         m_driverController.leftTrigger()
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
         // Climb Commands
-        m_driverController.b().onTrue(new InstantCommand(() -> {
-            if (ClimbButtonCounter == 0) {
-                m_climb.goToPosition(climbLvl.Extended);
-                ClimbButtonCounter += 1;
-            } else if (ClimbButtonCounter == 1) {
-                m_climb.goToPosition(climbLvl.Hang);
-                ClimbButtonCounter -= 1;
-            }
-        }));
-    }
+       // m_driverController.b().onTrue(new InstantCommand(() -> {
+       //     if (ClimbButtonCounter == 0) {
+    //             m_climb.goToPosition(climbLvl.Extended);
+    //             ClimbButtonCounter += 1;
+    //         } else if (ClimbButtonCounter == 1) {
+    //             m_climb.goToPosition(climbLvl.Hang);
+    //             ClimbButtonCounter -= 1;
+    //         }
+    //     }));
+}
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -265,10 +265,10 @@ public class RobotContainer {
             CommandScheduler.getInstance()
                     .schedule(new InstantCommand(() -> m_intake.goToPosition(intakePos.Stowed)));
         }
-        if (!m_climb.isInitDone()) {
-            CommandScheduler.getInstance()
-                    .schedule(new ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-        }
+        // if (!m_climb.isInitDone()) {
+        //     CommandScheduler.getInstance()
+        //             .schedule(new ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        // }
         if (!m_tourelle.isInitDone()) {
             CommandScheduler.getInstance()
                     .schedule(new TurretInit(m_tourelle).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));

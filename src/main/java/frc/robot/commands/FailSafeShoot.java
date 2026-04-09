@@ -6,6 +6,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ConveyorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
@@ -45,8 +46,8 @@ public class FailSafeShoot extends Command {
 
     @Override
     public void execute() {
-        var currentShotInfo = ShotCalculator.getInstance().getShotInfo();
-        shooter.setMotorSpeed(currentShotInfo.wheelSpeeds());
+        //var currentShotInfo = ShotCalculator.getInstance().getShotInfo();
+        shooter.setMotorSpeed(ShooterConstants.FailSafeVelocity);
 
         if (!intakeCmdActive.getAsBoolean()) {
             if (conveyorOn) {

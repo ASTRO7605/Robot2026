@@ -286,7 +286,7 @@ public final class Constants {
 
         public static final int intakeRollerPdhChannel = 17;
 
-        public static final int kCurrentLimit = 50;
+        public static final int kCurrentLimit = 65; // TODO: increase current limit to allow for faster intake speed (60~)
 
         public static final double kp = 0.0;
         public static final double ki = 0.0;
@@ -339,7 +339,7 @@ public final class Constants {
         public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
 
-        public static final double kInSpeed = 0.5;
+        public static final double kInSpeed = 0.75; // TODO: increase speed to allow for faster shooting of balls
         public static final double kOutSpeed = -0.5;
 
         public static final double kThresholdMotorStopped = 500;

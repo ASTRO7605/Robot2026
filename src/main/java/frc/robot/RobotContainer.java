@@ -60,6 +60,7 @@ public class RobotContainer {
     private final CommandJoystick m_throttleStick = new CommandJoystick(DriveConstants.kThrottleStickID);
     private int ClimbButtonCounter = 0;
     private int ShootButtonCounter = 0;
+    private int intakeButtonCounter = 0;
 
     private double teleopMaxSpeed = DriveConstants.kMaxTeleopSpeed;
 
@@ -79,7 +80,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         m_base = new Base();
-       // m_climb = new Climb();
+        // m_climb = new Climb();
         m_shooterBase = new ShooterBase();
         m_shooter = new Shooter();
         m_tourelle = new Tourelle();
@@ -227,17 +228,33 @@ public class RobotContainer {
 
         m_driverController.leftTrigger()
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
+
+        m_driverController.povDown().onTrue(new InstantCommand(() -> {
+            if (intakeButtonCounter == 0) {
+                CommandScheduler.getInstance()
+                        .schedule(new InstantCommand(() -> {
+                            m_intake.keepPosition();
+                        }));
+                intakeButtonCounter += 1;
+            } else if (intakeButtonCounter == 1) {
+                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
+                    m_intake.safeStop();
+                }));
+                intakeButtonCounter -= 1;
+            }
+        }));
+
         // Climb Commands
-       // m_driverController.b().onTrue(new InstantCommand(() -> {
-       //     if (ClimbButtonCounter == 0) {
-    //             m_climb.goToPosition(climbLvl.Extended);
-    //             ClimbButtonCounter += 1;
-    //         } else if (ClimbButtonCounter == 1) {
-    //             m_climb.goToPosition(climbLvl.Hang);
-    //             ClimbButtonCounter -= 1;
-    //         }
-    //     }));
-}
+        // m_driverController.b().onTrue(new InstantCommand(() -> {
+        // if (ClimbButtonCounter == 0) {
+        // m_climb.goToPosition(climbLvl.Extended);
+        // ClimbButtonCounter += 1;
+        // } else if (ClimbButtonCounter == 1) {
+        // m_climb.goToPosition(climbLvl.Hang);
+        // ClimbButtonCounter -= 1;
+        // }
+        // }));
+    }
 
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -270,8 +287,9 @@ public class RobotContainer {
                     .schedule(new InstantCommand(() -> m_intake.goToPosition(intakePos.Stowed)));
         }
         // if (!m_climb.isInitDone()) {
-        //     CommandScheduler.getInstance()
-        //             .schedule(new ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        // CommandScheduler.getInstance()
+        // .schedule(new
+        // ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
         // }
         if (!m_tourelle.isInitDone()) {
             CommandScheduler.getInstance()

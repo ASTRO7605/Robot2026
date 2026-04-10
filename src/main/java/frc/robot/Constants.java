@@ -286,7 +286,8 @@ public final class Constants {
 
         public static final int intakeRollerPdhChannel = 17;
 
-        public static final int kCurrentLimit = 65; // TODO: increase current limit to allow for faster intake speed (60~)
+        public static final int kCurrentLimit = 65; // TODO: increase current limit to allow for faster intake speed
+                                                    // (60~)
 
         public static final double kp = 0.0;
         public static final double ki = 0.0;
@@ -359,11 +360,11 @@ public final class Constants {
 
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
-        public static final double kLimitSwitchPosition = 66; // degrees
+        public static final double kLimitSwitchPosition = 65; // degrees
         public static final double kSoftLimitReverse = -67;
         public static final double kInitPercentage = 0.075;
 
-        public static final double kMaxSetpoint = 65;
+        public static final double kMaxSetpoint = 64;
         public static final double kMinSetpoint = -66;
         public static final double kExtremesThreshold = 15;
 

@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Outpost Pickup 1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 3.0
+            "pathName": "Center Placement 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Outpost Pickup 2"
+            "pathName": "Intake Right"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Right Back"
           }
         },
         {
@@ -29,23 +29,23 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 20.0
+                  "waitTime": 10.0
                 }
               },
               {
-                "type": "deadline",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "Wiggle Intake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "name": "Shoot"
                       }
                     }
                   ]

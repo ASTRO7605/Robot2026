@@ -3,47 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.183265060240964,
-        "y": 5.127771084337349
+        "x": 1.2443081312410837,
+        "y": 6.241041369472183
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8538574811654103,
-        "y": 5.093173968345501
+        "x": 2.244308131241084,
+        "y": 6.241041369472183
       },
       "isLocked": false,
-      "linkedName": "depot-pickup"
+      "linkedName": "depot balls"
     },
     {
       "anchor": {
-        "x": 2.5,
-        "y": 5.438199999999999
+        "x": 2.3958487874465044,
+        "y": 6.241041369472183
       },
       "prevControl": {
-        "x": 2.01546378837097,
-        "y": 5.72894486485201
+        "x": 1.3958487874465044,
+        "y": 6.241041369472183
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "retirement balls"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Intake Out",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": 0.49925558312653495,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Intake Out"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -60,7 +48,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -45.0
+    "rotation": 0.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

@@ -3,43 +3,57 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 1.0
+        "x": 6.860325301204819,
+        "y": 1.2265783132530124
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8605355119660815,
-        "y": 1.9485902181007204
+        "x": 6.860325301204818,
+        "y": 2.221000000000001
       },
       "isLocked": false,
-      "linkedName": "outpost"
+      "linkedName": "prep intake"
     },
     {
       "anchor": {
-        "x": 2.3690361445783132,
-        "y": 2.1554337349397588
+        "x": 6.991457831325301,
+        "y": 2.8001686746987957
       },
       "prevControl": {
-        "x": 2.2489610143529952,
-        "y": 1.936157737390157
+        "x": 6.969602409638553,
+        "y": 2.384915662650603
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost end"
+      "linkedName": "fin intake right"
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0,
+      "maxWaypointRelativePos": 1.0,
+      "constraints": {
+        "maxVelocity": 0.5,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
-      "waypointRelativePos": 0.25,
+      "name": "Intake Out",
+      "waypointRelativePos": 0,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
         "data": {
-          "name": "Shoot"
+          "name": "Intake Out"
         }
       }
     }
@@ -54,13 +68,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.0
+    "rotation": -130.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -130.0
   },
   "useDefaultConstraints": true
 }

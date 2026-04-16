@@ -3,47 +3,35 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 1.0
+        "x": 2.183265060240964,
+        "y": 5.127771084337349
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8605355119660815,
-        "y": 1.9485902181007204
+        "x": 2.201768901569186,
+        "y": 4.481383737517832
       },
       "isLocked": false,
-      "linkedName": "outpost"
+      "linkedName": "depot-pickup"
     },
     {
       "anchor": {
-        "x": 2.3690361445783132,
-        "y": 2.1554337349397588
+        "x": 4.4,
+        "y": 7.405520684736091
       },
       "prevControl": {
-        "x": 2.2489610143529952,
-        "y": 1.936157737390157
+        "x": 1.6324679029957196,
+        "y": 7.509029957203994
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost end"
+      "linkedName": "trench left start"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 0.25,
-      "endWaypointRelativePos": 1.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Shoot"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -54,13 +42,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.0
+    "rotation": 180.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": -45.0
   },
   "useDefaultConstraints": true
 }

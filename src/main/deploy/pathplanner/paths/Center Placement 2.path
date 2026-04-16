@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 1.0
+        "x": 4.445301204819277,
+        "y": 0.691120481927711
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8605355119660815,
-        "y": 1.9485902181007204
+        "x": 5.723843373493976,
+        "y": 0.5272048192771093
       },
       "isLocked": false,
-      "linkedName": "outpost"
+      "linkedName": "trench right"
     },
     {
       "anchor": {
-        "x": 2.3690361445783132,
-        "y": 2.1554337349397588
+        "x": 6.860325301204819,
+        "y": 1.2265783132530124
       },
       "prevControl": {
-        "x": 2.2489610143529952,
-        "y": 1.936157737390157
+        "x": 6.434144578313253,
+        "y": 0.8331807228915673
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost end"
+      "linkedName": "prep intake"
     }
   ],
   "rotationTargets": [],
@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "Shoot",
-      "waypointRelativePos": 0.25,
-      "endWaypointRelativePos": 1.0,
+      "name": "Intake Out",
+      "waypointRelativePos": 0.6443991853360479,
+      "endWaypointRelativePos": 0.65,
       "command": {
         "type": "named",
         "data": {
-          "name": "Shoot"
+          "name": "Intake Out"
         }
       }
     }
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.0
+    "rotation": -130.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

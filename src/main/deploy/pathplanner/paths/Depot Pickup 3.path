@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 1.0
+        "x": 2.3958487874465044,
+        "y": 6.241041369472183
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8605355119660815,
-        "y": 1.9485902181007204
+        "x": 2.5167045524050735,
+        "y": 6.0221946558201855
       },
       "isLocked": false,
-      "linkedName": "outpost"
+      "linkedName": "retirement balls"
     },
     {
       "anchor": {
-        "x": 2.3690361445783132,
-        "y": 2.1554337349397588
+        "x": 2.183265060240964,
+        "y": 5.127771084337349
       },
       "prevControl": {
-        "x": 2.2489610143529952,
-        "y": 1.936157737390157
+        "x": 2.090607482722975,
+        "y": 4.895575965248902
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost end"
+      "linkedName": "depot-pickup"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "Shoot",
-      "waypointRelativePos": 0.25,
+      "waypointRelativePos": 0.0,
       "endWaypointRelativePos": 1.0,
       "command": {
         "type": "named",
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.0
+    "rotation": -45.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 0.0
   },
   "useDefaultConstraints": true
 }

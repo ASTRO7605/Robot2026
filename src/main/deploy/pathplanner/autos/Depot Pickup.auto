@@ -11,6 +11,18 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Pickup 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Pickup 3"
+          }
+        },
+        {
           "type": "race",
           "data": {
             "commands": [

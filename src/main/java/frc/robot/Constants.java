@@ -252,7 +252,7 @@ public final class Constants {
         public static final double maxVelocity = 240;
         public static final double maxAcceleration = 700;
         public static final double kSoftLimitReverse = -142;
-        public static final double kMaxAf = 0.85;
+        public static final double kMaxAf = 0.97;
         public static final double kLimitSwitchPosition = 0; // degrees
         public static final double kAfOffset = 140; // degrés
 

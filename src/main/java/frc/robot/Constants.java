@@ -252,7 +252,7 @@ public final class Constants {
         public static final double maxVelocity = 240;
         public static final double maxAcceleration = 700;
         public static final double kSoftLimitReverse = -142;
-        public static final double kMaxAf = 0.65;
+        public static final double kMaxAf = 0.97;
         public static final double kLimitSwitchPosition = 0; // degrees
         public static final double kAfOffset = 140; // degrés
 
@@ -300,8 +300,8 @@ public final class Constants {
         public static final double conveyorTimeIn = 1.0; // seconds
         public static final double conveyorTimeOff = 0.15; // seconds
 
-        public static final double manualPercentageInConveyor = 0.75;
-        public static final double manualPercentageOutConveyor = -0.75;
+        public static final double manualPercentageInConveyor = 1;
+        public static final double manualPercentageOutConveyor = -1;
         public static final double manualPercentageInIntake = 1;
         public static final double manualPercentageOutIntake = -1;
 
@@ -409,18 +409,16 @@ public final class Constants {
      */
     public static final class PoseEstimationConstants {
         public static final Matrix<N3, N1> kStateStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
-                new double[] { 0.025, 0.025, 0.001 });
+                new double[] { 0.03, 0.03, 0.001 });
         // Basically dummy values given as a default, since we feed actual dynamic std
         // devs with each update from vision
         public static final Matrix<N3, N1> kVisionStdDevsDefault = new Matrix<>(Nat.N3(), Nat.N1(),
                 new double[] { 0.05, 0.05, 100 });
         // because gyro is better than vision, we make σ_θ huge
         public static final Matrix<N3, N1> kVisionStdDevsPerMeterGlobal = new Matrix<>(Nat.N3(), Nat.N1(),
-                new double[] { .04, .04, 100 });
+                new double[] { .025, .025, 100 });
         public static final Matrix<N3, N1> kVisionStdDevsBaselineGlobal = new Matrix<>(Nat.N3(), Nat.N1(),
-                new double[] { .18, .18, 100 });
-        public static final Matrix<N3, N1> kVisionStdDevsPerMeterCubedLocal = new Matrix<>(Nat.N3(), Nat.N1(),
-                new double[] { .05, .05, 100 });
+                new double[] { .125, .125, 100 });
     }
 
     public static final class VisionConstants {

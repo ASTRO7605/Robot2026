@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.5167045524050735,
-        "y": 6.0221946558201855
+        "x": 2.3958487874465044,
+        "y": 5.956390870185448
       },
       "isLocked": false,
       "linkedName": "retirement balls"
     },
     {
       "anchor": {
-        "x": 2.183265060240964,
-        "y": 5.127771084337349
+        "x": 2.24058487874465,
+        "y": 5.024807417974323
       },
       "prevControl": {
-        "x": 2.090607482722975,
-        "y": 4.895575965248902
+        "x": 2.1111982881597715,
+        "y": 5.555292439372327
       },
       "nextControl": null,
       "isLocked": false,
@@ -54,7 +54,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -45.0
+    "rotation": -40.0
   },
   "reversed": false,
   "folder": null,

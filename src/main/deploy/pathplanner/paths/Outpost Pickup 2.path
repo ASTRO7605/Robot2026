@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.4,
-        "y": 1.0
+        "x": 0.3,
+        "y": 1.2
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.8605355119660815,
-        "y": 1.9485902181007204
+        "x": 0.760535511966081,
+        "y": 2.14859021810072
       },
       "isLocked": false,
       "linkedName": "outpost"
@@ -25,25 +25,13 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "outpost end"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [
-    {
-      "name": "Shoot",
-      "waypointRelativePos": 0.25,
-      "endWaypointRelativePos": 1.0,
-      "command": {
-        "type": "named",
-        "data": {
-          "name": "Shoot"
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,

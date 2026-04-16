@@ -122,7 +122,7 @@ public final class Constants {
         public static final double kMaxTeleopRotateSpeed = 3 * Math.PI;
 
         public static final double kGeneralSpeedMulti = .8;
-        public static final double kDriverSlowSpeed= 0.3;
+        public static final double kDriverSlowSpeed = 0.3;
 
         /* Neutral Modes */
         public static final NeutralModeValue angleNeutralMode = NeutralModeValue.Coast;
@@ -286,7 +286,8 @@ public final class Constants {
 
         public static final int intakeRollerPdhChannel = 17;
 
-        public static final int kCurrentLimit = 50;
+        public static final int kCurrentLimit = 65; // TODO: increase current limit to allow for faster intake speed
+                                                    // (60~)
 
         public static final double kp = 0.0;
         public static final double ki = 0.0;
@@ -325,6 +326,8 @@ public final class Constants {
         public static final double fPositionConversion = 1;
         public static final double fVelocityConversion = 1;
 
+        public static final double FailSafeVelocity = 2900;
+
         public static final double kPredictPoseLatency = 0.1; // seconds
 
         public static final double kSpeedShootThreshold = 100;
@@ -337,7 +340,7 @@ public final class Constants {
         public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
 
-        public static final double kInSpeed = 0.5;
+        public static final double kInSpeed = 0.75; // TODO: increase speed to allow for faster shooting of balls
         public static final double kOutSpeed = -0.5;
 
         public static final double kThresholdMotorStopped = 500;
@@ -357,11 +360,11 @@ public final class Constants {
 
         public static final double maxVelocity = 0;
         public static final double maxAcceleration = 0;
-        public static final double kLimitSwitchPosition = 66; // degrees
+        public static final double kLimitSwitchPosition = 65; // degrees
         public static final double kSoftLimitReverse = -67;
         public static final double kInitPercentage = 0.075;
 
-        public static final double kMaxSetpoint = 65;
+        public static final double kMaxSetpoint = 64;
         public static final double kMinSetpoint = -66;
         public static final double kExtremesThreshold = 15;
 
@@ -427,10 +430,10 @@ public final class Constants {
         public static final String limelight2Name = "limelight-deux";
 
         public static final Transform3d robotTolimelight4Transform = new Transform3d(new Translation3d(
-            Units.inchesToMeters(13.06), Units.inchesToMeters(6.65), Units.inchesToMeters(11.15)),
-            new Rotation3d(0, Units.degreesToRadians(26), Units.degreesToRadians(-41))); // 0,24,31
+                Units.inchesToMeters(13.06), Units.inchesToMeters(6.5), Units.inchesToMeters(11.12)),
+                new Rotation3d(0, Units.degreesToRadians(26), Units.degreesToRadians(-41))); // 0,24,31
         public static final Transform3d robotTolimelight3Transform = new Transform3d(new Translation3d(
-                Units.inchesToMeters(13.32), Units.inchesToMeters(-6.38), Units.inchesToMeters(11.31)),
+                Units.inchesToMeters(12.18), Units.inchesToMeters(-7.25), Units.inchesToMeters(11.31)),
                 new Rotation3d(0, Units.degreesToRadians(24), Units.degreesToRadians(31))); // 0,24,31
         public static final Transform3d robotTolimelight2Transform = new Transform3d();
 

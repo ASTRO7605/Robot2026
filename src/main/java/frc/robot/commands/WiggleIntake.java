@@ -48,7 +48,7 @@ public class WiggleIntake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        m_intake.goToPosition(intakePos.Down);
+        m_intake.safeStop();
     }
 
 }

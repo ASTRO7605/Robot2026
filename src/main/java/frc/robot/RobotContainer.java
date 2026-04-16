@@ -10,6 +10,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,18 +22,13 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.ClimbConstants;
-import frc.robot.Constants.ConveyorConstants;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.ClimbConstants.climbLvl;
 import frc.robot.Constants.IntakeConstants.intakePos;
-import frc.robot.commands.ClimbBar;
 import frc.robot.commands.ClimberInit;
 import frc.robot.commands.EverythingOut;
+import frc.robot.commands.FailSafeShoot;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeInit;
 import frc.robot.subsystems.Base;
@@ -40,17 +36,12 @@ import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
 import frc.robot.subsystems.Tourelle;
-import frc.robot.utils.PDH;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.commands.IntakeOut;
-import frc.robot.commands.ManualClimb;
-import frc.robot.commands.PrepareClimb;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.TurretInit;
 import frc.robot.commands.WiggleIntake;
-import frc.robot.commands.StopShoot;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -67,11 +58,8 @@ public class RobotContainer {
             DriveConstants.kXboxControllerID);
     private final CommandJoystick m_turnStick = new CommandJoystick(DriveConstants.kTurnStickID);
     private final CommandJoystick m_throttleStick = new CommandJoystick(DriveConstants.kThrottleStickID);
-    private int ShooterButtonCounter = 0;
-    private int ShooterBaseButtonCounter = 0;
     private int ClimbButtonCounter = 0;
     private int ShootButtonCounter = 0;
-    private int ConveyorButtonCounter = 0;
     private int intakeButtonCounter = 0;
 
     private double teleopMaxSpeed = DriveConstants.kMaxTeleopSpeed;
@@ -80,7 +68,7 @@ public class RobotContainer {
 
     /* Subsystems */
     private Base m_base;
-    private Climb m_climb;
+    // private Climb m_climb;
     private ShooterBase m_shooterBase;
     private Shooter m_shooter;
     private Tourelle m_tourelle;
@@ -92,7 +80,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
         m_base = new Base();
-        m_climb = new Climb();
+        // m_climb = new Climb();
         m_shooterBase = new ShooterBase();
         m_shooter = new Shooter();
         m_tourelle = new Tourelle();
@@ -109,6 +97,9 @@ public class RobotContainer {
         SmartDashboard.putData("AutoChooser", m_chooser);
 
         configureButtonBindings();
+
+
+        
     }
 
     private void registerNamedCommands() {
@@ -204,6 +195,10 @@ public class RobotContainer {
 
         /* Copilot Buttons */
 
+        // Shoot Commands
+        m_driverController.rightTrigger()
+                .whileTrue(new FailSafeShoot(m_shooter, m_conveyor, m_shooterBase, m_driverController.y()));
+
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
             if (ShootButtonCounter == 0) {
                 CommandScheduler.getInstance()
@@ -216,34 +211,9 @@ public class RobotContainer {
             }
         }));
 
-        // m_driverController.leftTrigger().onTrue(new InstantCommand(() -> {
-        // m_shooterBase.setMotorSpeed(-500);
-        // m_driverController.leftTrigger().onFalse(new InstantCommand(() ->
-        // m_shooterBase.ShooterBaseWheelOff()));
-        // }));
-
-        // m_driverController.povRight().onTrue(new InstantCommand(() ->
-        // m_tourelle.turnRight()));
-        // m_driverController.povRight().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-        // m_driverController.povLeft().onTrue(new InstantCommand(() ->
-        // m_tourelle.turnLeft()));
-        // m_driverController.povLeft().onFalse(new InstantCommand(() ->
-        // m_tourelle.safeStop()));
-
-        // m_driverController.start().onTrue(new InstantCommand(() ->
-        // m_base.setModulesFacingForward()));
-        // m_driverController.povUp().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kForward));
-        // m_driverController.povDown().whileTrue(
-        // m_base.sysIdQuasistatic(Direction.kReverse));
-
-        // m_driverController.povLeft().whileTrue(
-        // m_base.sysIdDynamic(Direction.kForward));
-        // m_driverController.povRight().whileTrue(
-        // m_base.sysIdDynamic(Direction.kReverse));
-
         // Intake Commands
+        m_turnStick.trigger().whileTrue(new WiggleIntake(m_intake));
+
         m_driverController.a().onTrue(new IntakeIn(m_intake));
 
         m_driverController.y().and(() -> (ShootButtonCounter == 0))
@@ -257,29 +227,33 @@ public class RobotContainer {
         }));
 
         m_driverController.leftTrigger()
-                .onTrue(new InstantCommand(() -> m_conveyor.conveyorWheelsOut(), m_conveyor));
-        m_driverController.leftTrigger()
-                .onFalse(new InstantCommand(() -> m_conveyor.conveyorWheelsOff()));
-
-        m_driverController.leftTrigger()
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
 
-        m_driverController.leftBumper().whileTrue(new WiggleIntake(m_intake));
-        // Climb Commands
-        m_driverController.b().onTrue(new InstantCommand(() -> {
-            if (ClimbButtonCounter == 0) {
-                m_climb.goToPosition(climbLvl.Extended);
-                ClimbButtonCounter += 1;
-            } else if (ClimbButtonCounter == 1) {
-                m_climb.goToPosition(climbLvl.Hang);
-                ClimbButtonCounter -= 1;
+        m_driverController.povDown().onTrue(new InstantCommand(() -> {
+            if (intakeButtonCounter == 0) {
+                CommandScheduler.getInstance()
+                        .schedule(new InstantCommand(() -> {
+                            m_intake.keepPosition();
+                        }));
+                intakeButtonCounter += 1;
+            } else if (intakeButtonCounter == 1) {
+                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
+                    m_intake.safeStop();
+                }));
+                intakeButtonCounter -= 1;
             }
         }));
 
-        // m_driverController.povUp().whileTrue(new InstantCommand(() ->
-        // m_intake.setManualMotorPercentage(0.5, true)));
-        // m_driverController.povDown().whileTrue(new InstantCommand(() ->
-        // m_intake.setManualMotorPercentage(-0.5, true)));
+        // Climb Commands
+        // m_driverController.b().onTrue(new InstantCommand(() -> {
+        // if (ClimbButtonCounter == 0) {
+        // m_climb.goToPosition(climbLvl.Extended);
+        // ClimbButtonCounter += 1;
+        // } else if (ClimbButtonCounter == 1) {
+        // m_climb.goToPosition(climbLvl.Hang);
+        // ClimbButtonCounter -= 1;
+        // }
+        // }));
     }
 
     /**
@@ -312,10 +286,11 @@ public class RobotContainer {
             CommandScheduler.getInstance()
                     .schedule(new InstantCommand(() -> m_intake.goToPosition(intakePos.Stowed)));
         }
-        if (!m_climb.isInitDone()) {
-            CommandScheduler.getInstance()
-                    .schedule(new ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
-        }
+        // if (!m_climb.isInitDone()) {
+        // CommandScheduler.getInstance()
+        // .schedule(new
+        // ClimberInit(m_climb).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));
+        // }
         if (!m_tourelle.isInitDone()) {
             CommandScheduler.getInstance()
                     .schedule(new TurretInit(m_tourelle).withInterruptBehavior(InterruptionBehavior.kCancelIncoming));

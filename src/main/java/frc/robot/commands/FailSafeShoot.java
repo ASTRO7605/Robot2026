@@ -2,12 +2,11 @@ package frc.robot.commands;
 
 import java.util.function.BooleanSupplier;
 
-import com.fasterxml.jackson.databind.ser.std.TokenBufferSerializer;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.ConveyorConstants;
+import frc.robot.Constants.ShooterConstants;
 import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
@@ -16,29 +15,27 @@ import frc.robot.subsystems.Tourelle;
 import frc.robot.utils.ShotCalculator;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Shoot extends Command {
+public class FailSafeShoot extends Command {
 
     private final Shooter shooter;
     private final Conveyor conveyor;
     private final ShooterBase shooterBase;
-    private final Tourelle tourelle;
     private final Timer conveyorTimer = new Timer();
     private boolean hasStartedShooting;
     private boolean conveyorOn;
     private BooleanSupplier intakeCmdActive;
 
-    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase, Tourelle tourelle,
+    public FailSafeShoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase,
             BooleanSupplier intakeCmdActive) {
         this.shooter = shooter;
         this.conveyor = conveyor;
         this.shooterBase = shooterBase;
-        this.tourelle = tourelle;
         this.intakeCmdActive = intakeCmdActive;
 
-        addRequirements(shooter, conveyor, shooterBase, tourelle);
+        addRequirements(shooter, conveyor, shooterBase);
+
     }
 
-    // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void initialize() {
         hasStartedShooting = false;
@@ -49,24 +46,8 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
-        var currentShotInfo = ShotCalculator.getInstance().getShotInfo();
-        shooter.setMotorSpeed(currentShotInfo.wheelSpeeds());
-        boolean valid = tourelle.requestTurretAngle(currentShotInfo.turretAngle());
-
-        // shooterbase et conveyor arrêtent lorsque mal orienté
-
-        if (!valid) {
-            shooterBase.ShooterBaseWheelOff();
-            conveyor.conveyorWheelsOff();
-            hasStartedShooting = false;
-        } else if (!hasStartedShooting) {
-            if (shooter.areWheelsAtSpeed(currentShotInfo.wheelSpeeds())
-                    && tourelle.isAtTarget(currentShotInfo.turretAngle())) {
-                conveyor.conveyorWheelsIn();
-                shooterBase.ShooterBaseWheelsIn();
-                hasStartedShooting = true;
-            }
-        }
+        //var currentShotInfo = ShotCalculator.getInstance().getShotInfo();
+        shooter.setMotorSpeed(ShooterConstants.FailSafeVelocity);
 
         if (!intakeCmdActive.getAsBoolean()) {
             if (conveyorOn) {
@@ -95,7 +76,6 @@ public class Shoot extends Command {
         shooter.setMotorSpeed(0);
         conveyor.conveyorWheelsOff();
         shooterBase.ShooterBaseWheelOff();
-        tourelle.requestTurretAngle(new Rotation2d(0));
     }
 
 }

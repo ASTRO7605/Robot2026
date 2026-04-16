@@ -3,52 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.6,
-        "y": 6.05
+        "x": 4.4,
+        "y": 7.405520684736091
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.35,
-        "y": 6.05
+        "x": 5.461980514665939,
+        "y": 7.428878889163922
       },
       "isLocked": false,
-      "linkedName": "depot-start"
+      "linkedName": "barge left start"
     },
     {
       "anchor": {
-        "x": 1.1666761768901568,
-        "y": 6.279857346647646
+        "x": 6.96,
+        "y": 6.978544935805992
       },
       "prevControl": {
-        "x": 2.589928673323824,
-        "y": 6.25398002853067
+        "x": 5.874125188744557,
+        "y": 7.263498381246485
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "depot balls"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [
-    {
-      "name": "Constraints Zone",
-      "minWaypointRelativePos": 0.6996197718631199,
-      "maxWaypointRelativePos": 1.0,
-      "constraints": {
-        "maxVelocity": 0.4,
-        "maxAcceleration": 2.0,
-        "maxAngularVelocity": 540.0,
-        "maxAngularAcceleration": 720.0,
-        "nominalVoltage": 12.0,
-        "unlimited": false
-      }
-    }
-  ],
+  "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [
     {
       "name": "Intake Out",
-      "waypointRelativePos": 0.1,
+      "waypointRelativePos": 0.4120131393711837,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -67,14 +53,14 @@
     "unlimited": false
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 140.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
-    "velocity": 0.0,
-    "rotation": 0.0
+    "velocity": 0,
+    "rotation": 180.0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

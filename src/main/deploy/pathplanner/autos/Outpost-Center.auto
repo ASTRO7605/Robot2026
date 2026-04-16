@@ -13,7 +13,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 3.0
           }
         },
         {
@@ -29,7 +29,7 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 20.0
+                  "waitTime": 10.0
                 }
               },
               {
@@ -52,6 +52,18 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Outpost-trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Placement 2"
           }
         }
       ]

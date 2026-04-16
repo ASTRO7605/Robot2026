@@ -7,19 +7,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Outpost Pickup 1"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.5
+            "pathName": "Depot Pickup 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Outpost Pickup 2"
+            "pathName": "Depot Pickup 2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Pickup 3"
           }
         },
         {
@@ -29,29 +29,41 @@
               {
                 "type": "wait",
                 "data": {
-                  "waitTime": 20.0
+                  "waitTime": 5.0
                 }
               },
               {
-                "type": "deadline",
+                "type": "parallel",
                 "data": {
                   "commands": [
                     {
                       "type": "named",
                       "data": {
-                        "name": "Shoot"
+                        "name": "Wiggle Intake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Wiggle Intake"
+                        "name": "Shoot"
                       }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot-trench"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Center Placement 1"
           }
         }
       ]

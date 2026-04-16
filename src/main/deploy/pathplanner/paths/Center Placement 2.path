@@ -3,35 +3,47 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.3,
-        "y": 1.2
+        "x": 4.445301204819277,
+        "y": 0.691120481927711
       },
       "prevControl": null,
       "nextControl": {
-        "x": 0.760535511966081,
-        "y": 2.14859021810072
+        "x": 5.723843373493976,
+        "y": 0.5272048192771093
       },
       "isLocked": false,
-      "linkedName": "outpost"
+      "linkedName": "trench right"
     },
     {
       "anchor": {
-        "x": 2.3690361445783132,
-        "y": 2.1554337349397588
+        "x": 6.860325301204819,
+        "y": 1.2265783132530124
       },
       "prevControl": {
-        "x": 2.2489610143529952,
-        "y": 1.936157737390157
+        "x": 6.434144578313253,
+        "y": 0.8331807228915673
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "prep intake"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Intake Out",
+      "waypointRelativePos": 0.6443991853360479,
+      "endWaypointRelativePos": 0.65,
+      "command": {
+        "type": "named",
+        "data": {
+          "name": "Intake Out"
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 2.0,
     "maxAcceleration": 2.0,
@@ -42,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 40.0
+    "rotation": -130.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 90.0
+    "rotation": 180.0
   },
   "useDefaultConstraints": true
 }

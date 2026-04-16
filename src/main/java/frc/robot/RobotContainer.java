@@ -184,6 +184,13 @@ public class RobotContainer {
 
         m_turnStick.button(2).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(false)));
 
+        m_turnStick.button(3).whileTrue(new RunCommand(() -> {
+            var latestMeasurement = m_base.getAverageMt2PoseFromCameras();
+            if (latestMeasurement.isPresent()) {
+                m_base.setPose(latestMeasurement.get());
+            }
+        }));
+
         m_turnStick.button(5).whileTrue(new RunCommand(() -> {
             var latestMeasurement = m_base.getAverageMt1PoseFromCameras();
             if (latestMeasurement.isPresent()) {
@@ -192,6 +199,8 @@ public class RobotContainer {
         }));
 
         m_turnStick.button(6).onTrue(new InstantCommand(() -> m_base.resetGyroOffset(true)));
+
+        
 
         /* Copilot Buttons */
 

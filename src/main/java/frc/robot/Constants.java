@@ -379,7 +379,7 @@ public final class Constants {
         public static final double kXPosFeed = Units.inchesToMeters(195);
 
         public static enum BluePositions {
-            HUB(new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84))),
+            HUB(new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(166.84))),
             DEPOT_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(287.69))),
             OUTPOST_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(30)));
 

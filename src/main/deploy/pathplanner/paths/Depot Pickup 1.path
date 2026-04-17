@@ -4,15 +4,15 @@
     {
       "anchor": {
         "x": 3.6,
-        "y": 6.05
+        "y": 6.025
       },
       "prevControl": null,
       "nextControl": {
         "x": 3.35,
-        "y": 6.05
+        "y": 6.025
       },
       "isLocked": false,
-      "linkedName": "depot-start"
+      "linkedName": "right start"
     },
     {
       "anchor": {

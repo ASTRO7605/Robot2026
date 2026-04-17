@@ -407,7 +407,7 @@ public final class Constants {
     /**
      * Standard deviations: X(m), Y(m), θ(rad)
      */
-    public static final class PoseEstimationConstants { //TODO demander why it got changed 
+    public static final class PoseEstimationConstants {
         public static final Matrix<N3, N1> kStateStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
                 new double[] { 0.025, 0.025, 0.001 });
         // Basically dummy values given as a default, since we feed actual dynamic std

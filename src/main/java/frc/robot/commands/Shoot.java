@@ -49,9 +49,10 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
+        double leftOffset = 4.0;
         var currentShotInfo = ShotCalculator.getInstance().getShotInfo();
         shooter.setMotorSpeed(currentShotInfo.wheelSpeeds());
-        boolean valid = tourelle.requestTurretAngle(currentShotInfo.turretAngle());
+        boolean valid = tourelle.requestTurretAngle(currentShotInfo.turretAngle().plus(Rotation2d.fromDegrees(leftOffset)));
 
         // shooterbase et conveyor arrêtent lorsque mal orienté
 
@@ -61,7 +62,7 @@ public class Shoot extends Command {
             hasStartedShooting = false;
         } else if (!hasStartedShooting) {
             if (shooter.areWheelsAtSpeed(currentShotInfo.wheelSpeeds())
-                    && tourelle.isAtTarget(currentShotInfo.turretAngle())) {
+                    && tourelle.isAtTarget(currentShotInfo.turretAngle().plus(Rotation2d.fromDegrees(leftOffset)))) {
                 conveyor.conveyorWheelsIn();
                 shooterBase.ShooterBaseWheelsIn();
                 hasStartedShooting = true;

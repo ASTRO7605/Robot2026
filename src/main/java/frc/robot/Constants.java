@@ -266,7 +266,7 @@ public final class Constants {
         // enum pour les positions de l'intake
         public static enum intakePos {
             // in degrees
-            Stowed(-20),
+            Stowed(-0.5),
             Down(-146),
             WiggleOut(-120),
             WiggleIn(-70);

@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -410,6 +411,9 @@ public class Base extends SubsystemBase {
         // update pose estimator with vision, if applicable
         // if(!DriverStation.isAutonomous()){// TODO check if this remove bug
         //     updateVisionEstimate();
+        // }
+        // else{
+        //     System.out.println("Vision disabled for autonomous");
         // }
         updateVisionEstimate();
 

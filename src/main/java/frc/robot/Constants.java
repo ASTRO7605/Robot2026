@@ -409,14 +409,14 @@ public final class Constants {
      */
     public static final class PoseEstimationConstants { //TODO demander why it got changed 
         public static final Matrix<N3, N1> kStateStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
-                new double[] { 0.03, 0.03, 0.001 });
+                new double[] { 0.025, 0.025, 0.001 });
         // Basically dummy values given as a default, since we feed actual dynamic std
         // devs with each update from vision
         public static final Matrix<N3, N1> kVisionStdDevsDefault = new Matrix<>(Nat.N3(), Nat.N1(),
                 new double[] { 0.05, 0.05, 100 });
         // because gyro is better than vision, we make σ_θ huge
         public static final Matrix<N3, N1> kVisionStdDevsPerMeterGlobal = new Matrix<>(Nat.N3(), Nat.N1(),
-                new double[] { .025, .025, 100 });
+                new double[] { .04, .04, 100 });
         public static final Matrix<N3, N1> kVisionStdDevsBaselineGlobal = new Matrix<>(Nat.N3(), Nat.N1(),
                 new double[] { .125, .125, 100 });
     }

@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.275578313253012,
-        "y": 2.4832650602409636
+        "x": 7.040827389443652,
+        "y": 2.4111982881597713
       },
       "isLocked": false,
       "linkedName": "fin intake right"
@@ -37,7 +37,7 @@
       },
       "prevControl": {
         "x": 3.8343413497740966,
-        "y": 0.4061462725903622
+        "y": 0.40614627259036223
       },
       "nextControl": {
         "x": 2.040212867093374,
@@ -66,7 +66,21 @@
       "rotationDegrees": 180.0
     }
   ],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 1.4340032590983014,
+      "maxWaypointRelativePos": 1.7338403041825252,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 2.0,
+        "maxAngularVelocity": 540.0,
+        "maxAngularAcceleration": 720.0,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
   "pointTowardsZones": [],
   "eventMarkers": [
     {

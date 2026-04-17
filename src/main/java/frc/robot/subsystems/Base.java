@@ -409,13 +409,13 @@ public class Base extends SubsystemBase {
     @Override
     public void periodic() {
         // update pose estimator with vision, if applicable
-        // if(!DriverStation.isAutonomous()){// TODO check if this remove bug
-        //     updateVisionEstimate();
-        // }
-        // else{
-        //     System.out.println("Vision disabled for autonomous");
-        // }
-        updateVisionEstimate();
+        if(!DriverStation.isAutonomous()){// TODO check if this remove bug
+            updateVisionEstimate();
+        }
+        else{
+            System.out.println("Vision disabled for autonomous");
+        }
+        // updateVisionEstimate();
 
         updateShotTarget();
 

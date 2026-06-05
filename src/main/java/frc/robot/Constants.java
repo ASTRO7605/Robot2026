@@ -378,7 +378,7 @@ public final class Constants {
         // position to switch between feeding / shooting
         public static final double kXPosFeed = Units.inchesToMeters(195);
         public static enum BluePositions {
-            HUB(new Translation2d(Units.inchesToMeters(183.5), Units.inchesToMeters(159.23))),
+            HUB(new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84))),
             DEPOT_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(287.69))),
             OUTPOST_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(30)));
 
@@ -406,7 +406,7 @@ public final class Constants {
     /**
      * Standard deviations: X(m), Y(m), θ(rad)
      */
-    public static final class PoseEstimationConstants { //TODO demander why it got changed 
+    public static final class PoseEstimationConstants {
         public static final Matrix<N3, N1> kStateStdDevs = new Matrix<>(Nat.N3(), Nat.N1(),
                 new double[] { 0.025, 0.025, 0.001 });
         // Basically dummy values given as a default, since we feed actual dynamic std

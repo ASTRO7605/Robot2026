@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
+import java.io.Console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -408,6 +409,7 @@ public class Base extends SubsystemBase {
     @Override
     public void periodic() {
         // update pose estimator with vision, if applicable
+
         updateVisionEstimate();
 
         updateShotTarget();

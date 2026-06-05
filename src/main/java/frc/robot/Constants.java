@@ -266,7 +266,7 @@ public final class Constants {
         // enum pour les positions de l'intake
         public static enum intakePos {
             // in degrees
-            Stowed(-20),
+            Stowed(-0.5),
             Down(-146),
             WiggleOut(-120),
             WiggleIn(-70);
@@ -377,9 +377,8 @@ public final class Constants {
 
         // position to switch between feeding / shooting
         public static final double kXPosFeed = Units.inchesToMeters(195);
-
         public static enum BluePositions {
-            HUB(new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(158.84))),
+            HUB(new Translation2d(Units.inchesToMeters(183.5), Units.inchesToMeters(159.23))),
             DEPOT_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(287.69))),
             OUTPOST_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(30)));
 

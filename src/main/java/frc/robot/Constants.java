@@ -117,7 +117,7 @@ public final class Constants {
 
         /* Swerve Profiling Values */
         /** Meters per Second */
-        public static final double kMaxTeleopSpeed = 5.25;
+        public static final double kMaxTeleopSpeed = 3;
         /** Radians per Second */
         public static final double kMaxTeleopRotateSpeed = 3 * Math.PI;
 

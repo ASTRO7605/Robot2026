@@ -221,10 +221,10 @@ public class RobotContainer {
             }
         }));
 
-        m_driverController.leftBumper().onTrue(new InstantCommand(() -> {
+         m_turnStick.trigger().onTrue(new InstantCommand(() -> {
             if (ShootButtonCounter == 0) {
                 CommandScheduler.getInstance()
-                        .schedule(new ShootKontron(m_shooter, m_conveyor, m_shooterBase, m_tourelle, m_driverController.y()));
+                        .schedule(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle, m_driverController.y()));
                 ShootButtonCounter += 1;
             } else if (ShootButtonCounter == 1) {
                 CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
@@ -233,15 +233,24 @@ public class RobotContainer {
             }
         }));
 
+        m_driverController.leftTrigger() 
+        .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
+
         // Intake Commands
-        m_turnStick.trigger().whileTrue(new WiggleIntake(m_intake));
+        m_turnStick.button(4).whileTrue(new WiggleIntake(m_intake));
 
         m_driverController.a().onTrue(new IntakeIn(m_intake));
 
-        m_driverController.y().and(() -> (ShootButtonCounter == 0))
+        // m_driverController.y().and(() -> (ShootButtonCounter == 0))
+        //         .whileTrue(new IntakeOut(m_intake, m_conveyor, true));
+
+        // m_driverController.y().and(() -> (ShootButtonCounter == 1))
+        //         .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
+
+        m_throttleStick.trigger().and(() -> (ShootButtonCounter == 0))
                 .whileTrue(new IntakeOut(m_intake, m_conveyor, true));
 
-        m_driverController.y().and(() -> (ShootButtonCounter == 1))
+        m_throttleStick.trigger().and(() -> (ShootButtonCounter == 1))
                 .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
 
                 //button a

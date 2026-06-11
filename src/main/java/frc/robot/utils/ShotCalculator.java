@@ -65,12 +65,12 @@ public class ShotCalculator {
         distanceToRpm.put(2.0, 2675.0);
         distanceToRpm.put(2.27, 2775.0);
         distanceToRpm.put(2.5, 2890.0);
-        distanceToRpm.put(2.75, 2950.0);
-        distanceToRpm.put(3.2, 3265.0);
-        distanceToRpm.put(3.6, 3450.0);
-        distanceToRpm.put(4.0, 3500.0);
-        distanceToRpm.put(4.4, 3650.0);
-        distanceToRpm.put(4.8, 3950.0);
+        // distanceToRpm.put(2.75, 2950.0);
+        // distanceToRpm.put(3.2, 3265.0);
+        // distanceToRpm.put(3.6, 3450.0);
+        // distanceToRpm.put(4.0, 3500.0);
+        // distanceToRpm.put(4.4, 3650.0);
+        // distanceToRpm.put(4.8, 3950.0);
         // put distance / tof couples
         addDataToTofTables(1.82, 0.79);
         addDataToTofTables(2.12, 0.84);

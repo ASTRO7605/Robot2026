@@ -13,8 +13,8 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.ShooterConstants;
 
 // singleton to contain shot information
-public class ShotCalculator {
-    private static ShotCalculator instance = null;
+public class ShotCalculatorKontron {
+    private static ShotCalculatorKontron instance = null;
     private ShotInfo currentShotInfo;
     private Field2d turretToTargetField;
     private double lastTargetDistance = 0;
@@ -47,30 +47,16 @@ public class ShotCalculator {
         return angleFromDistance.get(lastTargetDistance);
     }
 
-    private ShotCalculator() {
+    private ShotCalculatorKontron() {
         turretToTargetField = new Field2d();
         // put distance / speed couples
-        // distanceToRpm.put(1.74, 2500.0);
-        // distanceToRpm.put(2.57, 2800.0);
-        // distanceToRpm.put(3.09, 2800.0);
-        // distanceToRpm.put(3.16, 2800.0);
-        // distanceToRpm.put(3.3, 2900.0);
-        // distanceToRpm.put(3.4, 3000.0);
-        // distanceToRpm.put(4.0, 3300.0);
-        // distanceToRpm.put(4.18, 3300.0);
-        // distanceToRpm.put(4.75, 3500.0);
-        // distanceToRpm.put(5.1, 3700.0);
-
+   
         distanceToRpm.put(1.75, 2500.0);
         distanceToRpm.put(2.0, 2675.0);
         distanceToRpm.put(2.27, 2775.0);
         distanceToRpm.put(2.5, 2890.0);
-        // distanceToRpm.put(2.75, 2950.0);
-        // distanceToRpm.put(3.2, 3265.0);
-        // distanceToRpm.put(3.6, 3450.0);
-        // distanceToRpm.put(4.0, 3500.0);
-        // distanceToRpm.put(4.4, 3650.0);
-        // distanceToRpm.put(4.8, 3950.0);
+        distanceToRpm.put(2.75, 2900.0);
+        
         // put distance / tof couples
         addDataToTofTables(1.82, 0.79);
         addDataToTofTables(2.12, 0.84);
@@ -85,9 +71,9 @@ public class ShotCalculator {
         SmartDashboard.putNumber("Test Shooter Speeds", 0);
     }
 
-    public static ShotCalculator getInstance() {
+    public static ShotCalculatorKontron getInstance() {
         if (instance == null) {
-            instance = new ShotCalculator();
+            instance = new ShotCalculatorKontron();
         }
 
         return instance;

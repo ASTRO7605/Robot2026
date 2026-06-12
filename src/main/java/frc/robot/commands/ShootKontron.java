@@ -13,10 +13,10 @@ import frc.robot.subsystems.Conveyor;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterBase;
 import frc.robot.subsystems.Tourelle;
-import frc.robot.utils.ShotCalculator;
+import frc.robot.utils.ShotCalculatorKontron;
 import edu.wpi.first.wpilibj.Timer;
 
-public class Shoot extends Command {
+public class ShootKontron extends Command {
 
     private final Shooter shooter;
     private final Conveyor conveyor;
@@ -27,7 +27,7 @@ public class Shoot extends Command {
     private boolean conveyorOn;
     private BooleanSupplier intakeCmdActive;
 
-    public Shoot(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase, Tourelle tourelle,
+    public ShootKontron(Shooter shooter, Conveyor conveyor, ShooterBase shooterBase, Tourelle tourelle,
             BooleanSupplier intakeCmdActive) {
         this.shooter = shooter;
         this.conveyor = conveyor;
@@ -49,20 +49,19 @@ public class Shoot extends Command {
 
     @Override
     public void execute() {
-        double leftOffset = 4.0;
-        var currentShotInfo = ShotCalculator.getInstance().getShotInfo();
+        var currentShotInfo = ShotCalculatorKontron.getInstance().getShotInfo();
         shooter.setMotorSpeed(currentShotInfo.wheelSpeeds());
-        boolean valid = tourelle.requestTurretAngle(currentShotInfo.turretAngle().plus(Rotation2d.fromDegrees(leftOffset)));
+        boolean valid = tourelle.requestTurretAngle(currentShotInfo.turretAngle());
 
         // shooterbase et conveyor arrêtent lorsque mal orienté
-
+    
         if (!valid) {
             shooterBase.ShooterBaseWheelOff();
             conveyor.conveyorWheelsOff();
             hasStartedShooting = false;
         } else if (!hasStartedShooting) {
             if (shooter.areWheelsAtSpeed(currentShotInfo.wheelSpeeds())
-                    && tourelle.isAtTarget(currentShotInfo.turretAngle().plus(Rotation2d.fromDegrees(leftOffset)))) {
+                    && tourelle.isAtTarget(currentShotInfo.turretAngle())) {
                 conveyor.conveyorWheelsIn();
                 shooterBase.ShooterBaseWheelsIn();
                 hasStartedShooting = true;

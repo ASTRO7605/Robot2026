@@ -40,6 +40,7 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Conveyor;
 import frc.robot.commands.IntakeOut;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.ShootKontron;
 import frc.robot.commands.TurretInit;
 import frc.robot.commands.WiggleIntake;
 
@@ -220,15 +221,36 @@ public class RobotContainer {
             }
         }));
 
+         m_turnStick.trigger().onTrue(new InstantCommand(() -> {
+            if (ShootButtonCounter == 0) {
+                CommandScheduler.getInstance()
+                        .schedule(new Shoot(m_shooter, m_conveyor, m_shooterBase, m_tourelle, m_driverController.y()));
+                ShootButtonCounter += 1;
+            } else if (ShootButtonCounter == 1) {
+                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
+                }, m_shooter));
+                ShootButtonCounter -= 1;
+            }
+        }));
+
+        m_driverController.leftTrigger() 
+        .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
+
         // Intake Commands
-        m_turnStick.trigger().whileTrue(new WiggleIntake(m_intake));
+        m_turnStick.button(4).whileTrue(new WiggleIntake(m_intake));
 
         m_driverController.a().onTrue(new IntakeIn(m_intake));
 
-        m_driverController.y().and(() -> (ShootButtonCounter == 0))
+        // m_driverController.y().and(() -> (ShootButtonCounter == 0))
+        //         .whileTrue(new IntakeOut(m_intake, m_conveyor, true));
+
+        // m_driverController.y().and(() -> (ShootButtonCounter == 1))
+        //         .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
+
+        m_throttleStick.trigger().and(() -> (ShootButtonCounter == 0))
                 .whileTrue(new IntakeOut(m_intake, m_conveyor, true));
 
-        m_driverController.y().and(() -> (ShootButtonCounter == 1))
+        m_throttleStick.trigger().and(() -> (ShootButtonCounter == 1))
                 .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
 
                 //button a
@@ -239,20 +261,20 @@ public class RobotContainer {
         m_driverController.button(7).or(m_driverController.leftTrigger())
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
 
-        m_driverController.povDown().onTrue(new InstantCommand(() -> {
-            if (intakeButtonCounter == 0) {
-                CommandScheduler.getInstance()
-                        .schedule(new InstantCommand(() -> {
-                            m_intake.keepPosition();
-                        }));
-                intakeButtonCounter += 1;
-            } else if (intakeButtonCounter == 1) {
-                CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
-                    m_intake.safeStop();
-                }));
-                intakeButtonCounter -= 1;
-            }
-        }));
+        // m_driverController.povDown().onTrue(new InstantCommand(() -> {
+        //     if (intakeButtonCounter == 0) {
+        //         CommandScheduler.getInstance()
+        //                 .schedule(new InstantCommand(() -> {
+        //                     m_intake.keepPosition();
+        //                 }));
+        //         intakeButtonCounter += 1;
+        //     } else if (intakeButtonCounter == 1) {
+        //         CommandScheduler.getInstance().schedule(new InstantCommand(() -> {
+        //             m_intake.safeStop();
+        //         }));
+        //         intakeButtonCounter -= 1;
+        //     }
+        // }));
 
         // Climb Commands
         // m_driverController.b().onTrue(new InstantCommand(() -> {

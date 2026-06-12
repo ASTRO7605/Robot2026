@@ -205,7 +205,7 @@ public class RobotContainer {
         /* Copilot Buttons */
 
         // Shoot Commands
-        m_driverController.button(8)
+        m_driverController.button(8).or(m_driverController.rightTrigger())
                 .whileTrue(new FailSafeShoot(m_shooter, m_conveyor, m_shooterBase, m_driverController.y()));
 
         m_driverController.rightBumper().onTrue(new InstantCommand(() -> {
@@ -232,11 +232,11 @@ public class RobotContainer {
                 .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
 
                 //button a
-        m_driverController.button(2).onTrue(new InstantCommand(() -> {
+        m_driverController.button(2).or(m_driverController.x()).onTrue(new InstantCommand(() -> {
             m_intake.goToPosition(0);
         }));
 
-        m_driverController.button(7)
+        m_driverController.button(7).or(m_driverController.leftTrigger())
                 .whileTrue(new EverythingOut(m_conveyor, m_shooter, m_shooterBase));
 
         m_driverController.povDown().onTrue(new InstantCommand(() -> {

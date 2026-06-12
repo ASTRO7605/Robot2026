@@ -326,7 +326,7 @@ public final class Constants {
         public static final double fPositionConversion = 1;
         public static final double fVelocityConversion = 1;
 
-        public static final double FailSafeVelocity = 2900;
+        public static final double FailSafeVelocity = 5000;
 
         public static final double kPredictPoseLatency = 0.1; // seconds
 
@@ -339,6 +339,8 @@ public final class Constants {
         public static final double maxVelocity = 40;
         public static final double maxAcceleration = 60;
         public static final int kCurrentLimit = 50;
+
+         public static final double FailSafeVelocity = 2900;
 
         public static final double kInSpeed = 0.75; // TODO: increase speed to allow for faster shooting of balls
         public static final double kOutSpeed = -0.5;
@@ -379,7 +381,7 @@ public final class Constants {
         public static final double kXPosFeed = Units.inchesToMeters(195);
 
         public static enum BluePositions {
-            HUB(new Translation2d(Units.inchesToMeters(182.11), Units.inchesToMeters(166.84))),
+            HUB(new Translation2d(Units.inchesToMeters(175), Units.inchesToMeters(166.84))),
             DEPOT_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(287.69))),
             OUTPOST_DUMP(new Translation2d(Units.inchesToMeters(30), Units.inchesToMeters(30)));
 

@@ -253,7 +253,6 @@ public class RobotContainer {
         m_throttleStick.trigger().and(() -> (ShootButtonCounter == 1))
                 .whileTrue(new IntakeOut(m_intake, m_conveyor, false));
 
-                //button a
         m_driverController.button(2).or(m_driverController.x()).onTrue(new InstantCommand(() -> {
             m_intake.goToPosition(0);
         }));
